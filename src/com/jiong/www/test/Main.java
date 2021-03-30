@@ -9,6 +9,7 @@ public class Main {
         //int userId = tilitiliView.login();
         //tilitiliView.register();
         //tilitiliView.perfectInformation(userId);
+        System.out.println("test");
 
     }
 }
