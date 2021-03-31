@@ -1,6 +1,8 @@
 package com.jiong.www.service;
 
 import com.jiong.www.dao.TilitiliDao;
+import com.jiong.www.po.Event;
+import com.jiong.www.po.EventGroup;
 import com.jiong.www.po.User;
 
 import java.sql.Connection;
@@ -20,7 +22,6 @@ public class TilitiliService {
     //放在类中，才能验证是不是同一个人
     public int register(String loginName,String loginPassword) {
         int row=0;
-        int row1=0;
         // 用于接收dao层的返回值
         //封装user对象
         User user = new User();
@@ -28,20 +29,10 @@ public class TilitiliService {
         user.setLoginPassword(loginPassword);
         try {
             row = tilitiliDao.register(user);
-            //注册，添加信息到用户表
+            //注册，添加信息到用户表 把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try {
-            row1=tilitiliDao.addRole(user);
-            //添加到用户角色表
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(row1==0){
-            row =0;
-        }
-        //添加判断如果添加到用户角色表失败，则整个过程失败
         //处理dao层的异常
         return row;
         //返回结果集
@@ -55,7 +46,7 @@ public class TilitiliService {
             e.printStackTrace();
         }
         return row;
-        //不存在该用户名重复则row为1抛出
+        //0不存在，1存在
     }
     //完善用户信息
     public int perfectInformation(String userEmail,String userNickName,int userGender,String userDescription,int userId){
@@ -89,18 +80,28 @@ public class TilitiliService {
         //处理dao层的异常
         return userId;
     }
+    //验证用户的身份，吃瓜群众1管理员2游客3超管4
+    public int verifyRole(int userId){
+        int roleId=0;
+        try {
+            roleId=tilitiliDao.verifyRole(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roleId;
+    }
     //验证要修改的密码
     public int verifyPassword(String oldPassword,int userId){
-        int row1=0;
+        int row=0;
         // 用于接收dao层的返回值
         //封装对象
         try {
-            row1=tilitiliDao.verifyPassword(oldPassword,userId);
+            row=tilitiliDao.verifyPassword(oldPassword,userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         //处理dao层的异常
-        return row1;
+        return row;
         //返回结果集
     }
     //修改密码
@@ -117,16 +118,93 @@ public class TilitiliService {
         return row2;
     }
     //查询用户的个人信息
-    public List queryUserInformation(int userId){
-        List<Object> arr = null;
+    public User queryUserInformation(int userId){
+        User userQuery = new User();
         //用集合来存数据
         try {
-            arr=tilitiliDao.queryUserInformation(userId);
+            userQuery=tilitiliDao.queryUserInformation(userId);
             
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return arr;
+        return userQuery;
+    }
+    //创建瓜圈
+    public int createEventGroup(int userId,String eventGroupName,String eventGroupDescription){
+        int row=0;
+        // 用于接收dao层的返回值
+        //封装eventGroup对象
+        EventGroup eventGroup = new EventGroup();
+        eventGroup.setEventGroupName(eventGroupName);
+        eventGroup.setEventGroupDescription(eventGroupDescription);
+        try {
+            row=tilitiliDao.createEventGroup(userId,eventGroup);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+    //验证瓜圈名是否存在
+    public int verifyEventGroupName(String eventGroupName){
+        int row=0;
+        //默认0不存在
+        try {
+            row=tilitiliDao.verifyEventGroupName(eventGroupName);
+            //0则无数据，1则有数据
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+
+    }
+    //验证是否是该管理员管理的瓜圈
+    public int verifyEventGroupOfAdmin(int userId,String eventGroupName){
+        int row=0;
+        //默认0不是管理员管理的瓜圈
+        try {
+            row=tilitiliDao.verifyEventGroupOfAdmin(userId,eventGroupName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+    //删除瓜圈，同时在管理员所管理的数据删除关系
+    public int deleteEventGroup(String deleteEventGroupName,int userId){
+        int row=0;
+        // 用于接收dao层的返回值
+        try {
+            row=tilitiliDao.deleteEventGroup(deleteEventGroupName,userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+    //创建瓜
+    public int createEvent(int userId,int eventGroupId,String eventName,String eventContent){
+        int row=0;
+        // 用于接收dao层的返回值
+        //封装event对象
+        Event event = new Event();
+        event.setEventName(eventName);
+        event.setEventContent(eventContent);
+        try {
+            row=tilitiliDao.createEvent(userId,eventGroupId,event);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+    //验证瓜名是否存在
+    public int verifyEventName(String eventGroupName){
+        int row=0;
+        //默认0不存在
+        try {
+            row=tilitiliDao.verifyEventName(eventGroupName);
+            //1则无数据，0则有数据
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
     }
 
 }

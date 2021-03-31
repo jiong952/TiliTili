@@ -3,6 +3,7 @@ package com.jiong.www.view;
 import com.jiong.www.po.User;
 import com.jiong.www.service.TilitiliService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,31 +15,40 @@ public class TilitiliView {
     Scanner scanner = new Scanner(System.in);
     //注册界面，将用户信息加到用户角色表,普通用户只能注册为吃瓜群众，用户名存在则不继续输入
     public void register(){
+        boolean flag=false;
+        while (!flag){
         System.out.println("请输入新用户名：");
         String loginName = scanner.next();
         int judge = tilitiliService.verifyUsername(loginName);
-        if(judge==1){
+        if(judge==0){
+            //judge为0不存在,为1存在
             System.out.println("请输入新密码：");
             String loginPassword = scanner.next();
             int row = tilitiliService.register(loginName,loginPassword);
             //row用于接收service传来的结果
             if(row>0){
                 System.out.println("注册成功！");
+                flag=true;
             }else {
                 System.out.println("注册失败!");
             }
         }
         else {
-            System.out.println("用户名已存在！");
+            System.out.println("用户名已存在！请重新输入用户名!退出注册请输入0");
+            int nextRow=scanner.nextInt();
+            if(nextRow==0){
+                break;
+            }
+        }
         }
 
     }
     //登录界面
     public int login(){
         System.out.println("请输入用户名：");
-        String loginName = scanner.next();
+        String loginName = scanner.nextLine();
         System.out.println("请输入密码：");
-        String loginPassword = scanner.next();
+        String loginPassword = scanner.nextLine();
         int userId=0;
         //用户的id
         userId= tilitiliService.login(loginName, loginPassword);
@@ -63,6 +73,7 @@ public class TilitiliView {
             System.out.println("1.填写生日 2.填写邮箱 3.设置头像 4.修改昵称 5.填写性别 6.填写个人简介 7.修改密码 8.保存修改 0.返回");
             System.out.println("------------------------------------------------------------");
             judge=scanner.nextInt();
+            System.out.println("sad");
             scanner.nextLine();
             //一次修改一次录入
             switch (judge){
@@ -88,8 +99,20 @@ public class TilitiliView {
                     userGender= scanner.nextInt();
                     break;
                 case 6:
-                    System.out.println("请填写个人简介");
-                    userDescription=scanner.next();
+                    System.out.println("请输入个人简介！停止输入请在文末新建一行输入@");
+                    List<String> list=new ArrayList<>();
+                    while (!scanner.hasNext("@")){
+                        list.add(scanner.nextLine());
+                    }
+                    //储存多行字符串的数组
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < list.size(); i++) {
+                        stringBuilder.append(list.get(i)+"\n");
+                    }
+                    //把list--stringBuilder--string
+                    userDescription = stringBuilder.toString();
+                    scanner.nextLine();
+                    //用于缓冲最后的@
                     //用文本框来修改
                     break;
                 case 7:
@@ -158,17 +181,140 @@ public class TilitiliView {
     }
     //查询用户的个人信息
     public void queryUserInformation(int userId){
-        List<Object> list = tilitiliService.queryUserInformation(userId);
-        if(list==null||list.isEmpty()){
-            System.out.println("无信息");
-        }else {
-                System.out.println("用户名：" + list.get(0));
-                System.out.println("邮箱：" + list.get(1));
-                System.out.println("昵称：" + list.get(2));
-                System.out.println("性别：" + ((int) list.get(3) == 0 ? "女" : "男"));
-                System.out.println("个人简介：" + list.get(4));
-        }
-
+        User userQuery = new User();
+        userQuery=tilitiliService.queryUserInformation(userId);
+        System.out.println("用户名：" + userQuery.getLoginName());
+        System.out.println("邮箱：" + userQuery.getUserEmail());
+        System.out.println("昵称：" + userQuery.getUserNickname());
+        System.out.println("性别：" + (userQuery.getUserGender()== 0 ? "女" : "男"));
+        System.out.println("个人简介：" + userQuery.getUserDescription());
     }
+    //创建瓜圈,在瓜圈表里加数据，同时管理员的管理表里也要加瓜圈的数据在管理员瓜圈表里也要传数据，把管理员id加传入,瓜圈名不能相同,
+    public void createEventGroup(int userId){
+        boolean flag=false;
+        while (!flag){
+        System.out.println("请输入新创建的瓜圈名称");
+        String eventGroupName=scanner.nextLine();
+        //验证瓜圈名
+        int judge;
+            judge = tilitiliService.verifyEventGroupName(eventGroupName);
+            if(judge==0)
+            //judge==0表示瓜圈名不存在
+            {
+            System.out.println("请输入瓜圈简介！停止输入请在文末新建一行输入@");
+            List<String> list=new ArrayList<>();
+            //储存多行字符串的数组
+            while (!scanner.hasNext("@")){
+                list.add(scanner.nextLine());
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                stringBuilder.append(list.get(i)+"\n");
+            }
+            //把list--stringBuilder--string
+            String eventGroupDescription = stringBuilder.toString();
+            int row=tilitiliService.createEventGroup(userId,eventGroupName,eventGroupDescription);
+            //创建瓜圈
+            if(row>0){
+                System.out.println("创建成功！");
+                flag=true;
+            }else {
+                System.out.println("创建失败！");
+            }
+        }
+        else {
+            System.out.println("瓜圈已存在!请重新输入瓜圈名！退出创建请输入0");
+            int nextRow=scanner.nextInt();
+            if(nextRow==0){
+                break;
+            }
+        }
+        }
+    }
+    //删除瓜圈，同时在管理员所管理的数据删除关系,管理员只能删除自己的瓜圈,删除瓜圈，瓜圈里的瓜也要被删除
+    public void deleteEventGroup(int userId){
+        boolean flag=false;
+        while (!flag){
+        System.out.println("请输入删除的瓜圈名");
+        String deleteEventGroupName = scanner.next();
+        //验证瓜圈名
+        int judge;
+        int judge1;
+            judge = tilitiliService.verifyEventGroupName(deleteEventGroupName);
+            if(judge==1){
+                judge1=tilitiliService.verifyEventGroupOfAdmin(userId,deleteEventGroupName);
+                if(judge1==1){
+                    //judge1==1表示是该管理员管理的瓜圈，可以删除
+                    //删除
+                    int row=tilitiliService.deleteEventGroup(deleteEventGroupName,userId);
+                    //row用于接收service传来的结果
+                    if(row>0){
+                        System.out.println("删除成功！");
+                        flag=true;
+                    }else {
+                        System.out.println("删除失败!");
+                    }
+                }else {
+                    System.out.println("这不是您管理的瓜圈，不可以删除！请重新输入瓜圈名！退出删除请输入0");
+                    int nextRow=scanner.nextInt();
+                    if(nextRow==0){
+                        break;
+                    }
+                }
+
+        }else {
+            System.out.println("该瓜圈名不存在！请重新输入瓜圈名！退出删除请输入0");
+            int nextRow=scanner.nextInt();
+            if(nextRow==0){
+                break;
+            }
+        }
+        }
+    }
+    //查看瓜圈
+    //创建瓜
+    public void createEvent(int userId,int eventGroupId){
+        boolean flag=false;
+        while (!flag){
+            System.out.println("请输入新创建的瓜的名称");
+            String eventName=scanner.nextLine();
+            //验证瓜名
+            int judge=tilitiliService.verifyEventName(eventName);
+            if(judge==0)
+            //judge==0表示瓜圈名不存在
+            {
+                System.out.println("请输入瓜的内容！停止输入请在文末新建一行输入@");
+                List<String> list=new ArrayList<>();
+                //储存多行字符串的数组
+                while (!scanner.hasNext("@")){
+                    list.add(scanner.nextLine());
+                }
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < list.size(); i++) {
+                    stringBuilder.append(list.get(i)+"\n");
+                }
+                //把list--stringBuilder--string
+                String eventContent = stringBuilder.toString();
+                int row=0;
+                //创建瓜
+                row=tilitiliService.createEvent(userId,eventGroupId,eventName,eventContent);
+                if(row>0){
+                    System.out.println("创建成功！");
+                    flag=true;
+                }else {
+                    System.out.println("创建失败！");
+                }
+            }
+            else {
+                System.out.println("此瓜已存在!请重新输入瓜名！退出创建请输入0");
+                int nextRow=scanner.nextInt();
+                if(nextRow==0){
+                    break;
+                }
+            }
+        }
+    }
+    //删除瓜 管理员删除自己瓜圈里的瓜，用户删除自己瓜
+    //查看瓜
 
 }

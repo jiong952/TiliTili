@@ -1,33 +1,35 @@
 package com.jiong.www.dao;
 
+import com.jiong.www.po.Event;
+import com.jiong.www.po.EventGroup;
 import com.jiong.www.po.User;
 import com.jiong.www.util.JdbcUtils;
 
-import javax.sql.RowSet;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 /**
  * @author Mono
  */
 public class TilitiliDao {
-    //注册，添加用户信息到用户表
+    //注册，添加用户信息到用户表, 把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
     public int register(User user) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
-        //`login_name`加了主键约束，在数据库设计上可以防止重名
+        String sql1 ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES((SELECT `user_id`FROM `user` WHERE `login_name`=?),1)";
+        //`login_name`加了唯一约束，在数据库设计上可以防止重名
         PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps.setString(1,user.getLoginName());
         ps.setString(2,user.getLoginPassword());
         ps.setString(3,user.getLoginName());
+        ps1.setString(1,user.getLoginName());
         //昵称默认为用户名
         row= ps.executeUpdate();
+        ps1.executeUpdate();
         //sql语句返回结果判断
         //row是返回值，用于判断
         JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
         //释放连接
         return row;
         //向上抛出到view层
@@ -35,33 +37,19 @@ public class TilitiliDao {
     //用于注册时验证该用户名是否存在
     public int verifyUsername(String loginName) throws SQLException {
         Connection connection = JdbcUtils.getConnection();
-        int row=1;
+        int row=0;
+        //默认为0不存在
         //用来抛出到view层做判断
         String sql1="SELECT *FROM `user` WHERE `login_name`=?";
-        PreparedStatement ps0 = connection.prepareStatement(sql1);
-        ps0.setString(1,loginName);
-        ResultSet resultSet = ps0.executeQuery();
+        PreparedStatement ps = connection.prepareStatement(sql1);
+        ps.setString(1,loginName);
+        ResultSet resultSet = ps.executeQuery();
         if(resultSet.isBeforeFirst()){
-            row=0;
-            //表里有数据则row=0
+            row=1;
+            //表里有数据则row=1
         }
         return row;
         //抛出到view层判断
-    }
-    //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
-    public int addRole(User user) throws SQLException {
-        Connection conn = JdbcUtils.getConnection();
-        String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES((SELECT `user_id`FROM `user` WHERE `login_name`=?),1)";
-        //1为提前设计的吃瓜群众对于的role_id
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1,user.getLoginName());
-        int row1 = ps.executeUpdate();
-        //sql语句返回结果判断
-        //row是返回值，用于判断
-        JdbcUtils.release(conn,ps,null);
-        //释放连接
-        return row1;
-        //向上抛出到view层
     }
     //完善用户信息,实现了每次只改动一个信息，其他的保存为上次的值
     public int perfectInformation(User user,int userId) throws SQLException {
@@ -70,37 +58,35 @@ public class TilitiliDao {
         PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps1.setInt(1,userId);
         ResultSet resultSet = ps1.executeQuery();
-        String defaultEmail = null;
-        String defaultNickname = null;
-        int defaultGender = 0;
-        String defaultDescirption = null;
+        User userDeafault = new User();
+        //userDeafault用来封装表中数据地初始值
         while(resultSet.next()){
-            defaultEmail = resultSet.getString("user_e-mail");
-            defaultNickname=resultSet.getString("user_nickname");
-            defaultGender=resultSet.getInt("user_gender");
-            defaultDescirption=resultSet.getString("user_description");
+            userDeafault.setUserEmail(resultSet.getString("user_e-mail"));
+            userDeafault.setUserNickname(resultSet.getString("user_nickname"));
+            userDeafault.setUserGender(resultSet.getInt("user_gender"));
+            userDeafault.setUserDescription(resultSet.getString("user_description"));
         }
         //查询并储存该用户的信息的原先值
         String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=? WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         if(user.getUserEmail() ==null){
-            ps.setString(1,defaultEmail);
+            ps.setString(1,userDeafault.getUserEmail());
         }else {
             ps.setString(1, user.getUserEmail());
         }
         if(user.getUserNickname() ==null){
-            ps.setString(2, defaultNickname);
+            ps.setString(2, userDeafault.getLoginName());
         }else {
             ps.setString(2,user.getUserNickname());
         }
         if(user.getUserGender() ==2){
             //2是性别为空的默认值
-            ps.setInt(3, defaultGender);
+            ps.setInt(3, userDeafault.getUserGender());
         }else {
             ps.setInt(3,user.getUserGender());
         }
         if(user.getUserDescription() ==null){
-            ps.setString(4, defaultDescirption);
+            ps.setString(4,userDeafault.getUserDescription());
         }
         else {
             ps.setString(4,user.getUserDescription());
@@ -111,6 +97,7 @@ public class TilitiliDao {
         //sql语句返回结果判断
         //row是返回值，用于判断
         JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
         //释放连接
         return row;
     }
@@ -145,9 +132,23 @@ public class TilitiliDao {
 
         return userId;
     }
+    //验证用户的身份，吃瓜群众1管理员2游客3超管4
+    public int verifyRole(int userId) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="SELECT *FROM `user_role`WHERE`user_id`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,userId);
+        ResultSet rs = ps.executeQuery();
+        int roleId=0;
+        //用户角色的id
+        while (rs.next()){
+            roleId=rs.getInt("role_id");
+        }
+        return roleId;
+    }
     //验证要修改的密码
     public int verifyPassword(String oldPassword,int userId) throws SQLException {
-        int row1=0;
+        int row=0;
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `user` WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -160,9 +161,9 @@ public class TilitiliDao {
         }
         if(realPassword.equals(oldPassword)){
             //验证密码成功则令结果为1
-            row1=1;
+            row=1;
         }
-        return row1;
+        return row;
         //row1返回到view层用于验证
     }
     //修改密码
@@ -181,22 +182,205 @@ public class TilitiliDao {
         return row2;
     }
     //查询用户的个人信息
-    public List queryUserInformation(int userId) throws SQLException {
-        List<Object> arr = new ArrayList();
+    public User queryUserInformation(int userId) throws SQLException {
+        User userQuery = new User();
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `user` WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1,userId);
         ResultSet rs = ps.executeQuery();
         while(rs.next()){
-            arr.add(rs.getString("login_name"));
-            arr.add(rs.getString("user_e-mail"));
-            arr.add(rs.getString("user_nickname"));
-            arr.add(rs.getInt("user_gender"));
-            arr.add(rs.getString("user_description"));
+            userQuery.setLoginName(rs.getString("login_name"));
+            userQuery.setUserEmail(rs.getString("user_e-mail"));
+            userQuery.setUserNickname(rs.getString("user_nickname"));
+            userQuery.setUserGender(rs.getInt("user_gender"));
+            userQuery.setUserDescription(rs.getString("user_description"));
         }
         //把查询的结果集返回到service层
-        return arr;
+        return userQuery;
     }
+    //创建瓜圈,添加瓜圈信息到瓜圈表，并且把管理员和瓜联系一起
+    public int createEventGroup(int userId,EventGroup eventGroup) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        int row=0;
+        String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
+        String sql1 ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
+        //`eventGroup_name`加了唯一约束，在数据库设计上可以防止重名
+        PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps1 = conn.prepareStatement(sql1);
+        ps.setString(1,eventGroup.getEventGroupName());
+        ps.setString(2, eventGroup.getEventGroupDescription());
+        ps1.setInt(1,userId);
+        ps1.setString(2,eventGroup.getEventGroupName());
+        row= ps.executeUpdate();
+        ps1.executeUpdate();
+        //sql语句返回结果判断
+        //row是返回值，用于判断
+        JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
+        //释放连接
+        return row;
+        //向上抛出到view层
+    }
+    //验证瓜圈名是否存在,避免发生重复
+    public int verifyEventGroupName(String eventGroupName) throws SQLException {
+        Connection connection = JdbcUtils.getConnection();
+        int row=0;
+        //用来抛出到view层做判断
+        String sql="SELECT *FROM `eventgroup` WHERE `eventGroup_name`=?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,eventGroupName);
+        ResultSet resultSet = ps.executeQuery();
+        if(resultSet.isBeforeFirst()){
+            row=1;
+            //表里有数据则row=1
+        }
+        return row;
+        //抛出到view层判断
+    }
+    //验证是否是该管理员管理的瓜圈
+    public int verifyEventGroupOfAdmin(int userId,String eventGroupName) throws SQLException {
+        int row=0;
+        //0表示不是
+        Connection connection = JdbcUtils.getConnection();
+        String sql="SELECT `id`\n" +
+                "FROM `administrator`\n" +
+                "INNER JOIN `eventgroup`\n" +
+                "ON `administrator_groupid`=`eventGroup_id`\n" +
+                "WHERE `eventGroup_name`=? AND `administrator_id`=?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,eventGroupName);
+        ps.setInt(2,userId);
+        ResultSet resultSet = ps.executeQuery();
+        if(resultSet.isBeforeFirst()){
+            row=1;
+            //表里有数据则是该管理员管的瓜圈row=1
+        }
+        return row;
+    }
+    //删除瓜圈，同时在管理员所管理的数据删除关系,删除瓜圈瓜圈里瓜也要删除
+    public int deleteEventGroup(String deleteEventGroupName,int userId) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        int row;
+        //删除瓜圈
+        String sql ="DELETE FROM `eventgroup` WHERE `eventGroup_name`=?";
+        //删除瓜圈与管理员的关系
+        String sql1 ="DELETE FROM `administrator`WHERE `administrator_id`=? AND `administrator_groupid`=(SELECT `eventGroup_id` FROM `eventgroup` WHERE `eventGroup_name`=?)";
+        //删除瓜圈里的瓜
+        String sql2 ="DELETE FROM `event` WHERE `eventGroup_id`=(SELECT `eventGroup_id` FROM `eventgroup` WHERE `eventGroup_name`=?)";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps1 = conn.prepareStatement(sql1);
+        PreparedStatement ps2= conn.prepareStatement(sql2);
+        ps.setString(1,deleteEventGroupName);
+        ps1.setInt(1,userId);
+        //userId是管理员id
+        ps1.setString(2,deleteEventGroupName);
+        ps2.setString(1,deleteEventGroupName);
+        //先删除瓜圈与管理员的关系
+        ps1.executeUpdate();
+        //再删除瓜圈里的瓜
+        ps2.executeUpdate();
+        //最后删除瓜圈
+        row= ps.executeUpdate();
+        //sql语句返回结果判断
+        //row是返回值，用于判断
+        JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
+        //释放连接
+        return row;
+        //向上抛出到view层
+    }
+    //创建瓜，添加瓜信息到瓜表
+    public int createEvent(int userId, int eventGroupId, Event event) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        int row;
+        String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
+        // event_name加了唯一约束，在数据库设计上可以防止重名
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,eventGroupId);
+        ps.setInt(2,userId);
+        ps.setString(3,event.getEventName());
+        ps.setString(4,event.getEventContent());
+        row= ps.executeUpdate();
+        //sql语句返回结果判断
+        //row是返回值，用于判断
+        JdbcUtils.release(conn,ps,null);
+        //释放连接
+        return row;
+        //向上抛出到view层
+    }
+    //验证瓜名是否存在
+    public int verifyEventName(String eventName) throws SQLException {
+        Connection connection = JdbcUtils.getConnection();
+        int row=1;
+        //row为1表示不存在
+        //用来抛出到view层做判断
+        String sql="SELECT *FROM `event`WHERE `event_name`=?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,eventName);
+        ResultSet resultSet = ps.executeQuery();
+        if(resultSet.isBeforeFirst()){
+            row=0;
+            //row=0则表里有数据
+        }
+        return row;
+        //抛出到view层判断,1则无数据，0则有数据
+    }
+    //验证是不是用户发的瓜
+    public int verifyEventOfUser(int userId,String eventName) throws SQLException {
+        Connection connection = JdbcUtils.getConnection();
+        int row=0;
+        //默认不是用户的瓜
+        //用来抛出到view层做判断
+        String sql="SELECT *FROM `eventgroup` WHERE `eventGroup_name`=?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,eventName);
+        ResultSet resultSet = ps.executeQuery();
+        if(resultSet.isBeforeFirst()){
+            row=1;
+            //表里有数据,是用户的瓜则row=1
+        }
+        return row;
+        //抛出到view层判断
+    }
+    //删除瓜，用户只能删除自己的瓜，管理员可以删除自己瓜圈里的所有瓜
+    public int deleteEvent(int userId,int roleId,String deleteEventName) throws SQLException {
+        int row=0;
+        String eventGroupName=null;
+        Connection conn = JdbcUtils.getConnection();
+        if(roleId==1){
+            //为普通用户
+            //验证这个瓜是不是该用户发的
+            int row1=verifyEventOfUser(userId,deleteEventName);
+            if(row1==1){
+                //row1==1表示是该用户发的
+                //进行删除
+            }else {
 
+            }
+        }
+        else if(roleId==2){
+            //管理员
+            //先查这个瓜在哪个组,查出瓜圈名
+            String sql ="SELECT `eventGroup_name`\n" +
+                    "FROM `eventgroup` s\n" +
+                    "INNER JOIN `event` p\n" +
+                    "ON s.`eventGroup_id`=p.`eventGroup_id`\n" +
+                    "WHERE `event_name`=?";
+            PreparedStatement ps0 = conn.prepareStatement(sql);
+            ResultSet rs = ps0.executeQuery();
+            while (rs.next()){
+                eventGroupName=rs.getString("eventGroup_name");
+            }
+            //验证这个组是不是归管理员管
+            int row2 = verifyEventGroupOfAdmin(userId, eventGroupName);
+            //row==1表示是该管理员管理的
+            if(row2==1){
+                //进行删除
+            }
+
+        }
+        String sql1 ="DELETE FROM `event` WHERE `event_name`=?";
+        return row;
+    }
 }
