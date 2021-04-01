@@ -1,21 +1,13 @@
 package com.jiong.www.test;
 
-import com.jiong.www.po.User;
-import com.jiong.www.service.TilitiliService;
 import com.jiong.www.view.TilitiliView;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        //bug 用list输入多行文字，只要回车就不可以撤回上一行
         TilitiliView tilitiliView = new TilitiliView();
-        int login = tilitiliView.login();
-        //tilitiliView.createEventGroup(login);
-        //tilitiliView.deleteEventGroup(login);
-        //tilitiliView.createEvent(login,1);
+        int userId = tilitiliView.login();
+        int eventId = tilitiliView.viewEvent("赵英俊留给世界最后的话：不要把我忘了，永别了");
+        tilitiliView.cancelComment(userId,eventId);
     }
 }

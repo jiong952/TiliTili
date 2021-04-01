@@ -1,13 +1,11 @@
 package com.jiong.www.service;
 
 import com.jiong.www.dao.TilitiliDao;
+import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.po.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -205,6 +203,119 @@ public class TilitiliService {
             e.printStackTrace();
         }
         return row;
+    }
+    //验证这个瓜是不是用户发的
+    public int verifyEventOfUser(int userId,int eventId){
+        int row = 0;
+        //row=1是用户发的,row=0不是
+        try {
+            row=tilitiliDao.verifyEventOfUser(userId,eventId);
+            //row=1是用户发的,row=0不是
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+    //查询这个瓜所在的瓜圈名
+    public String queryEventOfEventGroup(int eventId){
+        String eventGroupName = null;
+        //eventGroupName为查询的瓜圈名
+        try {
+            eventGroupName=tilitiliDao.queryEventOfEventGroup(eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return eventGroupName;
+    }
+    //删除瓜
+    public int deleteEvent(int eventId){
+        int row=0;
+        try {
+            row=tilitiliDao.deleteEvent(eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+    //查看瓜,返回瓜的所有信息，封装
+    public Event viewEvent(String eventName){
+        Event eventQuery = new Event();
+        try {
+            eventQuery=tilitiliDao.viewEvent(eventName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return eventQuery;
+    }
+    //点赞,同时更新用户点赞表
+    public void likes(int userId,int eventId){
+        try {
+            tilitiliDao.likes(userId,eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //取消点赞,同时删除用户点赞表中的相关数据
+    public void cancelLikes(int userId,int eventId){
+        try {
+            tilitiliDao.cancelLikes(userId,eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量
+    public List<Event> viewEventOfLikes(int userId){
+        List<Event> events = new ArrayList<Event>();
+        try {
+            events = tilitiliDao.viewEventOfLikes(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+    //收藏,同时更新收藏表
+    public void collection(int userId,int eventId){
+        try {
+            tilitiliDao.collection(userId,eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //取消收藏,同时删除用户收藏表中的相关数据
+    public void cancelCollection(int userId,int eventId){
+        try {
+            tilitiliDao.cancelCollection(userId,eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量
+    public List<Event> viewEventOfCollection(int userId){
+        List<Event> events = new ArrayList<Event>();
+        try {
+            events=tilitiliDao.viewEventOfCollection(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+    //进行评论，评论数+1，评论表更新
+    public void comment(int userId,int eventId,String commentContent){
+        Comment comment = new Comment();
+        comment.setCommentContent(commentContent);
+        try {
+            tilitiliDao.comment(userId,eventId,comment);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //删除评论，同时删除用户评论表中的相关数据
+    public void cancelComment(int userId,int eventId){
+        try {
+            tilitiliDao.cancelComment(userId,eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
