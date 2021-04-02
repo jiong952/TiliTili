@@ -582,10 +582,11 @@ public class TilitiliDao {
         //sql语句返回结果判断
         //row是返回值，用于判断
         JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
         //释放连接
         //向上抛出到view层
     }
-    //删除评论，同时删除用户评论表中的相关数据
+    //删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除
     public void cancelComment(int userId,int eventId) throws SQLException{
         Connection conn = JdbcUtils.getConnection();
         String sql ="UPDATE `event` SET `comment_num` = `comment_num`-1 WHERE `event_id` =?";
@@ -601,5 +602,56 @@ public class TilitiliDao {
         //row是返回值，用于判断 0表示执行失败,1表示执行成功
         JdbcUtils.release(conn,ps,null);
         //释放连接
+    }
+    //删除瓜的所有评论，管理员
+    public void clearComment(int eventId) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
+        //清空所有评论
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,eventId);
+        ps.executeUpdate();
+        //sql语句返回结果判断
+        //row是返回值，用于判断 0表示执行失败,1表示执行成功
+        JdbcUtils.release(conn,ps,null);
+        //释放连接
+    }
+    //查看瓜的评论,也要返回评论人名
+    public List<Comment> viewComment(int eventId) throws SQLException {
+        List<Comment> comments = new ArrayList<Comment>();
+        //创建一个容器返回 评论的信息
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="SELECT `login_name`,`comment_content`\n" +
+                "FROM `user` s\n" +
+                "INNER JOIN `comment` p\n" +
+                "ON s.`user_id`=p.`user_id`\n" +
+                "WHERE `event_id`=?";
+        //联表查询
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,eventId);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            Comment comment = new Comment();
+            comment.setCommentContent(rs.getString("comment_content"));
+            comment.setCommenterName(rs.getString("login_name"));
+            comments.add(comment);
+        }
+        JdbcUtils.release(conn,ps,rs);
+        //把查询的结果集返回到service层
+        return comments;
+
+    }
+    //用户举报瓜
+    public int accuseEvent(int eventId) throws SQLException {
+        int row=0;
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="UPDATE `event` SET `accuse_status` = 1 WHERE `event_id`=?";
+        //联表查询
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,eventId);
+        row = ps.executeUpdate();
+        JdbcUtils.release(conn,ps,null);
+        //把查询的结果集返回到service层
+        return row;
     }
 }

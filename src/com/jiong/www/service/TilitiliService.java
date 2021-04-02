@@ -309,13 +309,42 @@ public class TilitiliService {
             e.printStackTrace();
         }
     }
-    //删除评论，同时删除用户评论表中的相关数据
+    //删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除
     public void cancelComment(int userId,int eventId){
         try {
             tilitiliDao.cancelComment(userId,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    //删除瓜的所有评论,管理员
+    public void clearComment(int eventId){
+        try {
+            tilitiliDao.clearComment(eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    //查看瓜的评论,也要返回评论人名
+    public List<Comment> viewComment(int eventId){
+        List<Comment> comments = new ArrayList<Comment>();
+        //创建一个容器返回 评论的信息
+        try {
+            comments = tilitiliDao.viewComment(eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return comments;
+    }
+    //用户可以举报瓜，给管理员处理
+    public int accuseEvent(int eventId){
+        int row=0;
+        try {
+            tilitiliDao.accuseEvent(eventId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
     }
 
 }
