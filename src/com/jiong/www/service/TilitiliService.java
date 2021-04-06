@@ -6,6 +6,7 @@ import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.po.User;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class TilitiliService {
         //0不存在，1存在
     }
     //完善用户信息
-    public int perfectInformation(String userEmail,String userNickName,int userGender,String userDescription,int userId){
+    public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday){
         int row =0;
         // 用于接收dao层的返回值
         //封装对象
@@ -56,6 +57,7 @@ public class TilitiliService {
         user.setUserNickname(userNickName);
         user.setUserGender(userGender);
         user.setUserDescription(userDescription);
+        user.setUserBirthday(userBirthday);
         try {
             row=tilitiliDao.perfectInformation(user,userId);
         } catch (SQLException e) {

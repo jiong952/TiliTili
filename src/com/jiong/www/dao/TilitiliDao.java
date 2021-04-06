@@ -70,9 +70,10 @@ public class TilitiliDao {
             userDeafault.setUserNickname(resultSet.getString("user_nickname"));
             userDeafault.setUserGender(resultSet.getInt("user_gender"));
             userDeafault.setUserDescription(resultSet.getString("user_description"));
+            userDeafault.setUserBirthday(resultSet.getDate("user_birthday"));
         }
         //查询并储存该用户的信息的原先值
-        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=? WHERE `user_id`=?";
+        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=? WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         if(user.getUserEmail() ==null){
             ps.setString(1,userDeafault.getUserEmail());
@@ -96,8 +97,13 @@ public class TilitiliDao {
         else {
             ps.setString(4,user.getUserDescription());
         }
+        if(user.getUserBirthday()==null){
+            ps.setDate(5,userDeafault.getUserBirthday());
+        }else {
+            ps.setDate(5,user.getUserBirthday());
+        }
         //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
-        ps.setInt(5,userId);
+        ps.setInt(6,userId);
         int row = ps.executeUpdate();
         //sql语句返回结果判断
         //row是返回值，用于判断
@@ -202,6 +208,7 @@ public class TilitiliDao {
             userQuery.setUserNickname(rs.getString("user_nickname"));
             userQuery.setUserGender(rs.getInt("user_gender"));
             userQuery.setUserDescription(rs.getString("user_description"));
+            userQuery.setUserBirthday(rs.getDate("user_birthday"));
         }
         JdbcUtils.release(conn,ps,rs);
         //把查询的结果集返回到service层

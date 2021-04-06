@@ -5,6 +5,7 @@ import com.jiong.www.po.Event;
 import com.jiong.www.po.User;
 import com.jiong.www.service.TilitiliService;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class TilitiliView {
         String userNickName =null;
         int userGender =0;
         String userDescription = null;
+        Date userBirthday=null;
         int judge =1;
         while(judge!=0){
             System.out.println("------------------------------------------------------------");
@@ -173,7 +175,7 @@ public class TilitiliView {
                     }
                     break;
                 case 8:
-                    int row = tilitiliService.perfectInformation(userEmail,userNickName,userGender,userDescription,userId);
+                    int row = tilitiliService.perfectInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday);
                     if(row>0){
                         System.out.println("保存成功!");
                     }else {

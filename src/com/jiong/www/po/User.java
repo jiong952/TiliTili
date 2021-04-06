@@ -1,6 +1,7 @@
 package com.jiong.www.po;
 
-import java.util.Date;
+
+import java.sql.Date;
 
 /**
  * @author Mono
@@ -19,8 +20,11 @@ public class User {
     //用户的昵称
     private int userGender;
     //用户的性别
+    //0为女，1为男,默认数据库为2，即没选择
     private Date userBirthday;
-    //用户的生日
+    //用户的生日 java.sql.Date这个包才可以直接放进数据库
+    //存进去：用StringBuilder按照格式拼接string，把string转化为java.sql.Date可以直接存进去
+    //取出来：把java.sql.Date用Calendar类来获取年月日
     private String userDescription;
     //用户的个人说明
 
