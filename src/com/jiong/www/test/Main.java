@@ -1,29 +1,18 @@
 package com.jiong.www.test;
 
-import com.jiong.www.view.TilitiliView;
-import com.jiong.www.view.Welcome;
-
 import java.text.*;
-import java.util.Calendar;
-import java.util.Date;
 
 public class Main {
     public static void main(String[] args) throws ParseException {
-        //存进去：用StringBuilder按照格式拼接string，把string转化为java.sql.Date可以直接存进去
-        //取出来：把java.sql.Date用Calendar类来获取年月日
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("2021");
-        stringBuilder.append("-");
-        stringBuilder.append("12");
-        stringBuilder.append("-");
-        stringBuilder.append("31");
-        String s = stringBuilder.toString();
-        java.sql.Date date1 = java.sql.Date.valueOf(s);
-        System.out.println(date1);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date1);
-        System.out.println(calendar.get(Calendar.YEAR));
-
-
+        //按钮添加按钮作用的信息  setToolTips
+        //按钮增加图片JButton b1 = new JButton(new ImageIcon("D:/images/1.jpg"));
+        //邮箱增加后缀报错
+        //头像的添加 文件选择器？
+        //密码进行加密  MD5？
+        //最后增加超级管理员的功能
+        //界面美化：加显示当前的时间
+        // 菜单项可以设置快捷键
+        // 界面的外框可以加图标
+        //瓜 瓜圈 判断是否被点过？
     }
 }

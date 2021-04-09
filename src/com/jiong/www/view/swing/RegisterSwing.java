@@ -1,6 +1,6 @@
-package com.jiong.www.view;
+package com.jiong.www.view.swing;
 
-import com.jiong.www.service.TilitiliService;
+import com.jiong.www.service.UserService;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Register extends JFrame implements ActionListener , DocumentListener {
+public class RegisterSwing extends JFrame implements ActionListener , DocumentListener {
     JFrame register;
     JPanel jPanel;
     //2个标签
@@ -26,9 +26,8 @@ public class Register extends JFrame implements ActionListener , DocumentListene
     JButton registerButton;
     JButton reset;
     JButton cancel;
-    TilitiliService tilitiliService = new TilitiliService();
-
-    public Register(){
+    UserService userService = new UserService();
+    public RegisterSwing(){
         register = new JFrame("TiliTili瓜王系统");
         register.setSize(1200,800);
         //设置大小
@@ -36,7 +35,7 @@ public class Register extends JFrame implements ActionListener , DocumentListene
         //窗口可见
         register.setResizable(false);
         //不可拉伸
-        register.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        register.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         jPanel = new JPanel();
@@ -108,7 +107,7 @@ public class Register extends JFrame implements ActionListener , DocumentListene
             if("".equals(usernameField.getText()) || "".equals(new String(passwordField.getPassword())) ||"".equals(new String(confirmPasswordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
                 //让用户填写所有
-            }else if(tilitiliService.verifyUsername(usernameField.getText())==1){
+            }else if(userService.verifyUsername(usernameField.getText())==1){
                 JOptionPane.showMessageDialog(null,"用户名已存在！","错误",JOptionPane.ERROR_MESSAGE);
             }else if(!new String(passwordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
@@ -116,11 +115,11 @@ public class Register extends JFrame implements ActionListener , DocumentListene
             else {
                 String newName = usernameField.getText();
                 String newPassword = new String(confirmPasswordField.getPassword());
-                int judge = tilitiliService.register(newName, newPassword);
+                int judge = userService.register(newName, newPassword);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");
                     register.dispose();
-                    new Welcome();
+                    new WelcomeSwing();
                 }else {
                     JOptionPane.showMessageDialog(null,"注册失败！","错误",JOptionPane.ERROR_MESSAGE);
                 }
@@ -136,7 +135,7 @@ public class Register extends JFrame implements ActionListener , DocumentListene
             //取消则返回欢迎界面
             register.dispose();
             //先销毁当前
-            new Welcome();
+            new WelcomeSwing();
         }
 
     }
@@ -145,7 +144,7 @@ public class Register extends JFrame implements ActionListener , DocumentListene
     public void insertUpdate(DocumentEvent e) {
         if(e.getDocument()==usernameField.getDocument()){
             String userName = usernameField.getText();
-            int judge = tilitiliService.verifyUsername(userName);
+            int judge = userService.verifyUsername(userName);
             //提示用户用户名存在
             jLabel1.setVisible(judge == 1&&!"".equals(usernameField.getText()));
         }
@@ -203,7 +202,7 @@ public class Register extends JFrame implements ActionListener , DocumentListene
 
         if(e.getDocument()==usernameField.getDocument()){
             String userName = usernameField.getText();
-            int judge = tilitiliService.verifyUsername(userName);
+            int judge = userService.verifyUsername(userName);
             //提示用户用户名存在
             jLabel1.setVisible(judge == 1&&!"".equals(usernameField.getText()));
         }

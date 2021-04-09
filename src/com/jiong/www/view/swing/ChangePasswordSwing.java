@@ -1,6 +1,6 @@
-package com.jiong.www.view;
+package com.jiong.www.view.swing;
 
-import com.jiong.www.service.TilitiliService;
+import com.jiong.www.service.UserService;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -12,16 +12,15 @@ import java.awt.event.ActionListener;
 /**
  * @author Mono
  */
-public class ChangePassword extends JFrame {
+public class ChangePasswordSwing extends JFrame {
     int userId;
 
     public static void main(String[] args) {
-        new ChangePassword(2);
+        new ChangePasswordSwing(2);
     }
-    public ChangePassword(int userId) {
+    public ChangePasswordSwing(int userId) {
         this.userId = userId;
-
-        TilitiliService tilitiliService = new TilitiliService();
+        UserService userService = new UserService();
 
         JFrame password = new JFrame();
         password.setSize(1200,800);
@@ -30,7 +29,7 @@ public class ChangePassword extends JFrame {
         //窗口可见
         password.setResizable(false);
         //不可拉伸
-        password.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        password.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         JPanel jPanel = new JPanel();
@@ -61,7 +60,7 @@ public class ChangePassword extends JFrame {
         oldPasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                int judge = tilitiliService.verifyPassword(new String(oldPasswordField.getPassword()), userId);
+                int judge = userService.verifyPassword(new String(oldPasswordField.getPassword()), userId);
                 if(judge==0){
                     //密码错误
                     errorPassword.setVisible(true);
@@ -73,7 +72,7 @@ public class ChangePassword extends JFrame {
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                int judge = tilitiliService.verifyPassword(oldPassword.getText(), userId);
+                int judge = userService.verifyPassword(oldPassword.getText(), userId);
                 if(judge==0){
                     //密码错误
                     errorPassword.setVisible(true);
@@ -238,7 +237,7 @@ public class ChangePassword extends JFrame {
                 if("".equals(new String(oldPasswordField.getPassword())) || "".equals(new String(newPasswordField.getPassword())) ||"".equals(new String(confirmPasswordField.getPassword()))){
                     JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
                     //让用户填写所有
-                }else if(tilitiliService.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
+                }else if(userService.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
                     JOptionPane.showMessageDialog(null,"密码错误！","错误",JOptionPane.ERROR_MESSAGE);
                 }
                     else if(!new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
@@ -246,11 +245,11 @@ public class ChangePassword extends JFrame {
                 }
                 else {
                     String userNewPassword=new String(newPasswordField.getPassword());
-                    int judge = tilitiliService.changePassword(userNewPassword, userId);
+                    int judge = userService.changePassword(userNewPassword, userId);
                     if(judge>0){
                         JOptionPane.showMessageDialog(null,"修改成功！");
                         password.dispose();
-                        new UserInformation(userId);
+                        new UserInformationSwing(userId);
                     }else {
                         JOptionPane.showMessageDialog(null,"修改失败！","错误",JOptionPane.ERROR_MESSAGE);
                     }
@@ -267,7 +266,7 @@ public class ChangePassword extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 password.dispose();
                 //销毁当前界面
-                new UserInformation(userId);
+                new UserInformationSwing(userId);
             }
         });
         jPanel.add(cancel);

@@ -1,13 +1,13 @@
-package com.jiong.www.view;
+package com.jiong.www.view.swing;
 
-import com.jiong.www.service.TilitiliService;
+import com.jiong.www.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Login extends JFrame implements ActionListener {
+public class LoginSwing extends JFrame implements ActionListener {
     JFrame login;
     JPanel jPanel;
     //2个标签
@@ -22,12 +22,11 @@ public class Login extends JFrame implements ActionListener {
     JButton cancel;
     int userId=0;
 
-
-    TilitiliService tilitiliService = new TilitiliService();
+    UserService userService = new UserService();
     public static void main(String[] args) {
-        new Login();
+        new LoginSwing();
     }
-    public Login()  {
+    public LoginSwing()  {
         login = new JFrame("TiliTili瓜王系统");
         login.setSize(1200,800);
         //设置大小
@@ -35,7 +34,7 @@ public class Login extends JFrame implements ActionListener {
         //窗口可见
         login.setResizable(false);
         //不可拉伸
-        login.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        login.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         jPanel = new JPanel();
@@ -85,14 +84,14 @@ public class Login extends JFrame implements ActionListener {
             if("".equals(usernameField.getText())||"".equals(new String(passwordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            userId = tilitiliService.login(userName, password);
+            userId = userService.login(userName, password);
             if(userId==0){
                 JOptionPane.showMessageDialog(null,"登录失败!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
                 JOptionPane.showMessageDialog(null,"登录成功！");
                 //进入下一个页面
                 login.dispose();
-                new Option(userId);
+                new EventWebSwing(userId);
             }
             }
         }
@@ -105,7 +104,7 @@ public class Login extends JFrame implements ActionListener {
             //取消则返回欢迎界面
             login.dispose();
             //先销毁当前
-            new Welcome();
+            new WelcomeSwing();
         }
 
     }

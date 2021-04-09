@@ -1,7 +1,7 @@
-package com.jiong.www.view;
+package com.jiong.www.view.swing;
 
 import com.jiong.www.po.User;
-import com.jiong.www.service.TilitiliService;
+import com.jiong.www.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,19 +11,18 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class UserInformation extends JFrame {
+public class UserInformationSwing extends JFrame {
 
     int userId;
     //返回
     public static void main(String[] args) {
-        new UserInformation(2);
+        new UserInformationSwing(2);
     }
-    public UserInformation(int userId){
+    public UserInformationSwing(int userId){
         this.userId = userId;
 
-        //获得查询结果
-        TilitiliService tilitiliService = new TilitiliService();
-        User user = tilitiliService.queryUserInformation(userId);
+        UserService userService = new UserService();
+        User user = userService.queryUserInformation(userId);
 
         JFrame userInformation = new JFrame("TiliTili瓜王系统");
         userInformation.setSize(1200,800);
@@ -32,7 +31,7 @@ public class UserInformation extends JFrame {
         //窗口可见
         userInformation.setResizable(false);
         //不可拉伸
-        userInformation.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        userInformation.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         JPanel jPanel =new JPanel();
@@ -180,9 +179,14 @@ public class UserInformation extends JFrame {
         //文本域
         JTextArea descriptionTextArea = new JTextArea(20,10);
         descriptionTextArea.setLineWrap(true);
+        //自动换行
         descriptionTextArea.setBounds(500,400,500,220);
         descriptionTextArea.setText(user.getUserDescription());
         jPanel.add(descriptionTextArea);
+        JScrollPane jScrollPane = new JScrollPane();
+        jScrollPane.setBounds(500,400,500,220);
+        jScrollPane.setViewportView(descriptionTextArea);
+        jPanel.add(jScrollPane);
 
         //修改密码的按钮，加监听器，跳转界面
         JButton changePassword = new JButton("修改密码");
@@ -192,7 +196,7 @@ public class UserInformation extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //修改密码界面
                 userInformation.dispose();
-                new ChangePassword(userId);
+                new ChangePasswordSwing(userId);
             }
         });
         jPanel.add(changePassword);
@@ -237,7 +241,7 @@ public class UserInformation extends JFrame {
                 if(("---请选择---").equals(birthyear.getSelectedItem())||("---请选择---").equals(birthmonth.getSelectedItem())||("---请选择---").equals(birthday.getSelectedItem())){
                     JOptionPane.showMessageDialog(null,"请填写正确的生日信息","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
-                    int judge = tilitiliService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday);
+                    int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {
@@ -298,7 +302,7 @@ public class UserInformation extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 userInformation.dispose();
                 //退出当前界面
-                new Option(userId);
+                new EventWebSwing(userId);
             }
         });
         jPanel.add(cancel);

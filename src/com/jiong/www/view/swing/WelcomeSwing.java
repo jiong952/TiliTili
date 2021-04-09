@@ -1,10 +1,10 @@
-package com.jiong.www.view;
+package com.jiong.www.view.swing;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Welcome extends JFrame implements ActionListener{
+public class WelcomeSwing extends JFrame implements ActionListener{
         JFrame welcome;
         //2个面板
         JPanel jPanel1;
@@ -17,9 +17,9 @@ public class Welcome extends JFrame implements ActionListener{
         JButton visiter;
 
     public static void main(String[] args) {
-        new Welcome();
+        new WelcomeSwing();
     }
-    public Welcome(){
+    public WelcomeSwing(){
         welcome = new JFrame("TiliTili瓜王系统");
         welcome.setSize(1200,800);
         //设置大小
@@ -66,12 +66,12 @@ public class Welcome extends JFrame implements ActionListener{
         if(e.getSource()==login){
             welcome.dispose();
             //销毁当前页面
-            new Login();
+            new LoginSwing();
             //进入登录界面
         }else if(e.getSource()==register){
             welcome.dispose();
             //销毁当前页面
-            new Register();
+            new RegisterSwing();
             //进入注册界面
         }else if(e.getSource()==visiter){
             System.out.println("10");
