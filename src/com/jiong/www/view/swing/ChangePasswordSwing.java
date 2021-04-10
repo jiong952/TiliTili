@@ -14,12 +14,11 @@ import java.awt.event.ActionListener;
  */
 public class ChangePasswordSwing extends JFrame {
     int userId;
+    String eventGroupName;
 
-    public static void main(String[] args) {
-        new ChangePasswordSwing(2);
-    }
-    public ChangePasswordSwing(int userId) {
+    public ChangePasswordSwing(int userId,String eventGroupName) {
         this.userId = userId;
+        this.eventGroupName=eventGroupName;
         UserService userService = new UserService();
 
         JFrame password = new JFrame();
@@ -249,7 +248,7 @@ public class ChangePasswordSwing extends JFrame {
                     if(judge>0){
                         JOptionPane.showMessageDialog(null,"修改成功！");
                         password.dispose();
-                        new UserInformationSwing(userId);
+                        new UserInformationSwing(userId,eventGroupName);
                     }else {
                         JOptionPane.showMessageDialog(null,"修改失败！","错误",JOptionPane.ERROR_MESSAGE);
                     }
@@ -266,7 +265,7 @@ public class ChangePasswordSwing extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 password.dispose();
                 //销毁当前界面
-                new UserInformationSwing(userId);
+                new UserInformationSwing(userId,eventGroupName);
             }
         });
         jPanel.add(cancel);

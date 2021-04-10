@@ -109,9 +109,9 @@ public class EventGroupDao {
         return row;
         //向上抛出到view层
     }
-    //查看瓜圈的简介
-    public String viewEventGroupDescription(String eventGroupName) throws SQLException {
-        String  description=null;
+    //查看瓜圈
+    public EventGroup viewEventGroup(String eventGroupName) throws SQLException {
+        EventGroup eventGroup = new EventGroup();
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `eventgroup` WHERE `eventGroup_name` = ?";
         //联表查询
@@ -119,14 +119,15 @@ public class EventGroupDao {
         ps.setString(1,eventGroupName);
         ResultSet rs = ps.executeQuery();
         while (rs.next()){
-            description = rs.getString("eventGroup_description");
+            eventGroup.setEventGroupDescription(rs.getString("eventGroup_description"));
+            eventGroup.setEventGroupId(rs.getInt("eventGroup_id"));
         }
         JdbcUtils.release(conn,ps,rs);
         //把查询的结果集返回到service层
-        return description;
+        return eventGroup;
     }
     //查看所有瓜圈
-    public List<EventGroup> viewEventGroup() throws SQLException {
+    public List<EventGroup> viewAllEventGroup() throws SQLException {
         List<EventGroup> eventGroups = new ArrayList<EventGroup>();
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `eventgroup`";

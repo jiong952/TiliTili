@@ -21,7 +21,7 @@ public class LoginSwing extends JFrame implements ActionListener {
     JButton reset;
     JButton cancel;
     int userId=0;
-
+    String eventGroupName=null;
     UserService userService = new UserService();
     public static void main(String[] args) {
         new LoginSwing();
@@ -91,7 +91,7 @@ public class LoginSwing extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null,"登录成功！");
                 //进入下一个页面
                 login.dispose();
-                new EventWebSwing(userId);
+                new EventWebSwing(userId,eventGroupName);
             }
             }
         }

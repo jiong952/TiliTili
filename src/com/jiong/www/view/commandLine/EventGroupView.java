@@ -108,13 +108,13 @@ public class EventGroupView {
         }
     }
     //查看瓜圈的简介
-    public void viewEventGroupDescription(String eventGroupName) {
-        System.out.println(eventGroupService.viewEventGroupDescription(eventGroupName));
+    public void viewEventGroup(String eventGroupName) {
+        System.out.println(eventGroupService.viewEventGroup(eventGroupName));
     }
     // 要把瓜的相应评论输出
-    public void viewEventGroup(){
+    public void viewAllEventGroup(){
         List<EventGroup> eventGroups ;
-        eventGroups = eventGroupService.viewEventGroup();
+        eventGroups = eventGroupService.viewAllEventGroup();
         System.out.println("所有瓜圈：");
         for (int i = 0; i < eventGroups.size(); i++) {
             EventGroup eventGroup;

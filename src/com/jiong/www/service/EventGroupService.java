@@ -61,24 +61,24 @@ public class EventGroupService {
         return row;
     }
     //查看所有瓜圈
-    public List<EventGroup> viewEventGroup(){
+    public List<EventGroup> viewAllEventGroup(){
         List<EventGroup> eventGroups = new ArrayList<EventGroup>();
         try {
-            eventGroups=eventGroupDao.viewEventGroup();
+            eventGroups=eventGroupDao.viewAllEventGroup();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return eventGroups;
     }
-    //查看瓜圈的简介
-    public String viewEventGroupDescription(String eventGroupName){
-        String description=null;
+    //查看瓜圈
+    public EventGroup viewEventGroup(String eventGroupName){
+        EventGroup eventGroup = new EventGroup();
         try {
-            description=eventGroupDao.viewEventGroupDescription(eventGroupName);
+            eventGroup=eventGroupDao.viewEventGroup(eventGroupName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return description;
+        return eventGroup;
     }
     //查看瓜圈里的所有瓜
     public List<Event> viewEventOfEventGroup(String eventGroupName){

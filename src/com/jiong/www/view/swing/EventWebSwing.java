@@ -18,12 +18,13 @@ import java.util.List;
 
 public class EventWebSwing extends JFrame {
     int userId;
-
+    String eventGroupName;
     public static void main(String[] args) {
-        new EventWebSwing(10);
+        new EventWebSwing(10,"范冰冰");
     }
-    public EventWebSwing(int userId) {
+    public EventWebSwing(int userId,String eventGroupName) {
         this.userId = userId;
+        this.eventGroupName= eventGroupName;
         EventGroupService eventGroupService = new EventGroupService();
         JFrame eventGroup = new JFrame("TiliTili瓜王系统");
         eventGroup.setSize(1200,800);
@@ -46,7 +47,7 @@ public class EventWebSwing extends JFrame {
         jLabel.setBounds(400,10,450,100);
         jPanel.add(jLabel);
 
-        new MenuSwing(userId,eventGroup);
+        new MenuSwing(userId,eventGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,25);
 
@@ -60,8 +61,7 @@ public class EventWebSwing extends JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 //单击是选择(单击会有tips提示内容简介) 双击是进入
                 if(!list.getValueIsAdjusting()){
-                    String eventGroupDescription = eventGroupService.viewEventGroupDescription(list.getSelectedValue());
-                    list.setToolTipText("内容简介:"+eventGroupDescription);
+                    list.setToolTipText("内容简介:"+eventGroupService.viewEventGroup(list.getSelectedValue()).getEventGroupDescription());
                 }
             }
         });
@@ -76,7 +76,7 @@ public class EventWebSwing extends JFrame {
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<String>();
-        List<EventGroup> eventGroups = eventGroupService.viewEventGroup();
+        List<EventGroup> eventGroups = eventGroupService.viewAllEventGroup();
         for (int i = 0; i < eventGroups.size(); i++) {
             listModel.add(i,eventGroups.get(i).getEventGroupName());
         }
@@ -165,7 +165,7 @@ public class EventWebSwing extends JFrame {
                                     JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
                                     //刷新
                                     DefaultListModel<String> listModel1 = new DefaultListModel<String>();
-                                    List<EventGroup> eventGroups1 = eventGroupService.viewEventGroup();
+                                    List<EventGroup> eventGroups1 = eventGroupService.viewAllEventGroup();
                                     for (int i = 0; i < eventGroups1.size(); i++) {
                                         listModel1.add(i,eventGroups1.get(i).getEventGroupName());
                                     }
@@ -190,7 +190,7 @@ public class EventWebSwing extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     //创建瓜圈
-                    new CreateGroupSwing(userId);
+                    new CreateGroupSwing(userId,eventGroupName);
                 }
             });
             jPanel.add(create);
@@ -201,7 +201,7 @@ public class EventWebSwing extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DefaultListModel<String> listModel1 = new DefaultListModel<String>();
-                List<EventGroup> eventGroups1 = eventGroupService.viewEventGroup();
+                List<EventGroup> eventGroups1 = eventGroupService.viewAllEventGroup();
                 for (int i = 0; i < eventGroups1.size(); i++) {
                     listModel1.add(i,eventGroups1.get(i).getEventGroupName());
                 }

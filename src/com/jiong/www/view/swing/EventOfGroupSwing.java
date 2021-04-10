@@ -62,7 +62,7 @@ public class EventOfGroupSwing extends JFrame {
         jLabel1.setBounds(160,5,90,30);
         jLabel1.setFont(font2);
         jPanel.add(jLabel1);
-        JTextArea description = new JTextArea(eventGroupService.viewEventGroupDescription(eventGroupName));
+        JTextArea description = new JTextArea(eventGroupService.viewEventGroup(eventGroupName).getEventGroupDescription());
 
         description.setFont(font2);
         description.setBounds(270,10,900,80);
@@ -73,7 +73,7 @@ public class EventOfGroupSwing extends JFrame {
         scrollPane.setViewportView(description);
         jPanel.add(scrollPane);
         //加入菜单栏
-        new MenuSwing(userId,eventOfGroup);
+        new MenuSwing(userId,eventOfGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,25);
 
@@ -131,8 +131,8 @@ public class EventOfGroupSwing extends JFrame {
         tip.setBounds(120,570,150,30);
         jPanel.add(tip);
         //文本框
-        JTextField queryField = new JTextField(30);
-        queryField.setBounds(120,550,120,30);
+        JTextField queryField = new JTextField(70);
+        queryField.setBounds(120,550,200,30);
         queryField.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -152,7 +152,7 @@ public class EventOfGroupSwing extends JFrame {
         jPanel.add(queryField);
         //查询按钮
         JButton queryButton = new JButton("查询");
-        queryButton.setBounds(245,550,60,30);
+        queryButton.setBounds(380,550,60,30);
         queryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -179,7 +179,7 @@ public class EventOfGroupSwing extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 eventOfGroup.dispose();
-                new EventWebSwing(userId);
+                new EventWebSwing(userId,eventGroupName);
             }
         });
 
@@ -190,7 +190,7 @@ public class EventOfGroupSwing extends JFrame {
         if(roleId==2||roleId==3){
             //管理员或者是超级管理员
             JButton delete = new JButton("删除瓜圈");
-            delete.setBounds(350,550,90,30);
+            delete.setBounds(500,550,90,30);
             delete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -204,7 +204,7 @@ public class EventOfGroupSwing extends JFrame {
                                 judge0 = eventGroupService.deleteEventGroup(eventGroupName, userId);
                                 if(judge0==1){
                                     JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                                    new EventWebSwing(userId);
+                                    new EventWebSwing(userId,eventGroupName);
                                 }
                             }
                         }else {
@@ -218,6 +218,17 @@ public class EventOfGroupSwing extends JFrame {
         }
         back.setFont(font2);
         jPanel.add(back);
+
+        //创建瓜的按钮
+        JButton create = new JButton("创建本瓜圈瓜");
+        create.setBounds(700,550,120,30);
+        create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CreateEventSwing(userId,eventGroupName);
+            }
+        });
+        jPanel.add(create);
         eventOfGroup.setVisible(true);
     }
 }

@@ -14,13 +14,11 @@ import java.util.Calendar;
 public class UserInformationSwing extends JFrame {
 
     int userId;
+    String eventGroupName;
     //返回
-    public static void main(String[] args) {
-        new UserInformationSwing(2);
-    }
-    public UserInformationSwing(int userId){
+    public UserInformationSwing(int userId,String eventGroupName){
         this.userId = userId;
-
+        this.eventGroupName = eventGroupName;
         UserService userService = new UserService();
         User user = userService.queryUserInformation(userId);
 
@@ -196,7 +194,7 @@ public class UserInformationSwing extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //修改密码界面
                 userInformation.dispose();
-                new ChangePasswordSwing(userId);
+                new ChangePasswordSwing(userId,eventGroupName);
             }
         });
         jPanel.add(changePassword);
@@ -302,7 +300,7 @@ public class UserInformationSwing extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 userInformation.dispose();
                 //退出当前界面
-                new EventWebSwing(userId);
+                new EventWebSwing(userId,eventGroupName);
             }
         });
         jPanel.add(cancel);

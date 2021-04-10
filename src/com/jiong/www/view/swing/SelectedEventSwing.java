@@ -61,7 +61,7 @@ public class SelectedEventSwing {
         jPanel.add(jLabel);
 
         //加入顶部菜单栏
-        new MenuSwing(userId,selectedEvent);
+        new MenuSwing(userId,selectedEvent,eventGroupName);
 
         Event event = eventService.viewEvent(eventName);
 

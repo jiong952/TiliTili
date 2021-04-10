@@ -8,9 +8,11 @@ import java.awt.event.ActionListener;
 
 public class MenuSwing {
     int userId;
+    String eventGroupName;
     JFrame jFrame;
-    public MenuSwing(int userId, JFrame jFrame) {
+    public MenuSwing(int userId, JFrame jFrame,String eventGroupName) {
         this.userId = userId;
+        this.eventGroupName=eventGroupName;
         //菜单栏
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBorderPainted(true);
@@ -60,14 +62,14 @@ public class MenuSwing {
         modifyInformation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new UserInformationSwing(userId);
+                new UserInformationSwing(userId,eventGroupName);
             }
         });
         JMenuItem modifyPassword = new JMenuItem("修改密码");
         modifyPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ChangePasswordSwing(userId);
+                new ChangePasswordSwing(userId,eventGroupName);
             }
         });
         information.add(modifyInformation);
@@ -75,13 +77,25 @@ public class MenuSwing {
 
         JMenu event = new JMenu("瓜");
         JMenuItem queryEventGroup = new JMenuItem("查询瓜圈");
+        queryEventGroup.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new QueryGroupSwing(userId,eventGroupName);
+            }
+        });
         JMenuItem queryEvent = new JMenuItem("查询瓜");
+        queryEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new QueryEventSwing(userId,eventGroupName);
+            }
+        });
         JMenuItem createEventGroup = new JMenuItem("创建瓜圈");
         createEventGroup.setVisible(false);
         createEventGroup.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CreateGroupSwing(userId);
+                new CreateGroupSwing(userId,eventGroupName);
             }
         });
         int roleId = new UserService().verifyRole(userId);
@@ -89,6 +103,12 @@ public class MenuSwing {
             createEventGroup.setVisible(true);
         }
         JMenuItem createEvent = new JMenuItem("创建瓜");
+        createEvent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CreateEventSwing(userId,null);
+            }
+        });
         event.add(queryEventGroup);
         event.add(queryEvent);
         event.add(createEventGroup);
