@@ -1,8 +1,10 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
+import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.EventService;
+import com.jiong.www.service.UserService;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,7 +23,7 @@ public class EventOfGroupSwing extends JFrame {
     String eventGroupName;
 
     public static void main(String[] args) {
-        new EventOfGroupSwing(2,"范冰冰");
+        new EventOfGroupSwing(10,"范冰冰");
     }
     public EventOfGroupSwing(int userId, String eventGroupName) throws HeadlessException {
         this.userId = userId;
@@ -180,6 +182,40 @@ public class EventOfGroupSwing extends JFrame {
                 new EventWebSwing(userId);
             }
         });
+
+        //删除按钮
+        //直接用roleId来区分不同的身份，使不同角色看到不同的界面
+        int roleId = new UserService().verifyRole(userId);
+        //删除瓜圈 创建瓜圈
+        if(roleId==2||roleId==3){
+            //管理员或者是超级管理员
+            JButton delete = new JButton("删除瓜圈");
+            delete.setBounds(350,550,90,30);
+            delete.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                        int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                        //判断是不是该管理员管理的瓜圈
+                        if(judge0==1){
+                            //是
+                            int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
+                            if(judge==0){
+                                //选择是
+                                judge0 = eventGroupService.deleteEventGroup(eventGroupName, userId);
+                                if(judge0==1){
+                                    JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
+                                    new EventWebSwing(userId);
+                                }
+                            }
+                        }else {
+                            //不是
+                            JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
+                        }
+
+                }
+            });
+            jPanel.add(delete);
+        }
         back.setFont(font2);
         jPanel.add(back);
         eventOfGroup.setVisible(true);
