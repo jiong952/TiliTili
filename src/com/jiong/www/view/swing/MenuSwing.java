@@ -1,5 +1,7 @@
 package com.jiong.www.view.swing;
 
+import com.jiong.www.service.UserService;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,6 +77,17 @@ public class MenuSwing {
         JMenuItem queryEventGroup = new JMenuItem("查询瓜圈");
         JMenuItem queryEvent = new JMenuItem("查询瓜");
         JMenuItem createEventGroup = new JMenuItem("创建瓜圈");
+        createEventGroup.setVisible(false);
+        createEventGroup.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CreateGroupSwing(userId);
+            }
+        });
+        int roleId = new UserService().verifyRole(userId);
+        if(roleId==2||roleId==3){
+            createEventGroup.setVisible(true);
+        }
         JMenuItem createEvent = new JMenuItem("创建瓜");
         event.add(queryEventGroup);
         event.add(queryEvent);

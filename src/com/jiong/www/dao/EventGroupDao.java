@@ -16,6 +16,7 @@ public class EventGroupDao {
     public int createEventGroup(int userId, EventGroup eventGroup) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
+        conn.setAutoCommit(false);
         String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
         String sql1 ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
         //`eventGroup_name`加了唯一约束，在数据库设计上可以防止重名
@@ -29,6 +30,7 @@ public class EventGroupDao {
         ps1.executeUpdate();
         //sql语句返回结果判断
         //row是返回值，用于判断
+        conn.commit();
         JdbcUtils.release(conn,ps,null);
         JdbcUtils.release(conn,ps1,null);
         //释放连接
@@ -77,6 +79,7 @@ public class EventGroupDao {
     public int deleteEventGroup(String deleteEventGroupName,int userId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row;
+        conn.setAutoCommit(false);
         //删除瓜圈
         String sql ="DELETE FROM `eventgroup` WHERE `eventGroup_name`=?";
         //删除瓜圈与管理员的关系
@@ -97,6 +100,7 @@ public class EventGroupDao {
         ps2.executeUpdate();
         //最后删除瓜圈
         row= ps.executeUpdate();
+        conn.commit();
         //sql语句返回结果判断
         //row是返回值，用于判断
         JdbcUtils.release(conn,ps,null);

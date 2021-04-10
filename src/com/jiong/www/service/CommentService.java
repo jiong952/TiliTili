@@ -20,9 +20,9 @@ public class CommentService {
         }
     }
     //删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除
-    public void cancelComment(int userId,int eventId){
+    public void cancelComment(int commentId,int eventId){
         try {
-            commentDao.cancelComment(userId,eventId);
+            commentDao.cancelComment(commentId,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

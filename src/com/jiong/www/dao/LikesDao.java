@@ -15,6 +15,7 @@ public class LikesDao {
     //点赞,同时更新用户点赞表
     public void likes(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
+        conn.setAutoCommit(false);
         String sql ="UPDATE `event` SET `likes_num` = `likes_num`+1 WHERE `event_id` =?";
         String sql1="INSERT INTO `like` (`event_id`,`user_id`) VALUES(?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -25,13 +26,14 @@ public class LikesDao {
         ps.executeUpdate();
         ps1.executeUpdate();
         //sql语句返回结果判断
-        //row是返回值，用于判断 0表示执行失败,1表示执行成功
+        conn.commit();
         JdbcUtils.release(conn,ps,null);
         //释放连接
     }
     //取消点赞,同时删除用户点赞表中的相关数据
     public void cancelLikes(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
+        conn.setAutoCommit(false);
         String sql ="UPDATE `event` SET `likes_num` = `likes_num`-1 WHERE `event_id` =?";
         String sql1="DELETE FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -42,7 +44,7 @@ public class LikesDao {
         ps.executeUpdate();
         ps1.executeUpdate();
         //sql语句返回结果判断
-        //row是返回值，用于判断 0表示执行失败,1表示执行成功
+        conn.commit();
         JdbcUtils.release(conn,ps,null);
         JdbcUtils.release(conn,ps1,null);
         //释放连接

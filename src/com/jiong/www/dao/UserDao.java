@@ -16,6 +16,7 @@ public class UserDao {
     public int register(User user) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
+        conn.setAutoCommit(false);
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
         String sql1 ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES((SELECT `user_id`FROM `user` WHERE `login_name`=?),1)";
         //`login_name`加了唯一约束，在数据库设计上可以防止重名
@@ -29,7 +30,7 @@ public class UserDao {
         row= ps.executeUpdate();
         ps1.executeUpdate();
         //sql语句返回结果判断
-        //row是返回值，用于判断
+        conn.commit();
         JdbcUtils.release(conn,ps,null);
         JdbcUtils.release(conn,ps1,null);
         //释放连接
