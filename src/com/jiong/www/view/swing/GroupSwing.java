@@ -4,6 +4,7 @@ import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.EventService;
 import com.jiong.www.service.UserService;
+import com.jiong.www.util.MenuSwingUtil;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -72,7 +73,7 @@ public class GroupSwing extends JFrame {
         scrollPane.setViewportView(description);
         jPanel.add(scrollPane);
         //加入菜单栏
-        new MenuSwing(userId,eventOfGroup,eventGroupName);
+        new MenuSwingUtil(userId,eventOfGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,25);
 

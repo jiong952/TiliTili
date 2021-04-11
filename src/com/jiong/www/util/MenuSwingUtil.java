@@ -1,18 +1,20 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.util;
 
 import com.jiong.www.service.UserService;
+import com.jiong.www.view.swing.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuSwing {
+public class MenuSwingUtil {
     int userId;
     String eventGroupName;
     JFrame jFrame;
-    public MenuSwing(int userId, JFrame jFrame,String eventGroupName) {
+    public MenuSwingUtil(int userId, JFrame jFrame, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
+        this.jFrame=jFrame;
         //菜单栏
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBorderPainted(true);

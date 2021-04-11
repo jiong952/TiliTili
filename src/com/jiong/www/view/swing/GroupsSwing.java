@@ -3,6 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.UserService;
+import com.jiong.www.util.MenuSwingUtil;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -47,7 +48,7 @@ public class GroupsSwing extends JFrame {
         jLabel.setBounds(400,10,450,100);
         jPanel.add(jLabel);
 
-        new MenuSwing(userId,eventGroup,eventGroupName);
+        new MenuSwingUtil(userId,eventGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,25);
 

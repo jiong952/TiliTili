@@ -2,8 +2,11 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.User;
 import com.jiong.www.service.UserService;
+import com.jiong.www.util.StringUtil;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +19,9 @@ public class InformationSwing extends JFrame {
     int userId;
     String eventGroupName;
     //返回
+    public static void main(String[] args) {
+        new InformationSwing(2,null);
+    }
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -93,11 +99,43 @@ public class InformationSwing extends JFrame {
         email.setBounds(50,250,60,20);
         email.setFont(font1);
         jPanel.add(email);
-        JTextField emailTextField = new JTextField(15);
-        emailTextField.setBounds(125,250,100,20);
+        JTextField emailTextField = new JTextField(20);
+        emailTextField.setBounds(125,250,150,20);
         emailTextField.setText(user.getUserEmail());
         jPanel.add(emailTextField);
 
+        JLabel emailTips = new JLabel("正确邮箱格式：1017328759@qq.com");
+        emailTips.setBounds(275,250,300,20);
+        emailTips.setForeground(Color.red);
+        emailTips.setVisible(false);
+        jPanel.add(emailTips);
+
+        emailTextField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if(!"".equals(emailTextField.getText())){
+                    String email = emailTextField.getText();
+                    boolean judge = new StringUtil().isEmail(email);
+                    //合法
+                    emailTips.setVisible(!judge);
+                }
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                if(!"".equals(emailTextField.getText())){
+                    String email = emailTextField.getText();
+                    boolean judge = new StringUtil().isEmail(email);
+                    //合法
+                    emailTips.setVisible(!judge);
+                }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+        });
         //生日+下拉列表+年月日标签
         JLabel birth = new JLabel("生日:");
         birth.setBounds(50,300,60,20);
@@ -238,6 +276,9 @@ public class InformationSwing extends JFrame {
 
                 if(("---请选择---").equals(birthyear.getSelectedItem())||("---请选择---").equals(birthmonth.getSelectedItem())||("---请选择---").equals(birthday.getSelectedItem())){
                     JOptionPane.showMessageDialog(null,"请填写正确的生日信息","错误",JOptionPane.ERROR_MESSAGE);
+                }if(emailTips.isVisible()){
+                    //错误提示还在
+                    JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
                     int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday);
                     if (judge == 1) {

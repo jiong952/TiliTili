@@ -3,6 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
+import com.jiong.www.util.MenuSwingUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -59,7 +60,7 @@ public class EventSwing {
         jPanel.add(jLabel);
 
         //加入顶部菜单栏
-        new MenuSwing(userId,selectedEvent,eventGroupName);
+        new MenuSwingUtil(userId,selectedEvent,eventGroupName);
 
         Event event = eventService.viewEvent(eventName);
 
