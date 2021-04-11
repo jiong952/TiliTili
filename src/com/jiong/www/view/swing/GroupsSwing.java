@@ -16,13 +16,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class EventWebSwing extends JFrame {
+public class GroupsSwing extends JFrame {
     int userId;
     String eventGroupName;
     public static void main(String[] args) {
-        new EventWebSwing(10,"范冰冰");
+        new GroupsSwing(10,"范冰冰");
     }
-    public EventWebSwing(int userId,String eventGroupName) {
+    public GroupsSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName= eventGroupName;
         EventGroupService eventGroupService = new EventGroupService();
@@ -71,7 +71,7 @@ public class EventWebSwing extends JFrame {
                 super.mouseClicked(e);
                 if(e.getClickCount()==2){
                     eventGroup.dispose();
-                    new EventOfGroupSwing(userId,list.getSelectedValue());
+                    new GroupSwing(userId,list.getSelectedValue());
                 }
             }
         });
@@ -133,7 +133,7 @@ public class EventWebSwing extends JFrame {
                 }else {
                 int judge = eventGroupService.verifyEventGroupName(eventGroupName);
                 if(judge==1){
-                new EventOfGroupSwing(userId,eventGroupName);
+                new GroupSwing(userId,eventGroupName);
                 }else {
                     JOptionPane.showMessageDialog(null,"查无此瓜圈！","错误",JOptionPane.ERROR_MESSAGE);
                 }

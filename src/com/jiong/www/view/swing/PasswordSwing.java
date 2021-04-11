@@ -12,23 +12,23 @@ import java.awt.event.ActionListener;
 /**
  * @author Mono
  */
-public class ChangePasswordSwing extends JFrame {
+public class PasswordSwing extends JFrame {
     int userId;
     String eventGroupName;
 
-    public ChangePasswordSwing(int userId,String eventGroupName) {
+    public PasswordSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
         UserService userService = new UserService();
 
         JFrame password = new JFrame();
-        password.setSize(1200,800);
+        password.setSize(500,500);
         //设置大小
         password.setLocationRelativeTo(null);
         //窗口可见
         password.setResizable(false);
         //不可拉伸
-        password.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        password.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         //默认关闭
 
         JPanel jPanel = new JPanel();
@@ -36,26 +36,26 @@ public class ChangePasswordSwing extends JFrame {
         password.add(jPanel);
         //绝对布局
 
-        Font font = new Font("宋体", Font.BOLD, 50);
+        Font font = new Font("宋体", Font.BOLD, 35);
         JLabel jLabel = new JLabel("修改密码");
         jLabel.setFont(font);
-        jLabel.setBounds(0,0,250,100);
+        jLabel.setBounds(5,5,250,100);
         jPanel.add(jLabel);
 
-        Font font1 = new Font("黑体",Font.PLAIN,18);
+        Font font1 = new Font("黑体",Font.PLAIN,14);
 
         //旧密码部分：标签+输入文本框+报错提示
         JLabel oldPassword = new JLabel("旧密码:");
         oldPassword.setFont(font1);
-        oldPassword.setBounds(425,200,125,20);
+        oldPassword.setBounds(100,80,70,30);
         jPanel.add(oldPassword);
         JLabel errorPassword = new JLabel("密码错误！");
         errorPassword.setVisible(false);
         errorPassword.setForeground(Color.red);
-        errorPassword.setBounds(660,200,100,20);
+        errorPassword.setBounds(280,80,100,20);
         jPanel.add(errorPassword);
         JPasswordField oldPasswordField = new JPasswordField(15);
-        oldPasswordField.setBounds(550,200,100,20);
+        oldPasswordField.setBounds(180,85,100,20);
         oldPasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -90,24 +90,24 @@ public class ChangePasswordSwing extends JFrame {
         //新密码部分：标签+输入文本框
         JLabel newPassword = new JLabel("新密码:");
         newPassword.setFont(font1);
-        newPassword.setBounds(425,250,125,20);
+        newPassword.setBounds(100,120,80,30);
         jPanel.add(newPassword);
         JPasswordField newPasswordField = new JPasswordField(15);
-        newPasswordField.setBounds(550,250,100,20);
+        newPasswordField.setBounds(180,125,100,20);
         jPanel.add(newPasswordField);
 
         //确认密码部分：标签+输入文本框+报错提示
         JLabel confirmPassword = new JLabel("确认密码:");
         confirmPassword.setFont(font1);
-        confirmPassword.setBounds(425,300,145,20);
+        confirmPassword.setBounds(100,170,80,30);
         jPanel.add(confirmPassword);
         JLabel errorPassword2 = new JLabel("两次密码不一致！");
         errorPassword2.setVisible(false);
         errorPassword2.setForeground(Color.red);
-        errorPassword2.setBounds(660,300,150,20);
+        errorPassword2.setBounds(280,170,150,30);
         jPanel.add(errorPassword2);
         JPasswordField confirmPasswordField = new JPasswordField(15);
-        confirmPasswordField.setBounds(550,300,100,20);
+        confirmPasswordField.setBounds(180,175,100,20);
         jPanel.add(confirmPasswordField);
 
         //对新密码和确认密码输入框加实时输入删除更新的监听器，便于报错
@@ -229,7 +229,7 @@ public class ChangePasswordSwing extends JFrame {
 
         //确认修改的按钮，按钮加监听器。对各种错误输入进行判断并报错
         JButton confirm = new JButton("确认修改");
-        confirm.setBounds(430,400,100,20);
+        confirm.setBounds(100,350,100,20);
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -248,7 +248,7 @@ public class ChangePasswordSwing extends JFrame {
                     if(judge>0){
                         JOptionPane.showMessageDialog(null,"修改成功！");
                         password.dispose();
-                        new UserInformationSwing(userId,eventGroupName);
+                        new InformationSwing(userId,eventGroupName);
                     }else {
                         JOptionPane.showMessageDialog(null,"修改失败！","错误",JOptionPane.ERROR_MESSAGE);
                     }
@@ -259,13 +259,13 @@ public class ChangePasswordSwing extends JFrame {
 
         //返回的按钮，加监听器
         JButton cancel = new JButton("返回");
-        cancel.setBounds(580,400,100,20);
+        cancel.setBounds(300,350,60,20);
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 password.dispose();
                 //销毁当前界面
-                new UserInformationSwing(userId,eventGroupName);
+                new InformationSwing(userId,eventGroupName);
             }
         });
         jPanel.add(cancel);

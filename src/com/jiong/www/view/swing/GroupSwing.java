@@ -1,7 +1,6 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.EventService;
 import com.jiong.www.service.UserService;
@@ -18,14 +17,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class EventOfGroupSwing extends JFrame {
+public class GroupSwing extends JFrame {
     int userId;
     String eventGroupName;
 
     public static void main(String[] args) {
-        new EventOfGroupSwing(10,"范冰冰");
+        new GroupSwing(10,"范冰冰");
     }
-    public EventOfGroupSwing(int userId, String eventGroupName) throws HeadlessException {
+    public GroupSwing(int userId, String eventGroupName) throws HeadlessException {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
         EventGroupService eventGroupService =new EventGroupService();
@@ -77,11 +76,12 @@ public class EventOfGroupSwing extends JFrame {
 
         Font font1 = new Font("黑体",Font.PLAIN,25);
 
+        //创建一个列表框来放瓜
         JList<String> list = new JList<>();
         list.setFont(font1);
         list.setFixedCellHeight(30);
-        list.setSelectionBackground(Color.gray);
         //单元格的大小
+        list.setSelectionBackground(Color.gray);
         list.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -101,7 +101,7 @@ public class EventOfGroupSwing extends JFrame {
                     //进入瓜界面
                     Event event = eventService.viewEvent(list.getSelectedValue());
                     eventOfGroup.dispose();
-                    new SelectedEventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
+                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
                 }
             }
         });
@@ -163,7 +163,7 @@ public class EventOfGroupSwing extends JFrame {
                     int judge = eventService.verifyEventName(eventName);
                     Event event1 = eventService.viewEvent(eventName);
                     if(judge==0){
-                        new SelectedEventSwing(userId,eventName,event1.getEventId(),eventGroupName);
+                        new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
                     }else {
                         JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);
                     }
@@ -179,7 +179,7 @@ public class EventOfGroupSwing extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 eventOfGroup.dispose();
-                new EventWebSwing(userId,eventGroupName);
+                new GroupsSwing(userId,eventGroupName);
             }
         });
 
@@ -204,7 +204,7 @@ public class EventOfGroupSwing extends JFrame {
                                 judge0 = eventGroupService.deleteEventGroup(eventGroupName, userId);
                                 if(judge0==1){
                                     JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                                    new EventWebSwing(userId,eventGroupName);
+                                    new GroupsSwing(userId,eventGroupName);
                                 }
                             }
                         }else {

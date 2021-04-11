@@ -9,22 +9,20 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
  * @author Mono
  */
-public class SelectedEventSwing {
+public class EventSwing {
     int userId;
     String eventName;
     int eventId;
     String eventGroupName;
     public static void main(String[] args) {
-        new SelectedEventSwing(2,"赵英俊留给世界最后的话：不要把我忘了，永别了",7,"范冰冰");
+        new EventSwing(10,"瓜瓜01",11,"唱歌");
     }
-    public SelectedEventSwing(int userId, String eventName, int eventId, String eventGroupName) {
+    public EventSwing(int userId, String eventName, int eventId, String eventGroupName) {
         this.userId = userId;
         this.eventName = eventName;
         this.eventId=eventId;
@@ -43,7 +41,7 @@ public class SelectedEventSwing {
         //窗口可见
         selectedEvent.setResizable(false);
         //不可拉伸
-        selectedEvent.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        selectedEvent.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         //默认关闭
 
         //放面板
@@ -334,6 +332,7 @@ public class SelectedEventSwing {
             }
         });
         jPanel.add(deleteComment);
+
         JButton clearComment= new JButton("清空评论");
         clearComment.setBounds(850,580,90,30);
         clearComment.addActionListener(new ActionListener() {
@@ -360,7 +359,14 @@ public class SelectedEventSwing {
                 }
             }
         });
+        clearComment.setVisible(false);
         jPanel.add(clearComment);
+        //只有在管理员时显示
+        int roleId = new UserService().verifyRole(userId);
+        if(roleId==2||roleId==3){
+            clearComment.setVisible(true);
+        }
+
         //返回按钮
         JButton back = new JButton("返回");
         back.setBounds(1050,600,78,30);
@@ -368,7 +374,7 @@ public class SelectedEventSwing {
             @Override
             public void actionPerformed(ActionEvent e) {
                 selectedEvent.dispose();
-                new EventOfGroupSwing(userId,eventGroupName);
+                new GroupSwing(userId,eventGroupName);
             }
         });
         back.setFont(font1);

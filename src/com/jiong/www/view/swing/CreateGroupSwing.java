@@ -85,7 +85,7 @@ public class CreateGroupSwing extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 jFrame.dispose();
-                new EventWebSwing(userId,eventGroupName);
+                new GroupsSwing(userId,eventGroupName);
             }
         });
         jPanel.add(back);

@@ -35,7 +35,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         //窗口可见
         register.setResizable(false);
         //不可拉伸
-        register.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        register.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         //默认关闭
 
         jPanel = new JPanel();

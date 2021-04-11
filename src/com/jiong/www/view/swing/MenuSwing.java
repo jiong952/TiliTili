@@ -62,14 +62,14 @@ public class MenuSwing {
         modifyInformation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new UserInformationSwing(userId,eventGroupName);
+                new InformationSwing(userId,eventGroupName);
             }
         });
         JMenuItem modifyPassword = new JMenuItem("修改密码");
         modifyPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ChangePasswordSwing(userId,eventGroupName);
+                new PasswordSwing(userId,eventGroupName);
             }
         });
         information.add(modifyInformation);
@@ -116,9 +116,21 @@ public class MenuSwing {
 
         JMenu viewCollection = new JMenu("查看合集");
         JMenuItem likesCollection = new JMenuItem("点赞合集");
-        JMenuItem Collection = new JMenuItem("收藏合集");
+        likesCollection.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LikesEventSwing(userId,eventGroupName);
+            }
+        });
+        JMenuItem collectedCollection = new JMenuItem("收藏合集");
+        collectedCollection.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CollectdEventSwing(userId,eventGroupName);
+            }
+        });
         viewCollection.add(likesCollection);
-        viewCollection.add(Collection);
+        viewCollection.add(collectedCollection);
 
         JMenu help = new JMenu("帮助");
         JMenuItem helpItem = new JMenuItem("帮助文档");

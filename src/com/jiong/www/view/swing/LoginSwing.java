@@ -91,7 +91,7 @@ public class LoginSwing extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null,"登录成功！");
                 //进入下一个页面
                 login.dispose();
-                new EventWebSwing(userId,eventGroupName);
+                new GroupsSwing(userId,eventGroupName);
             }
             }
         }

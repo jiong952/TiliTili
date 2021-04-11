@@ -26,7 +26,7 @@ public class QueryEventSwing extends JFrame{
         //窗口可见
         jFrame.setResizable(false);
         //不可拉伸
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         JPanel jPanel =new JPanel();
         jFrame.add(jPanel);
         jPanel.setLayout(null);
@@ -57,7 +57,7 @@ public class QueryEventSwing extends JFrame{
                     Event event1 = eventService.viewEvent(eventName);
                     if(judge==0){
                         jFrame.dispose();
-                        new SelectedEventSwing(userId,eventName,event1.getEventId(),eventGroupName);
+                        new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
                     }else {
                         JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);
                     }

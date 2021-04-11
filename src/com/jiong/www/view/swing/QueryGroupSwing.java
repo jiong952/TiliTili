@@ -1,11 +1,8 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventService;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,7 +25,7 @@ public class QueryGroupSwing {
         //窗口可见
         jFrame.setResizable(false);
         //不可拉伸
-        jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        jFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         JPanel jPanel =new JPanel();
         jFrame.add(jPanel);
         jPanel.setLayout(null);
@@ -58,7 +55,7 @@ public class QueryGroupSwing {
                     int judge = eventGroupService.verifyEventGroupName(eventGroupName);
                     if(judge==1){
                         jFrame.dispose();
-                        new EventOfGroupSwing(userId,eventGroupName);
+                        new GroupSwing(userId,eventGroupName);
                     }else {
                         JOptionPane.showMessageDialog(null,"查无此瓜圈！","错误",JOptionPane.ERROR_MESSAGE);
                     }

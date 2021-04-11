@@ -11,19 +11,19 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class UserInformationSwing extends JFrame {
+public class InformationSwing extends JFrame {
 
     int userId;
     String eventGroupName;
     //返回
-    public UserInformationSwing(int userId,String eventGroupName){
+    public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
         UserService userService = new UserService();
         User user = userService.queryUserInformation(userId);
 
         JFrame userInformation = new JFrame("TiliTili瓜王系统");
-        userInformation.setSize(1200,800);
+        userInformation.setSize(900,700);
         //设置大小
         userInformation.setLocationRelativeTo(null);
         //窗口可见
@@ -47,33 +47,33 @@ public class UserInformationSwing extends JFrame {
 
         //显示用户名标签+名字,用户名不可更改
         JLabel userNameLabel = new JLabel("用户名:");
-        userNameLabel.setBounds(425,150,100,20);
+        userNameLabel.setBounds(50,100,100,20);
         userNameLabel.setFont(font1);
         jPanel.add(userNameLabel);
         JLabel userName = new JLabel(user.getLoginName());
-        userName.setBounds(500,150,60,20);
+        userName.setBounds(125,100,60,20);
         userName.setFont(font1);
         jPanel.add(userName);
 
         //用于显示昵称标签+文本框
         JLabel nickNameLabel = new JLabel("昵称:");
-        nickNameLabel.setBounds(425,200,60,20);
+        nickNameLabel.setBounds(50,150,60,20);
         nickNameLabel.setFont(font1);
         jPanel.add(nickNameLabel);
         JTextField nickNameTextField = new JTextField(10);
-        nickNameTextField.setBounds(500,200,100,20);
+        nickNameTextField.setBounds(125,150,100,20);
         nickNameTextField.setText(user.getUserNickname());
         jPanel.add(nickNameTextField);
 
         //用于显示性别标签+单选框
         JLabel gender = new JLabel("性别:");
-        gender.setBounds(425,250,60,20);
+        gender.setBounds(50,200,60,20);
         gender.setFont(font1);
         jPanel.add(gender);
         JRadioButton girl = new JRadioButton("女");
-        girl.setBounds(500,245,80,30);
+        girl.setBounds(125,195,80,30);
         JRadioButton boy = new JRadioButton("男");
-        boy.setBounds(580,245,80,30);
+        boy.setBounds(225,195,80,30);
         int userGender = user.getUserGender();
         if(userGender==0){
             girl.setSelected(true);
@@ -90,17 +90,17 @@ public class UserInformationSwing extends JFrame {
         //用于显示邮箱标签+文本框
         // 邮箱要加一个监听器，监听后缀的格式
         JLabel email = new JLabel("邮箱:");
-        email.setBounds(425,300,60,20);
+        email.setBounds(50,250,60,20);
         email.setFont(font1);
         jPanel.add(email);
         JTextField emailTextField = new JTextField(15);
-        emailTextField.setBounds(500,300,100,20);
+        emailTextField.setBounds(125,250,100,20);
         emailTextField.setText(user.getUserEmail());
         jPanel.add(emailTextField);
 
         //生日+下拉列表+年月日标签
         JLabel birth = new JLabel("生日:");
-        birth.setBounds(425,350,60,20);
+        birth.setBounds(50,300,60,20);
         birth.setFont(font1);
         jPanel.add(birth);
         //用集合先存放string,转为数组，数组直接放进列表框
@@ -127,25 +127,25 @@ public class UserInformationSwing extends JFrame {
         String[] day = day1.toArray(new String[month1.size()]);
         //把年份数组放进下拉列表中
         JComboBox<String> birthyear = new JComboBox<>(year);
-        birthyear.setBounds(500,350,100,20);
+        birthyear.setBounds(125,300,100,20);
         JComboBox<String> birthmonth = new JComboBox<>(month);
-        birthmonth.setBounds(640,350,100,20);
+        birthmonth.setBounds(265,300,100,20);
         JComboBox<String> birthday = new JComboBox<>(day);
-        birthday.setBounds(780,350,100,20);
+        birthday.setBounds(405,300,100,20);
         jPanel.add(birthyear);
         jPanel.add(birthmonth);
         jPanel.add(birthday);
         //年月日的标签提示
         JLabel yearLabel = new JLabel("年");
-        yearLabel.setBounds(610,345,30,30);
+        yearLabel.setBounds(235,295,30,30);
         yearLabel.setFont(font1);
         jPanel.add(yearLabel);
         JLabel monthLabel = new JLabel("月");
-        monthLabel.setBounds(750,345,30,30);
+        monthLabel.setBounds(375,295,30,30);
         monthLabel.setFont(font1);
         jPanel.add(monthLabel);
         JLabel dayLabel = new JLabel("日");
-        dayLabel.setBounds(890,345,30,30);
+        dayLabel.setBounds(515,295,30,30);
         dayLabel.setFont(font1);
         jPanel.add(dayLabel);
 
@@ -171,37 +171,37 @@ public class UserInformationSwing extends JFrame {
 
         //个人简介提示+文本域
         JLabel description = new JLabel("个人简介：");
-        description.setBounds(390,400,100,20);
+        description.setBounds(15,350,100,20);
         description.setFont(font1);
         jPanel.add(description);
         //文本域
         JTextArea descriptionTextArea = new JTextArea(20,10);
         descriptionTextArea.setLineWrap(true);
         //自动换行
-        descriptionTextArea.setBounds(500,400,500,220);
+        descriptionTextArea.setBounds(125,350,500,100);
         descriptionTextArea.setText(user.getUserDescription());
         jPanel.add(descriptionTextArea);
         JScrollPane jScrollPane = new JScrollPane();
-        jScrollPane.setBounds(500,400,500,220);
+        jScrollPane.setBounds(125,350,500,100);
         jScrollPane.setViewportView(descriptionTextArea);
         jPanel.add(jScrollPane);
 
         //修改密码的按钮，加监听器，跳转界面
         JButton changePassword = new JButton("修改密码");
-        changePassword.setBounds(440,700,90,20);
+        changePassword.setBounds(65,500,90,20);
         changePassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //修改密码界面
                 userInformation.dispose();
-                new ChangePasswordSwing(userId,eventGroupName);
+                new PasswordSwing(userId,eventGroupName);
             }
         });
         jPanel.add(changePassword);
 
         //保存按钮,加监听器，获取上方的信息，判断修改个人信息是否完成
         JButton save = new JButton("保存");
-        save.setBounds(550,700,80,20);
+        save.setBounds(175,500,80,20);
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -252,7 +252,7 @@ public class UserInformationSwing extends JFrame {
 
         //重置按钮：恢复未保存前的原状
         JButton reset = new JButton("重置");
-        reset.setBounds(650,700,80,20);
+        reset.setBounds(275,500,80,20);
         reset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -294,13 +294,13 @@ public class UserInformationSwing extends JFrame {
 
         //返回按钮
         JButton cancel = new JButton("返回");
-        cancel.setBounds(750,700,80,20);
+        cancel.setBounds(375,500,80,20);
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 userInformation.dispose();
                 //退出当前界面
-                new EventWebSwing(userId,eventGroupName);
+                new GroupsSwing(userId,eventGroupName);
             }
         });
         jPanel.add(cancel);
