@@ -100,10 +100,7 @@ public class MenuSwingUtil {
                 new CreateGroupSwing(userId,eventGroupName);
             }
         });
-        int roleId = new UserService().verifyRole(userId);
-        if(roleId==2||roleId==3){
-            createEventGroup.setVisible(true);
-        }
+
         JMenuItem createEvent = new JMenuItem("创建瓜");
         createEvent.addActionListener(new ActionListener() {
             @Override
@@ -138,11 +135,29 @@ public class MenuSwingUtil {
         JMenuItem helpItem = new JMenuItem("帮助文档");
         help.add(helpItem);
 
+        JMenu handle = new JMenu("待处理");
+        handle.setVisible(false);
+        JMenuItem accuseHandle = new JMenuItem("举报处理");
+        accuseHandle.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AccuseHandleSwing(userId);
+            }
+        });
+        handle.add(accuseHandle);
+
         menuBar.add(status);
         menuBar.add(information);
         menuBar.add(event);
         menuBar.add(viewCollection);
         menuBar.add(help);
+        menuBar.add(handle);
+        int roleId = new UserService().verifyRole(userId);
+
+        if(roleId==2||roleId==3){
+            createEventGroup.setVisible(true);
+            handle.setVisible(true);
+        }
         jFrame.setJMenuBar(menuBar);
     }
 }

@@ -1,5 +1,6 @@
 package com.jiong.www.dao;
 
+import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import com.jiong.www.util.JdbcUtils;
 
@@ -7,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventDao {
 
@@ -132,17 +135,5 @@ public class EventDao {
         //把查询的结果集返回到service层
         return eventQuery;
     }
-    //用户举报瓜
-    public int accuseEvent(int eventId) throws SQLException {
-        int row=0;
-        Connection conn = JdbcUtils.getConnection();
-        String sql ="UPDATE `event` SET `accuse_status` = 1 WHERE `event_id`=?";
-        //联表查询
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1,eventId);
-        row = ps.executeUpdate();
-        JdbcUtils.release(conn,ps,null);
-        //把查询的结果集返回到service层
-        return row;
-    }
+
 }

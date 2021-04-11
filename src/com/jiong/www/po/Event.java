@@ -22,6 +22,8 @@ public class Event {
     //收藏的数目
     private int eventId;
     //瓜的id
+
+    //举报瓜的内容
     public String getEventContent() {
         return eventContent;
     }

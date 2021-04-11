@@ -21,7 +21,7 @@ public class GroupsSwing extends JFrame {
     int userId;
     String eventGroupName;
     public static void main(String[] args) {
-        new GroupsSwing(10,"范冰冰");
+        new GroupsSwing(2,"范冰冰");
     }
     public GroupsSwing(int userId, String eventGroupName) {
         this.userId = userId;

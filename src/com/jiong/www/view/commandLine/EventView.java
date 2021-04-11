@@ -114,10 +114,7 @@ public class EventView {
         eventId=eventQuery.getEventId();
         return eventId;
     }
-    //用户可以举报瓜，给管理员处理
-    public void accuseEvent(int eventId){
-        eventService.accuseEvent(eventId);
-    }
+
 
 
 }

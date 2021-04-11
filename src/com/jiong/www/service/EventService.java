@@ -1,9 +1,12 @@
 package com.jiong.www.service;
 
 import com.jiong.www.dao.EventDao;
+import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventService {
     EventDao eventDao = new EventDao();
@@ -57,7 +60,6 @@ public class EventService {
         }
         return eventGroupName;
     }
-
     //删除瓜
     public int deleteEvent(int eventId){
         int row=0;
@@ -78,16 +80,5 @@ public class EventService {
         }
         return eventQuery;
     }
-    //用户可以举报瓜，给管理员处理
-    public int accuseEvent(int eventId){
-        int row=0;
-        try {
-            eventDao.accuseEvent(eventId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return row;
-    }
-
 
 }

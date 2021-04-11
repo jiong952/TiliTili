@@ -21,7 +21,7 @@ public class EventSwing {
     int eventId;
     String eventGroupName;
     public static void main(String[] args) {
-        new EventSwing(10,"瓜瓜01",11,"唱歌");
+        new EventSwing(2,"瓜瓜01",11,"唱歌");
     }
     public EventSwing(int userId, String eventName, int eventId, String eventGroupName) {
         this.userId = userId;
@@ -232,7 +232,13 @@ public class EventSwing {
         }
         //创建一个表格来放评论
         JTable table = new JTable();
-        DefaultTableModel defaultTableModel = new DefaultTableModel(rowData, columnNames);
+        DefaultTableModel defaultTableModel = new DefaultTableModel(rowData, columnNames){
+            @Override
+            public boolean isCellEditable(int row, int column)
+            {
+                return false;
+            }
+        };
         table.setModel(defaultTableModel);
         table.setFont(font1);
         table.setRowHeight(30);
@@ -287,13 +293,15 @@ public class EventSwing {
         deleteComment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(table.getSelectedRow()<0){
+                    JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
+                }
                 int judge = userService.verifyRole(userId);
                 List<Comment> comments0 = commentService.viewComment(event.getEventId());
                 if(judge==1){
                     //吃瓜群众
                     if(userId==comments0.get(table.getSelectedRow()).getCommenterId()){
                         commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommentId(),eventId);
-
                         JOptionPane.showMessageDialog(null,"删除成功");
                         List<Comment> comments1 = commentService.viewComment(event.getEventId());
                         Object[][] rowData1 = new Object[comments1.size()][3];
@@ -368,9 +376,19 @@ public class EventSwing {
             clearComment.setVisible(true);
         }
 
+        //举报按钮
+        JButton accuse = new JButton("举报");
+        accuse.setBounds(850,650,90,30);
+        accuse.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AccuseSwing(userId,eventName,eventId);
+            }
+        });
+        jPanel.add(accuse);
         //返回按钮
         JButton back = new JButton("返回");
-        back.setBounds(1050,600,78,30);
+        back.setBounds(1050,650,78,30);
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
