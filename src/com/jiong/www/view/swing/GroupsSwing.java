@@ -3,7 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.UserService;
-import com.jiong.www.util.MenuSwingUtil;
+import com.jiong.www.util.MenuSwingUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -34,7 +34,7 @@ public class GroupsSwing extends JFrame {
         //窗口可见
         eventGroup.setResizable(false);
         //不可拉伸
-        eventGroup.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        eventGroup.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         JPanel jPanel =new JPanel();
@@ -48,7 +48,7 @@ public class GroupsSwing extends JFrame {
         jLabel.setBounds(400,10,450,100);
         jPanel.add(jLabel);
 
-        new MenuSwingUtil(userId,eventGroup,eventGroupName);
+        new MenuSwingUtils(userId,eventGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,25);
 
@@ -146,7 +146,7 @@ public class GroupsSwing extends JFrame {
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
         int roleId = new UserService().verifyRole(userId);
         //删除瓜圈 创建瓜圈
-        if(roleId==2||roleId==3){
+        if(roleId==2||roleId==4){
             //管理员或者是超级管理员
             JButton delete = new JButton("删除瓜圈");
             delete.setBounds(350,550,90,30);
@@ -194,6 +194,7 @@ public class GroupsSwing extends JFrame {
                     new CreateGroupSwing(userId,eventGroupName);
                 }
             });
+            //create.setVisible(false);
             jPanel.add(create);
         }
         JButton refresh = new JButton("刷新");
@@ -211,6 +212,9 @@ public class GroupsSwing extends JFrame {
             }
         });
         jPanel.add(refresh);
+        if(roleId==3){
+            refresh.setVisible(false);
+        }
 
         //窗口可见
         eventGroup.setVisible(true);

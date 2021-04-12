@@ -2,7 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.User;
 import com.jiong.www.service.UserService;
-import com.jiong.www.util.StringUtil;
+import com.jiong.www.util.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -115,7 +115,7 @@ public class InformationSwing extends JFrame {
             public void insertUpdate(DocumentEvent e) {
                 if(!"".equals(emailTextField.getText())){
                     String email = emailTextField.getText();
-                    boolean judge = new StringUtil().isEmail(email);
+                    boolean judge = new StringUtils().isEmail(email);
                     //合法
                     emailTips.setVisible(!judge);
                 }
@@ -125,7 +125,7 @@ public class InformationSwing extends JFrame {
             public void removeUpdate(DocumentEvent e) {
                 if(!"".equals(emailTextField.getText())){
                     String email = emailTextField.getText();
-                    boolean judge = new StringUtil().isEmail(email);
+                    boolean judge = new StringUtils().isEmail(email);
                     //合法
                     emailTips.setVisible(!judge);
                 }

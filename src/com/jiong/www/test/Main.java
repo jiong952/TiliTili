@@ -1,10 +1,11 @@
 package com.jiong.www.test;
 
+import com.jiong.www.util.Md5Utils;
+
 import java.text.*;
 
 public class Main {
-    public static void main(String[] args) throws ParseException {
-        //按钮添加按钮作用的信息  setToolTips
+    public static void main(String[] args) {
         //按钮增加图片JButton b1 = new JButton(new ImageIcon("D:/images/1.jpg"));
         //邮箱增加后缀报错
         //头像的添加 文件选择器？
@@ -14,5 +15,9 @@ public class Main {
         // 菜单项可以设置快捷键
         // 界面的外框可以加图标
         //瓜 瓜圈 判断是否被点过？
+        Md5Utils md5Utils = new Md5Utils();
+        String password = new String("123456");
+        System.out.println(md5Utils.toMD5(password));
+
     }
 }

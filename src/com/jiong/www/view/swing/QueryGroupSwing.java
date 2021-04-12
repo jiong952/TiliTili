@@ -25,7 +25,7 @@ public class QueryGroupSwing {
         //窗口可见
         jFrame.setResizable(false);
         //不可拉伸
-        jFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         JPanel jPanel =new JPanel();
         jFrame.add(jPanel);
         jPanel.setLayout(null);

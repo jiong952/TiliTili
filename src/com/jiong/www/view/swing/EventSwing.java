@@ -3,7 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
-import com.jiong.www.util.MenuSwingUtil;
+import com.jiong.www.util.MenuSwingUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -42,7 +42,7 @@ public class EventSwing {
         //窗口可见
         selectedEvent.setResizable(false);
         //不可拉伸
-        selectedEvent.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        selectedEvent.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         //放面板
@@ -60,7 +60,7 @@ public class EventSwing {
         jPanel.add(jLabel);
 
         //加入顶部菜单栏
-        new MenuSwingUtil(userId,selectedEvent,eventGroupName);
+        new MenuSwingUtils(userId,selectedEvent,eventGroupName);
 
         Event event = eventService.viewEvent(eventName);
 
@@ -372,7 +372,7 @@ public class EventSwing {
         jPanel.add(clearComment);
         //只有在管理员时显示
         int roleId = new UserService().verifyRole(userId);
-        if(roleId==2||roleId==3){
+        if(roleId==2||roleId==4){
             clearComment.setVisible(true);
         }
 
@@ -398,6 +398,17 @@ public class EventSwing {
         });
         back.setFont(font1);
         jPanel.add(back);
+        if(roleId==3){
+            myComment.setVisible(false);
+            myCommentArea.setVisible(false);
+            sendComment.setVisible(false);
+            deleteComment.setVisible(false);
+            accuse.setVisible(false);
+            like.setVisible(false);
+            notLike.setVisible(false);
+            collected.setVisible(false);
+            notCollected.setVisible(false);
+        }
         selectedEvent.setVisible(true);
 
 

@@ -1,6 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.service.UserService;
+import com.jiong.www.util.Md5Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,7 +85,8 @@ public class LoginSwing extends JFrame implements ActionListener {
             if("".equals(usernameField.getText())||"".equals(new String(passwordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            userId = userService.login(userName, password);
+                String securePassword = new Md5Utils().toMD5(password);
+                userId = userService.login(userName, securePassword);
             if(userId==0){
                 JOptionPane.showMessageDialog(null,"登录失败!","错误",JOptionPane.ERROR_MESSAGE);
             }else {

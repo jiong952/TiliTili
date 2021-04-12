@@ -1,7 +1,8 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.service.UserService;
-import com.jiong.www.util.StringUtil;
+import com.jiong.www.util.Md5Utils;
+import com.jiong.www.util.StringUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -41,7 +42,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         //窗口可见
         register.setResizable(false);
         //不可拉伸
-        register.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        register.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         jPanel = new JPanel();
@@ -135,7 +136,8 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             }
             else {
                 String newName = usernameField.getText();
-                int judge = userService.register(newName, comfirmPassword);
+                String securePassword = new Md5Utils().toMD5(comfirmPassword);
+                int judge = userService.register(newName, securePassword);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");
                     register.dispose();
@@ -198,7 +200,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             String password = new String(passwordField.getPassword());
             String comfirmPassword = new String(confirmPasswordField.getPassword());
             if(!"".equals(password)){
-                boolean judge = new StringUtil().isPassword(password);
+                boolean judge = new StringUtils().isPassword(password);
                 jLabel3.setVisible(!judge);
             }
             if(!"".equals(password)&&"".equals(comfirmPassword)){
@@ -259,7 +261,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             String password = new String(passwordField.getPassword());
             String comfirmPassword = new String(confirmPasswordField.getPassword());
             if(!"".equals(password)){
-                boolean judge = new StringUtil().isPassword(password);
+                boolean judge = new StringUtils().isPassword(password);
                 jLabel3.setVisible(!judge);
             }
             if(!"".equals(password)&&"".equals(comfirmPassword)){

@@ -7,11 +7,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuSwingUtil {
+public class MenuSwingUtils {
     int userId;
     String eventGroupName;
     JFrame jFrame;
-    public MenuSwingUtil(int userId, JFrame jFrame, String eventGroupName) {
+    public MenuSwingUtils(int userId, JFrame jFrame, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
         this.jFrame=jFrame;
@@ -154,9 +154,15 @@ public class MenuSwingUtil {
         menuBar.add(handle);
         int roleId = new UserService().verifyRole(userId);
 
-        if(roleId==2||roleId==3){
+        if(roleId==2||roleId==4){
+            //管理员 超管
             createEventGroup.setVisible(true);
             handle.setVisible(true);
+        }
+        if(roleId==3){
+            information.setVisible(false);
+            event.setVisible(false);
+            viewCollection.setVisible(false);
         }
         jFrame.setJMenuBar(menuBar);
     }

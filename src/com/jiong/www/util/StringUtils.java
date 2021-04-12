@@ -3,31 +3,31 @@ package com.jiong.www.util;
 /**
  * @author Mono
  */
-public class StringUtil {
+public class StringUtils {
     public boolean isEmail(String email){
-        int k =0;
+        int judge =0;
         //判断是否有仅有一个@且不能在开头或结尾
         if(email.indexOf("@") > 0 && email.indexOf('@') == email.lastIndexOf('@') && email.indexOf('@') < email.length()-1) {
-            k++;
+            judge++;
         }
 
-        //判断"@"之后必须有"."且不能紧跟
+        //判断"@"之后必须有"."
         if(email.indexOf('.',email.indexOf('@')) > email.indexOf('@')+1 ) {
-            k++;
+            judge++;
         }
         //判断"@"之前或之后不能紧跟"."
         if(email.indexOf('.') < email.indexOf('@')-1 || email.indexOf('.') > email.indexOf('@')+1 ) {
-            k++;
+            judge++;
         }
         //@之前要有6个字符
         if(email.indexOf('@') > 5 ) {
-            k++;
+            judge++;
         }
-
-        if(email.endsWith("com") || email.endsWith("org") || email.endsWith("cn") ||email.endsWith("net")) {
-            k++;
+        //结尾的格式
+        if(email.endsWith("com")) {
+            judge++;
         }
-        return k == 5;
+        return judge == 5;
 
     }
     public boolean isPassword(String password){

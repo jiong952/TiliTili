@@ -28,7 +28,7 @@ public class PasswordSwing extends JFrame {
         //窗口可见
         password.setResizable(false);
         //不可拉伸
-        password.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        password.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         //默认关闭
 
         JPanel jPanel = new JPanel();
