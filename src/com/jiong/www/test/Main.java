@@ -16,8 +16,7 @@ public class Main {
         // 界面的外框可以加图标
         //瓜 瓜圈 判断是否被点过？
         Md5Utils md5Utils = new Md5Utils();
-        String password = new String("123456");
-        System.out.println(md5Utils.toMD5(password));
+        String password = new String("123456aa");
 
     }
 }

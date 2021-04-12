@@ -51,7 +51,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         //绝对布局
 
         Font font = new Font("宋体", Font.BOLD, 50);
-        JLabel jLabel = new JLabel("修改密码");
+        JLabel jLabel = new JLabel("注册");
         jLabel.setFont(font);
         jLabel.setBounds(0,0,250,100);
         jPanel.add(jLabel);

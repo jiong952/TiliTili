@@ -62,47 +62,53 @@ public class UserDao {
         PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps1.setInt(1,userId);
         ResultSet resultSet = ps1.executeQuery();
-        User userDeafault = new User();
-        //userDeafault用来封装表中数据地初始值
+        User userDefault = new User();
+        //userDefault用来封装表中数据地初始值
         while(resultSet.next()){
-            userDeafault.setUserEmail(resultSet.getString("user_e-mail"));
-            userDeafault.setUserNickname(resultSet.getString("user_nickname"));
-            userDeafault.setUserGender(resultSet.getInt("user_gender"));
-            userDeafault.setUserDescription(resultSet.getString("user_description"));
-            userDeafault.setUserBirthday(resultSet.getDate("user_birthday"));
+            userDefault.setUserEmail(resultSet.getString("user_e-mail"));
+            userDefault.setUserNickname(resultSet.getString("user_nickname"));
+            userDefault.setUserGender(resultSet.getInt("user_gender"));
+            userDefault.setUserDescription(resultSet.getString("user_description"));
+            userDefault.setUserBirthday(resultSet.getDate("user_birthday"));
+            userDefault.setIsRememberPassword(resultSet.getInt("password_remember"));
         }
         //查询并储存该用户的信息的原先值
-        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=? WHERE `user_id`=?";
+        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=?,`password_remember` =? WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         if(user.getUserEmail() ==null){
-            ps.setString(1,userDeafault.getUserEmail());
+            ps.setString(1,userDefault.getUserEmail());
         }else {
             ps.setString(1, user.getUserEmail());
         }
         if(user.getUserNickname() ==null){
-            ps.setString(2, userDeafault.getLoginName());
+            ps.setString(2, userDefault.getLoginName());
         }else {
             ps.setString(2,user.getUserNickname());
         }
         if(user.getUserGender() ==2){
             //2是性别为空的默认值
-            ps.setInt(3, userDeafault.getUserGender());
+            ps.setInt(3, userDefault.getUserGender());
         }else {
             ps.setInt(3,user.getUserGender());
         }
         if(user.getUserDescription() ==null){
-            ps.setString(4,userDeafault.getUserDescription());
+            ps.setString(4,userDefault.getUserDescription());
         }
         else {
             ps.setString(4,user.getUserDescription());
         }
         if(user.getUserBirthday()==null){
-            ps.setDate(5,userDeafault.getUserBirthday());
+            ps.setDate(5,userDefault.getUserBirthday());
         }else {
             ps.setDate(5,user.getUserBirthday());
         }
+        if(user.getIsRememberPassword()==0){
+            ps.setInt(6,0);
+        }else {
+            ps.setInt(6,1);
+        }
         //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
-        ps.setInt(6,userId);
+        ps.setInt(7,userId);
         int row = ps.executeUpdate();
         //sql语句返回结果判断
         //row是返回值，用于判断
@@ -208,9 +214,25 @@ public class UserDao {
             userQuery.setUserGender(rs.getInt("user_gender"));
             userQuery.setUserDescription(rs.getString("user_description"));
             userQuery.setUserBirthday(rs.getDate("user_birthday"));
+            userQuery.setLoginPassword(rs.getString("login_password"));
+            userQuery.setIsRememberPassword(rs.getInt("password_remember"));
         }
         JdbcUtils.release(conn,ps,rs);
         //把查询的结果集返回到service层
         return userQuery;
+    }
+    //用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回
+    public User isRememberPassword(String loginName) throws SQLException {
+        User user = new User();
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="SELECT *FROM `user` WHERE `login_name`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1,loginName);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()){
+            user.setIsRememberPassword(rs.getInt("password_remember"));
+            user.setLoginPassword(rs.getString("login_password"));
+        }
+        return user;
     }
 }

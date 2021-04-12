@@ -280,7 +280,7 @@ public class InformationSwing extends JFrame {
                     //错误提示还在
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
-                    int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday);
+                    int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday,0);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {

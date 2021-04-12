@@ -27,6 +27,17 @@ public class User {
     //取出来：把java.sql.Date用Calendar类来获取年月日
     private String userDescription;
     //用户的个人说明
+    private int isRememberPassword;
+    //是否记住密码
+    //默认0不记住，1则记住
+
+    public int getIsRememberPassword() {
+        return isRememberPassword;
+    }
+
+    public void setIsRememberPassword(int isRememberPassword) {
+        this.isRememberPassword = isRememberPassword;
+    }
 
 
     public String getLoginName() {

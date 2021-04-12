@@ -20,12 +20,14 @@ import java.util.List;
 public class GroupsSwing extends JFrame {
     int userId;
     String eventGroupName;
+    //判断是否记住密码
     public static void main(String[] args) {
         new GroupsSwing(2,"范冰冰");
     }
     public GroupsSwing(int userId, String eventGroupName) {
         this.userId = userId;
-        this.eventGroupName= eventGroupName;
+        this.eventGroupName = eventGroupName;
+
         EventGroupService eventGroupService = new EventGroupService();
         JFrame eventGroup = new JFrame("TiliTili瓜王系统");
         eventGroup.setSize(1200,800);
