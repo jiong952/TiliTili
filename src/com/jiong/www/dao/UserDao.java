@@ -3,65 +3,57 @@ package com.jiong.www.dao;
 import com.jiong.www.po.User;
 import com.jiong.www.util.JdbcUtils;
 
-import javax.sql.RowSet;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Mono
  */
-public class TilitiliDao {
-    //注册，添加用户信息到用户表
+public class UserDao {
+    //注册，添加用户信息到用户表, 把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
     public int register(User user) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
+        conn.setAutoCommit(false);
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
-        //`login_name`加了主键约束，在数据库设计上可以防止重名
+        String sql1 ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES((SELECT `user_id`FROM `user` WHERE `login_name`=?),1)";
+        //`login_name`加了唯一约束，在数据库设计上可以防止重名
         PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps.setString(1,user.getLoginName());
         ps.setString(2,user.getLoginPassword());
         ps.setString(3,user.getLoginName());
+        ps1.setString(1,user.getLoginName());
         //昵称默认为用户名
         row= ps.executeUpdate();
+        ps1.executeUpdate();
         //sql语句返回结果判断
-        //row是返回值，用于判断
+        conn.commit();
         JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
         //释放连接
         return row;
         //向上抛出到view层
     }
     //用于注册时验证该用户名是否存在
     public int verifyUsername(String loginName) throws SQLException {
-        Connection connection = JdbcUtils.getConnection();
-        int row=1;
+        Connection conn = JdbcUtils.getConnection();
+        int row=0;
+        //默认为0不存在
         //用来抛出到view层做判断
-        String sql1="SELECT *FROM `user` WHERE `login_name`=?";
-        PreparedStatement ps0 = connection.prepareStatement(sql1);
-        ps0.setString(1,loginName);
-        ResultSet resultSet = ps0.executeQuery();
-        if(resultSet.isBeforeFirst()){
-            row=0;
-            //表里有数据则row=0
+        String sql="SELECT *FROM `user` WHERE `login_name`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1,loginName);
+        ResultSet rs = ps.executeQuery();
+        if(rs.isBeforeFirst()){
+            row=1;
+            //表里有数据则row=1
         }
+        JdbcUtils.release(conn,ps,rs);
         return row;
         //抛出到view层判断
-    }
-    //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
-    public int addRole(User user) throws SQLException {
-        Connection conn = JdbcUtils.getConnection();
-        String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES((SELECT `user_id`FROM `user` WHERE `login_name`=?),1)";
-        //1为提前设计的吃瓜群众对于的role_id
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1,user.getLoginName());
-        int row1 = ps.executeUpdate();
-        //sql语句返回结果判断
-        //row是返回值，用于判断
-        JdbcUtils.release(conn,ps,null);
-        //释放连接
-        return row1;
-        //向上抛出到view层
     }
     //完善用户信息,实现了每次只改动一个信息，其他的保存为上次的值
     public int perfectInformation(User user,int userId) throws SQLException {
@@ -70,47 +62,58 @@ public class TilitiliDao {
         PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps1.setInt(1,userId);
         ResultSet resultSet = ps1.executeQuery();
-        String defaultEmail = null;
-        String defaultNickname = null;
-        int defaultGender = 0;
-        String defaultDescirption = null;
+        User userDefault = new User();
+        //userDefault用来封装表中数据地初始值
         while(resultSet.next()){
-            defaultEmail = resultSet.getString("user_e-mail");
-            defaultNickname=resultSet.getString("user_nickname");
-            defaultGender=resultSet.getInt("user_gender");
-            defaultDescirption=resultSet.getString("user_description");
+            userDefault.setUserEmail(resultSet.getString("user_e-mail"));
+            userDefault.setUserNickname(resultSet.getString("user_nickname"));
+            userDefault.setUserGender(resultSet.getInt("user_gender"));
+            userDefault.setUserDescription(resultSet.getString("user_description"));
+            userDefault.setUserBirthday(resultSet.getDate("user_birthday"));
+            userDefault.setIsRememberPassword(resultSet.getInt("password_remember"));
         }
         //查询并储存该用户的信息的原先值
-        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=? WHERE `user_id`=?";
+        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=?,`password_remember` =? WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         if(user.getUserEmail() ==null){
-            ps.setString(1,defaultEmail);
+            ps.setString(1,userDefault.getUserEmail());
         }else {
             ps.setString(1, user.getUserEmail());
         }
         if(user.getUserNickname() ==null){
-            ps.setString(2, defaultNickname);
+            ps.setString(2, userDefault.getLoginName());
         }else {
             ps.setString(2,user.getUserNickname());
         }
         if(user.getUserGender() ==2){
             //2是性别为空的默认值
-            ps.setInt(3, defaultGender);
+            ps.setInt(3, userDefault.getUserGender());
         }else {
             ps.setInt(3,user.getUserGender());
         }
         if(user.getUserDescription() ==null){
-            ps.setString(4, defaultDescirption);
+            ps.setString(4,userDefault.getUserDescription());
         }
         else {
             ps.setString(4,user.getUserDescription());
         }
+        if(user.getUserBirthday()==null){
+            ps.setDate(5,userDefault.getUserBirthday());
+        }else {
+            ps.setDate(5,user.getUserBirthday());
+        }
+        if(user.getIsRememberPassword()==0){
+            ps.setInt(6,0);
+        }else {
+            ps.setInt(6,1);
+        }
         //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
-        ps.setInt(5,userId);
+        ps.setInt(7,userId);
         int row = ps.executeUpdate();
         //sql语句返回结果判断
         //row是返回值，用于判断
         JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,null);
         //释放连接
         return row;
     }
@@ -142,12 +145,27 @@ public class TilitiliDao {
                 //令userId为0
             }
         }
-
+        JdbcUtils.release(conn,ps,rs);
         return userId;
+    }
+    //验证用户的身份，吃瓜群众1管理员2游客3超管4
+    public int verifyRole(int userId) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="SELECT *FROM `user_role`WHERE`user_id`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1,userId);
+        ResultSet rs = ps.executeQuery();
+        int roleId=0;
+        //用户角色的id
+        while (rs.next()){
+            roleId=rs.getInt("role_id");
+        }
+        JdbcUtils.release(conn,ps,rs);
+        return roleId;
     }
     //验证要修改的密码
     public int verifyPassword(String oldPassword,int userId) throws SQLException {
-        int row1=0;
+        int row=0;
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `user` WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -160,9 +178,10 @@ public class TilitiliDao {
         }
         if(realPassword.equals(oldPassword)){
             //验证密码成功则令结果为1
-            row1=1;
+            row=1;
         }
-        return row1;
+        JdbcUtils.release(conn,ps,rs);
+        return row;
         //row1返回到view层用于验证
     }
     //修改密码
@@ -181,22 +200,39 @@ public class TilitiliDao {
         return row2;
     }
     //查询用户的个人信息
-    public List queryUserInformation(int userId) throws SQLException {
-        List<Object> arr = new ArrayList();
+    public User queryUserInformation(int userId) throws SQLException {
+        User userQuery = new User();
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `user` WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1,userId);
         ResultSet rs = ps.executeQuery();
         while(rs.next()){
-            arr.add(rs.getString("login_name"));
-            arr.add(rs.getString("user_e-mail"));
-            arr.add(rs.getString("user_nickname"));
-            arr.add(rs.getInt("user_gender"));
-            arr.add(rs.getString("user_description"));
+            userQuery.setLoginName(rs.getString("login_name"));
+            userQuery.setUserEmail(rs.getString("user_e-mail"));
+            userQuery.setUserNickname(rs.getString("user_nickname"));
+            userQuery.setUserGender(rs.getInt("user_gender"));
+            userQuery.setUserDescription(rs.getString("user_description"));
+            userQuery.setUserBirthday(rs.getDate("user_birthday"));
+            userQuery.setLoginPassword(rs.getString("login_password"));
+            userQuery.setIsRememberPassword(rs.getInt("password_remember"));
         }
+        JdbcUtils.release(conn,ps,rs);
         //把查询的结果集返回到service层
-        return arr;
+        return userQuery;
     }
-
+    //用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回
+    public User isRememberPassword(String loginName) throws SQLException {
+        User user = new User();
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="SELECT *FROM `user` WHERE `login_name`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1,loginName);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()){
+            user.setIsRememberPassword(rs.getInt("password_remember"));
+            user.setLoginPassword(rs.getString("login_password"));
+        }
+        return user;
+    }
 }
