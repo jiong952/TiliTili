@@ -1,26 +1,27 @@
 package com.jiong.www.util;
 
-import com.jiong.www.po.Event;
-import com.jiong.www.po.EventGroup;
+import com.jiong.www.po.Comment;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * @author Mono
  */
-public class GroupsPagingUtils extends JFrame {
-    List<EventGroup> list = new ArrayList<EventGroup>();
+public class EventPagingUtils {
+
+    List<Comment> list = new ArrayList<Comment>();
     //list由外部传入，储存所有的数据
     private int currentPage = 1;
     private int lastPage;
     private int pageSize ;
     //页面的展示数目
-    DefaultListModel defaultListModel = null;
+    DefaultTableModel defaultTableModel = null;
     JPanel jPanel;
     public int getCurrentPage() {
         return currentPage;
@@ -46,9 +47,9 @@ public class GroupsPagingUtils extends JFrame {
         this.pageSize = pageSize;
     }
 
-    public GroupsPagingUtils(List<EventGroup> list, DefaultListModel defaultListModel, JPanel jPanel,int pageSize)  {
+    public EventPagingUtils(List<Comment> list, DefaultTableModel defaultTableModel, JPanel jPanel,int pageSize)  {
         this.list = list;
-        this.defaultListModel = defaultListModel;
+        this.defaultTableModel=defaultTableModel;
         this.jPanel=jPanel;
         this.pageSize=pageSize;
         //设置末页
@@ -58,34 +59,34 @@ public class GroupsPagingUtils extends JFrame {
             setLastPage(list.size()/getPageSize()+1);
         }
         JButton first = new JButton("首页");
-        first.setBounds(245,510,60,30);
+        first.setBounds(245,575,60,30);
         first.setActionCommand("首页");
-        first.addActionListener(new MyList());
+        first.addActionListener(new MyTable());
         jPanel.add(first);
 
         JButton previous = new JButton("上一页");
-        previous.setBounds(345,510,90,30);
+        previous.setBounds(345,575,90,30);
         previous.setActionCommand("上一页");
-        previous.addActionListener(new MyList());
+        previous.addActionListener(new MyTable());
         jPanel.add(previous);
 
         JButton next = new JButton("下一页");
-        next.setBounds(475,510,90,30);
+        next.setBounds(475,575,90,30);
         next.setActionCommand("下一页");
-        next.addActionListener(new MyList());
+        next.addActionListener(new MyTable());
         jPanel.add(next);
 
         JButton last = new JButton("尾页");
-        last.setBounds(605,510,60,30);
+        last.setBounds(605,575,60,30);
         last.setActionCommand("尾页");
-        last.addActionListener(new MyList());
+        last.addActionListener(new MyTable());
         jPanel.add(last);
 
     }
 
     //传入list得到子list
-    public List<EventGroup> getList(int currentPage,int pageSize){
-        List<EventGroup> sonList = new ArrayList();
+    public List<Comment> getList(int currentPage,int pageSize){
+        List<Comment> sonList = new ArrayList();
         //子list
         int listLength = list.size();
         //总长度
@@ -105,15 +106,20 @@ public class GroupsPagingUtils extends JFrame {
     }
 
     public void showList(int currentPage){
-        defaultListModel.clear();
+        defaultTableModel.setRowCount(0);
         //清除原有数据
         setCurrentPage(currentPage);
-        List<EventGroup> sonList = getList(currentPage, pageSize);
+        List<Comment> sonList = getList(currentPage, pageSize);
         for (int i = 0; i < sonList.size(); i++) {
-            defaultListModel.add(i,sonList.get(i).getEventGroupName());
+            Vector vector = new Vector();
+            Comment comment = sonList.get(i);
+            vector.add(comment.getCommenterName());
+            vector.add(comment.getCommentContent());
+            vector.add(comment.getCommentTime());
+            defaultTableModel.addRow(vector);
         }
     }
-    class MyList implements ActionListener{
+    class MyTable implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if("首页".equals(e.getActionCommand())){
@@ -137,6 +143,4 @@ public class GroupsPagingUtils extends JFrame {
             }
         }
     }
-
-
 }

@@ -112,7 +112,7 @@ public class GroupSwing extends JFrame {
         List<Event> events = eventGroupService.viewEventOfEventGroup(eventGroupName);
         int pageSize = 9;
         //每一页页面的展示瓜数目
-        if(events.size()>=9){
+        if(events.size()>=pageSize){
             for (int i = 0; i < pageSize; i++) {
                 listModel.add(i,events.get(i).getEventName());
             }

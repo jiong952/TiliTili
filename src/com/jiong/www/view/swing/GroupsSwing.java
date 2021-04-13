@@ -83,7 +83,7 @@ public class GroupsSwing extends JFrame {
         List<EventGroup> eventGroups = eventGroupService.viewAllEventGroup();
         int pageSize = 9;
         //每一页页面的展示瓜圈数目
-        if(eventGroups.size()>=9){
+        if(eventGroups.size()>=pageSize){
             for (int i = 0; i < pageSize; i++) {
                 listModel.add(i,eventGroups.get(i).getEventGroupName());
             }

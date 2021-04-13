@@ -3,6 +3,8 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
+import com.jiong.www.util.EventPagingUtils;
+import com.jiong.www.util.GroupPagingUtils;
 import com.jiong.www.util.MenuSwingUtils;
 
 import javax.swing.*;
@@ -224,11 +226,21 @@ public class EventSwing {
         String[] columnNames = {"评论人","评论内容","评论时间"};
         //查询瓜的所有评论
         List<Comment> comments = commentService.viewComment(event.getEventId());
-        Object[][] rowData = new Object[comments.size()][3];
-        for (int i = 0; i < comments.size(); i++) {
-            rowData[i][0]=comments.get(i).getCommenterName();
-            rowData[i][1]=comments.get(i).getCommentContent();
-            rowData[i][2]=comments.get(i).getCommentTime().toString();
+        int pageSize = 6;
+        //每一页展示评论数目
+        Object[][] rowData = new Object[Math.min(comments.size(), pageSize)][3];
+        if(comments.size()>=pageSize){
+            for (int i = 0; i < pageSize; i++) {
+                rowData[i][0]=comments.get(i).getCommenterName();
+                rowData[i][1]=comments.get(i).getCommentContent();
+                rowData[i][2]=comments.get(i).getCommentTime().toString();
+            }
+        }else {
+            for (int i = 0; i < comments.size(); i++) {
+                rowData[i][0]=comments.get(i).getCommenterName();
+                rowData[i][1]=comments.get(i).getCommentContent();
+                rowData[i][2]=comments.get(i).getCommentTime().toString();
+            }
         }
         //创建一个表格来放评论
         JTable table = new JTable();
@@ -241,30 +253,35 @@ public class EventSwing {
         };
         table.setModel(defaultTableModel);
         table.setFont(font1);
-        table.setRowHeight(30);
+        table.setRowHeight(32);
         table.setBounds(135,420,800,150);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//单选
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //单选
         JScrollPane jScrollPane1 = new JScrollPane();
         jScrollPane1.setBounds(135,420,920,150);
         jScrollPane1.setViewportView(table);
         jPanel.add(jScrollPane1);
 
+        new EventPagingUtils(comments,defaultTableModel,jPanel,pageSize);
+
+
+
         JLabel myComment = new JLabel("我要评论:");
         myComment.setFont(font1);
         myComment.setForeground(Color.PINK);
-        myComment.setBounds(20,580,80,30);
+        myComment.setBounds(20,637,80,30);
         jPanel.add(myComment);
 
         JTextArea myCommentArea = new JTextArea();
-        myCommentArea.setBounds(100,580,550,100);
+        myCommentArea.setBounds(100,637,550,100);
         jPanel.add(myCommentArea);
         JScrollPane jScrollPane2 = new JScrollPane();
-        jScrollPane2.setBounds(100,580,550,100);
+        jScrollPane2.setBounds(100,637,550,100);
         jScrollPane2.setViewportView(myCommentArea);
         jPanel.add(jScrollPane2);
 
         JButton sendComment = new JButton("发送");
-        sendComment.setBounds(700,650,60,30);
+        sendComment.setBounds(700,707,60,30);
         jPanel.add(sendComment);
         //发送按钮的监听器
         sendComment.addActionListener(new ActionListener() {
@@ -291,7 +308,7 @@ public class EventSwing {
 
         //删除评论+清空评论
         JButton deleteComment= new JButton("删除评论");
-        deleteComment.setBounds(750,580,90,30);
+        deleteComment.setBounds(750,637,90,30);
         deleteComment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -345,7 +362,7 @@ public class EventSwing {
         jPanel.add(deleteComment);
 
         JButton clearComment= new JButton("清空评论");
-        clearComment.setBounds(850,580,90,30);
+        clearComment.setBounds(850,637,90,30);
         clearComment.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -380,7 +397,7 @@ public class EventSwing {
 
         //举报按钮
         JButton accuse = new JButton("举报");
-        accuse.setBounds(850,650,90,30);
+        accuse.setBounds(850,707,90,30);
         accuse.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -390,7 +407,7 @@ public class EventSwing {
         jPanel.add(accuse);
         //返回按钮
         JButton back = new JButton("返回");
-        back.setBounds(1050,650,78,30);
+        back.setBounds(1050,707,78,30);
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

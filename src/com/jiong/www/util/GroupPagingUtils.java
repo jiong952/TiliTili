@@ -55,7 +55,6 @@ public class GroupPagingUtils extends JFrame {
         }else {
             setLastPage(list.size()/getPageSize()+1);
         }
-        //按钮的位置根据groups 和group 定位（这两个界面相似）
         JButton first = new JButton("首页");
         first.setBounds(245,510,60,30);
         first.setActionCommand("首页");
