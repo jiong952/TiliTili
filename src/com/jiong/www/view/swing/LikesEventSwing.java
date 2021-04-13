@@ -98,7 +98,7 @@ public class LikesEventSwing {
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(list.getSelectedIndex()>0){
+                if(list.getSelectedIndex()>=0){
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要取消点赞" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                     if(judge==0){
                         //YES

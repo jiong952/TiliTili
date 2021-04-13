@@ -123,17 +123,17 @@ public class GroupSwing extends JFrame {
         JLabel query = new JLabel("查询瓜");
         query.setFont(font1);
         query.setForeground(Color.BLACK);
-        query.setBounds(5,550,120,30);
+        query.setBounds(5,650,120,30);
         jPanel.add(query);
         //输入瓜圈名字的提示
         JLabel tip = new JLabel("请输入要查询瓜的名字");
         tip.setForeground(Color.red);
         tip.setVisible(false);
-        tip.setBounds(120,570,150,30);
+        tip.setBounds(120,670,150,30);
         jPanel.add(tip);
         //文本框
         JTextField queryField = new JTextField(70);
-        queryField.setBounds(120,550,200,30);
+        queryField.setBounds(120,650,200,30);
         queryField.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -153,7 +153,7 @@ public class GroupSwing extends JFrame {
         jPanel.add(queryField);
         //查询按钮
         JButton queryButton = new JButton("查询");
-        queryButton.setBounds(380,550,60,30);
+        queryButton.setBounds(380,650,60,30);
         queryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -175,7 +175,7 @@ public class GroupSwing extends JFrame {
 
         //返回按钮
         JButton back = new JButton("返回");
-        back.setBounds(1050,600,78,30);
+        back.setBounds(1050,700,78,30);
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -191,7 +191,7 @@ public class GroupSwing extends JFrame {
         if(roleId==2||roleId==4){
             //管理员或者是超级管理员
             JButton delete = new JButton("删除瓜圈");
-            delete.setBounds(500,550,90,30);
+            delete.setBounds(500,650,90,30);
             delete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -222,18 +222,34 @@ public class GroupSwing extends JFrame {
 
         //创建瓜的按钮
         JButton create = new JButton("创建本瓜圈瓜");
-        create.setBounds(700,550,120,30);
+        create.setBounds(700,650,120,30);
         create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new CreateEventSwing(userId,eventGroupName);
             }
         });
+        jPanel.add(create);
+        JButton refresh = new JButton("刷新");
+        refresh.setBounds(820,650,90,30);
+        refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultListModel<String> listModel1 = new DefaultListModel<String>();
+                List<Event> events1 = eventGroupService.viewEventOfEventGroup(eventGroupName);
+                for (int i = 0; i < events1.size(); i++) {
+                    listModel1.add(i,events1.get(i).getEventName());
+                }
+                //向列表框中加入该瓜圈的所有瓜名
+                list.setModel(listModel1);
+            }
+        });
+        jPanel.add(refresh);
         if(roleId==3){
             //游客不能创建瓜
             create.setVisible(false);
+            refresh.setVisible(false);
         }
-        jPanel.add(create);
         eventOfGroup.setVisible(true);
     }
 }

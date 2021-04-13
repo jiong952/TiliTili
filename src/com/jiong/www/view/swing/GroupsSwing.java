@@ -96,17 +96,17 @@ public class GroupsSwing extends JFrame {
         JLabel query = new JLabel("查询瓜圈");
         query.setFont(font1);
         query.setForeground(Color.BLACK);
-        query.setBounds(5,550,120,30);
+        query.setBounds(5,650,120,30);
         jPanel.add(query);
         //输入瓜圈名字的提示
         JLabel tip = new JLabel("请输入要查询瓜圈的名字");
         tip.setForeground(Color.red);
         tip.setVisible(false);
-        tip.setBounds(120,570,150,30);
+        tip.setBounds(120,670,150,30);
         jPanel.add(tip);
         //文本框
         JTextField queryField = new JTextField(30);
-        queryField.setBounds(120,550,120,30);
+        queryField.setBounds(120,650,120,30);
         queryField.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -126,7 +126,7 @@ public class GroupsSwing extends JFrame {
         jPanel.add(queryField);
         //查询按钮
         JButton queryButton = new JButton("查询");
-        queryButton.setBounds(245,550,60,30);
+        queryButton.setBounds(245,650,60,30);
         queryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -151,7 +151,7 @@ public class GroupsSwing extends JFrame {
         if(roleId==2||roleId==4){
             //管理员或者是超级管理员
             JButton delete = new JButton("删除瓜圈");
-            delete.setBounds(350,550,90,30);
+            delete.setBounds(350,650,90,30);
             delete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -188,7 +188,7 @@ public class GroupsSwing extends JFrame {
             jPanel.add(delete);
 
             JButton create = new JButton("创建瓜圈");
-            create.setBounds(550,550,90,30);
+            create.setBounds(550,650,90,30);
             create.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -200,7 +200,7 @@ public class GroupsSwing extends JFrame {
             jPanel.add(create);
         }
         JButton refresh = new JButton("刷新");
-        refresh.setBounds(720,550,90,30);
+        refresh.setBounds(720,650,90,30);
         refresh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -243,6 +243,7 @@ public class EventSwing {
         table.setFont(font1);
         table.setRowHeight(30);
         table.setBounds(135,420,800,150);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);//单选
         JScrollPane jScrollPane1 = new JScrollPane();
         jScrollPane1.setBounds(135,420,920,150);
         jScrollPane1.setViewportView(table);
@@ -271,6 +272,7 @@ public class EventSwing {
             public void actionPerformed(ActionEvent e) {
                 new CommentService().comment(userId,eventId,myCommentArea.getText());
                 JOptionPane.showMessageDialog(null,"评论成功！");
+                myCommentArea.setText("");
                 //刷新评论
                 List<Comment> comments1 = commentService.viewComment(event.getEventId());
                 Object[][] rowData1 = new Object[comments1.size()][3];
