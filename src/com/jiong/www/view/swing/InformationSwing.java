@@ -256,6 +256,8 @@ public class InformationSwing extends JFrame {
                 }
                 //邮箱
                 String userEmail = emailTextField.getText();
+                
+                Date userBirthday2 = null;
                 //生日
                 if(!("---请选择---").equals(birthyear.getSelectedItem())&&!("---请选择---").equals(birthmonth.getSelectedItem())&&!("---请选择---").equals(birthday.getSelectedItem())){
                     StringBuilder stringBuilder = new StringBuilder();
@@ -268,7 +270,7 @@ public class InformationSwing extends JFrame {
                     stringBuilder.append(birthday.getSelectedItem());
                     //日
                     String userBirthday1 = stringBuilder.toString();
-                    java.sql.Date userBirthday = java.sql.Date.valueOf(userBirthday1);
+                     userBirthday2 = java.sql.Date.valueOf(userBirthday1);
                 }
 
                 //个人简介
@@ -280,7 +282,7 @@ public class InformationSwing extends JFrame {
                     //错误提示还在
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
-                    int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday,0);
+                    int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday2,0);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {
