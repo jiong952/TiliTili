@@ -4,6 +4,7 @@ import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.MenuSwingUtils;
+import com.jiong.www.util.GroupsPagingUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -52,11 +53,11 @@ public class GroupsSwing extends JFrame {
 
         new MenuSwingUtils(userId,eventGroup,eventGroupName);
 
-        Font font1 = new Font("黑体",Font.PLAIN,25);
+        Font font1 = new Font("黑体",Font.PLAIN,36);
 
         JList<String> list = new JList<>();
         list.setFont(font1);
-        list.setFixedCellHeight(35);
+        list.setFixedCellHeight(56);
         list.setSelectionBackground(Color.gray);
         //单元格的大小
         list.addListSelectionListener(new ListSelectionListener() {
@@ -80,8 +81,16 @@ public class GroupsSwing extends JFrame {
         });
         DefaultListModel<String> listModel = new DefaultListModel<String>();
         List<EventGroup> eventGroups = eventGroupService.viewAllEventGroup();
-        for (int i = 0; i < eventGroups.size(); i++) {
-            listModel.add(i,eventGroups.get(i).getEventGroupName());
+        int pageSize = 9;
+        //每一页页面的展示瓜圈数目
+        if(eventGroups.size()>=9){
+            for (int i = 0; i < pageSize; i++) {
+                listModel.add(i,eventGroups.get(i).getEventGroupName());
+            }
+        }else {
+            for (int i = 0; i < eventGroups.size(); i++) {
+                listModel.add(i,eventGroups.get(i).getEventGroupName());
+            }
         }
         //向列表框中加入所有的瓜圈名
         list.setModel(listModel);
@@ -92,9 +101,12 @@ public class GroupsSwing extends JFrame {
         jScrollPane.setViewportView(list);
         jPanel.add(jScrollPane);
 
+        new GroupsPagingUtils(eventGroups,listModel,jPanel,pageSize);
+
         //查询瓜圈的标签+文本框
+        Font font2 = new Font("黑体",Font.PLAIN,25);
         JLabel query = new JLabel("查询瓜圈");
-        query.setFont(font1);
+        query.setFont(font2);
         query.setForeground(Color.BLACK);
         query.setBounds(5,650,120,30);
         jPanel.add(query);
@@ -222,4 +234,9 @@ public class GroupsSwing extends JFrame {
         eventGroup.setVisible(true);
 
     }
+
+
+
+
+
 }

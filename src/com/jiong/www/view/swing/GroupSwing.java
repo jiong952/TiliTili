@@ -4,6 +4,7 @@ import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.EventService;
 import com.jiong.www.service.UserService;
+import com.jiong.www.util.GroupPagingUtils;
 import com.jiong.www.util.MenuSwingUtils;
 
 import javax.swing.*;
@@ -75,12 +76,12 @@ public class GroupSwing extends JFrame {
         //加入菜单栏
         new MenuSwingUtils(userId,eventOfGroup,eventGroupName);
 
-        Font font1 = new Font("黑体",Font.PLAIN,25);
+        Font font1 = new Font("黑体",Font.PLAIN,36);
 
         //创建一个列表框来放瓜
         JList<String> list = new JList<>();
         list.setFont(font1);
-        list.setFixedCellHeight(30);
+        list.setFixedCellHeight(56);
         //单元格的大小
         list.setSelectionBackground(Color.gray);
         list.addListSelectionListener(new ListSelectionListener() {
@@ -107,9 +108,18 @@ public class GroupSwing extends JFrame {
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<String>();
+
         List<Event> events = eventGroupService.viewEventOfEventGroup(eventGroupName);
-        for (int i = 0; i < events.size(); i++) {
-            listModel.add(i,events.get(i).getEventName());
+        int pageSize = 9;
+        //每一页页面的展示瓜数目
+        if(events.size()>=9){
+            for (int i = 0; i < pageSize; i++) {
+                listModel.add(i,events.get(i).getEventName());
+            }
+        }else {
+            for (int i = 0; i < events.size(); i++) {
+                listModel.add(i,events.get(i).getEventName());
+            }
         }
         //向列表框中加入该瓜圈的所有瓜名
         list.setModel(listModel);
@@ -118,10 +128,12 @@ public class GroupSwing extends JFrame {
         jScrollPane.setBounds(10,100,1150,400);
         jScrollPane.setViewportView(list);
         jPanel.add(jScrollPane);
+        new GroupPagingUtils(events,listModel,jPanel,pageSize);
 
         //查询瓜的标签+文本框
+        Font font3 = new Font("黑体",Font.PLAIN,25);
         JLabel query = new JLabel("查询瓜");
-        query.setFont(font1);
+        query.setFont(font3);
         query.setForeground(Color.BLACK);
         query.setBounds(5,650,120,30);
         jPanel.add(query);
