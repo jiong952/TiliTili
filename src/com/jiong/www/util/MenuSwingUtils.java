@@ -4,13 +4,17 @@ import com.jiong.www.service.UserService;
 import com.jiong.www.view.swing.*;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+/**
+ * @author Mono
+ */
 public class MenuSwingUtils {
     int userId;
     String eventGroupName;
     JFrame jFrame;
+    static final int  ADMIN = 2;
+    static final int  SUPER_ADMIN = 4;
+    static final int  VISITOR = 3;
     public MenuSwingUtils(int userId, JFrame jFrame, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
@@ -21,38 +25,29 @@ public class MenuSwingUtils {
         //菜单
         JMenu status = new JMenu("用户状态");
         JMenuItem exitLogin = new JMenuItem("退出登录");
-        exitLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(userId==0){
-                    JOptionPane.showMessageDialog(null,"请先登录","错误",JOptionPane.ERROR_MESSAGE);
-                }else {
-                    jFrame.dispose();
-                    new WelcomeSwing();
-                    //表示游客模式
-                }
+        exitLogin.addActionListener(e -> {
+            if(userId==0){
+                JOptionPane.showMessageDialog(null,"请先登录","错误",JOptionPane.ERROR_MESSAGE);
+            }else {
+                jFrame.dispose();
+                new WelcomeSwing();
+                //表示游客模式
             }
         });
         JMenuItem register = new JMenuItem("注册");
-        register.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(userId!=0){
-                    JOptionPane.showMessageDialog(null,"请先退出登录","错误",JOptionPane.ERROR_MESSAGE);
-                }else {
-                    new RegisterSwing();
-                }
+        register.addActionListener(e -> {
+            if(userId!=0){
+                JOptionPane.showMessageDialog(null,"请先退出登录","错误",JOptionPane.ERROR_MESSAGE);
+            }else {
+                new RegisterSwing();
             }
         });
         JMenuItem login = new JMenuItem("登录");
-        login.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(userId==0){
-                    new LoginSwing();
-                }else {
-                    JOptionPane.showMessageDialog(null,"您已登录！","错误",JOptionPane.ERROR_MESSAGE);
-                }
+        login.addActionListener(e -> {
+            if(userId==0){
+                new LoginSwing();
+            }else {
+                JOptionPane.showMessageDialog(null,"您已登录！","错误",JOptionPane.ERROR_MESSAGE);
             }
         });
         status.add(exitLogin);
@@ -61,53 +56,23 @@ public class MenuSwingUtils {
 
         JMenu information = new JMenu("个人信息");
         JMenuItem modifyInformation = new JMenuItem("修改信息");
-        modifyInformation.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new InformationSwing(userId,eventGroupName);
-            }
-        });
+        modifyInformation.addActionListener(e -> new InformationSwing(userId,eventGroupName));
         JMenuItem modifyPassword = new JMenuItem("修改密码");
-        modifyPassword.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new PasswordSwing(userId,eventGroupName);
-            }
-        });
+        modifyPassword.addActionListener(e -> new PasswordSwing(userId,eventGroupName));
         information.add(modifyInformation);
         information.add(modifyPassword);
 
         JMenu event = new JMenu("瓜");
         JMenuItem queryEventGroup = new JMenuItem("查询瓜圈");
-        queryEventGroup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new QueryGroupSwing(userId,eventGroupName);
-            }
-        });
+        queryEventGroup.addActionListener(e -> new QueryGroupSwing(userId,eventGroupName));
         JMenuItem queryEvent = new JMenuItem("查询瓜");
-        queryEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new QueryEventSwing(userId,eventGroupName);
-            }
-        });
+        queryEvent.addActionListener(e -> new QueryEventSwing(userId,eventGroupName));
         JMenuItem createEventGroup = new JMenuItem("创建瓜圈");
         createEventGroup.setVisible(false);
-        createEventGroup.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CreateGroupSwing(userId,eventGroupName);
-            }
-        });
+        createEventGroup.addActionListener(e -> new CreateGroupSwing(userId,eventGroupName));
 
         JMenuItem createEvent = new JMenuItem("创建瓜");
-        createEvent.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CreateEventSwing(userId,null);
-            }
-        });
+        createEvent.addActionListener(e -> new CreateEventSwing(userId,null));
         event.add(queryEventGroup);
         event.add(queryEvent);
         event.add(createEventGroup);
@@ -115,19 +80,9 @@ public class MenuSwingUtils {
 
         JMenu viewCollection = new JMenu("查看合集");
         JMenuItem likesCollection = new JMenuItem("点赞合集");
-        likesCollection.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new LikesEventSwing(userId,eventGroupName);
-            }
-        });
+        likesCollection.addActionListener(e -> new LikesEventSwing(userId,eventGroupName));
         JMenuItem collectedCollection = new JMenuItem("收藏合集");
-        collectedCollection.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CollectdEventSwing(userId,eventGroupName);
-            }
-        });
+        collectedCollection.addActionListener(e -> new CollectdEventSwing(userId,eventGroupName));
         viewCollection.add(likesCollection);
         viewCollection.add(collectedCollection);
 
@@ -138,12 +93,7 @@ public class MenuSwingUtils {
         JMenu handle = new JMenu("待处理");
         handle.setVisible(false);
         JMenuItem accuseHandle = new JMenuItem("举报处理");
-        accuseHandle.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new AccuseHandleSwing(userId);
-            }
-        });
+        accuseHandle.addActionListener(e -> new AccuseHandleSwing(userId));
         handle.add(accuseHandle);
 
         menuBar.add(status);
@@ -154,12 +104,12 @@ public class MenuSwingUtils {
         menuBar.add(handle);
         int roleId = new UserService().verifyRole(userId);
 
-        if(roleId==2||roleId==4){
+        if(roleId==ADMIN||roleId==SUPER_ADMIN){
             //管理员 超管
             createEventGroup.setVisible(true);
             handle.setVisible(true);
         }
-        if(roleId==3){
+        if(roleId==VISITOR){
             information.setVisible(false);
             event.setVisible(false);
             viewCollection.setVisible(false);

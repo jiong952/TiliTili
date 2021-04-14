@@ -2,30 +2,22 @@ package com.jiong.www.po;
 
 import java.util.Date;
 
+/**
+ * @author Mono
+ */
 public class Accuse {
-
+    /**举报人的id*/
     private int accusedUserId;
-    //举报人的id
+    /**举报人的名字*/
     private String accusedUserName;
-    //举报人的名字
+    /**举报时间*/
     private Date accuseTime;
-    //举报时间
+    /**举报内容*/
     private String accusedContent;
-    //举报内容
+    /**举报瓜的名字*/
     private String accusedEventName;
-    //举报瓜的名字
+    /**举报瓜的id*/
     private int eventId;
-    //举报瓜的id
-    private int userId;
-    //举报人的id
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public int getEventId() {
         return eventId;

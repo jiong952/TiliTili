@@ -65,9 +65,11 @@ public class AccuseSwing extends JFrame {
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要举报" + eventName + "吗?", "确认", JOptionPane.YES_NO_OPTION);
                     if(judge==0){
                         //YES
-                        new AccuseService().accuseEvent(eventId,userId,jTextArea.getText());
-                        JOptionPane.showMessageDialog(null,"举报成功");
-                        jFrame.dispose();
+                        int row = new AccuseService().accuseEvent(eventId, userId, jTextArea.getText());
+                        if(row==1){
+                            JOptionPane.showMessageDialog(null,"举报成功");
+                            jFrame.dispose();
+                        }
                     }else {
                         JOptionPane.showMessageDialog(null,"做一个文明吃瓜群众！");
                     }

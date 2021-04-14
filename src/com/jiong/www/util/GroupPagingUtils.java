@@ -5,21 +5,25 @@ import com.jiong.www.po.Event;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Mono
  */
 public class GroupPagingUtils extends JFrame {
-    List<Event> list = new ArrayList<Event>();
-    //list由外部传入，储存所有的数据
+    /**list由外部传入，储存所有的数据*/
+    List<Event> list;
     private int currentPage = 1;
     private int lastPage;
-    private int pageSize ;
-    //页面的展示数目
-    DefaultListModel defaultListModel = null;
+    /**页面的展示数目*/
+    private final int pageSize ;
+    DefaultListModel<String> defaultListModel;
     JPanel jPanel;
+    /**常量，避免魔法值*/
+    static final String FIRST_PAGE = "首页";
+    static final String LAST_PAGE = "尾页";
+    static final String PREVIOUS_PAGE = "上一页";
+    static final String NEXT_PAGE = "下一页";
     public int getCurrentPage() {
         return currentPage;
     }
@@ -40,11 +44,8 @@ public class GroupPagingUtils extends JFrame {
         return pageSize;
     }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
 
-    public GroupPagingUtils(List<Event> list, DefaultListModel defaultListModel, JPanel jPanel,int pageSize)  {
+    public GroupPagingUtils(List<Event> list, DefaultListModel<String> defaultListModel, JPanel jPanel, int pageSize)  {
         this.list = list;
         this.defaultListModel = defaultListModel;
         this.jPanel=jPanel;
@@ -81,9 +82,9 @@ public class GroupPagingUtils extends JFrame {
 
     }
 
-    //传入list得到子list
+    /**传入list得到子list*/
     public List<Event> getList(int currentPage,int pageSize){
-        List<Event> sonList = new ArrayList();
+        List<Event> sonList;
         //子list
         int listLength = list.size();
         //总长度
@@ -114,23 +115,23 @@ public class GroupPagingUtils extends JFrame {
     class MyList implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if("首页".equals(e.getActionCommand())){
+            if(FIRST_PAGE.equals(e.getActionCommand())){
                 showList(1);
             }
-            if("上一页".equals(e.getActionCommand())){
+            if(PREVIOUS_PAGE.equals(e.getActionCommand())){
                 if(getCurrentPage()<=1){
                     setCurrentPage(2);
                 }
                 showList(getCurrentPage()-1);
             }
-            if("下一页".equals(e.getActionCommand())){
+            if(NEXT_PAGE.equals(e.getActionCommand())){
                 if(getCurrentPage()<getLastPage()){
                     showList(getCurrentPage()+1);
                 }else {
                     showList(getLastPage());
                 }
             }
-            if("尾页".equals(e.getActionCommand())){
+            if(LAST_PAGE.equals(e.getActionCommand())){
                 showList(getLastPage());
             }
         }

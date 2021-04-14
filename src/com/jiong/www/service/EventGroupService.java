@@ -7,10 +7,13 @@ import com.jiong.www.po.EventGroup;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Mono
+ */
 public class EventGroupService {
-    private EventGroupDao eventGroupDao = new EventGroupDao();
-    //创建瓜圈
+
+    private final EventGroupDao eventGroupDao = new EventGroupDao();
+    /**创建瓜圈*/
     public int createEventGroup(int userId,String eventGroupName,String eventGroupDescription){
         int row=0;
         // 用于接收dao层的返回值
@@ -25,7 +28,7 @@ public class EventGroupService {
         }
         return row;
     }
-    //验证瓜圈名是否存在
+    /**验证瓜圈名是否存在*/
     public int verifyEventGroupName(String eventGroupName){
         int row=0;
         //默认0不存在
@@ -38,7 +41,7 @@ public class EventGroupService {
         return row;
 
     }
-    //验证是否是该管理员管理的瓜圈
+    /**验证是否是该管理员管理的瓜圈*/
     public int verifyEventGroupOfAdmin(int userId,String eventGroupName){
         int row=0;
         //默认0不是管理员管理的瓜圈
@@ -49,7 +52,7 @@ public class EventGroupService {
         }
         return row;
     }
-    //删除瓜圈，同时在管理员所管理的数据删除关系
+    /**删除瓜圈，同时在管理员所管理的数据删除关系*/
     public int deleteEventGroup(String deleteEventGroupName,int userId){
         int row=0;
         // 用于接收dao层的返回值
@@ -60,9 +63,9 @@ public class EventGroupService {
         }
         return row;
     }
-    //查看所有瓜圈
+    /**查看所有瓜圈*/
     public List<EventGroup> viewAllEventGroup(){
-        List<EventGroup> eventGroups = new ArrayList<EventGroup>();
+        List<EventGroup> eventGroups = new ArrayList<>();
         try {
             eventGroups=eventGroupDao.viewAllEventGroup();
         } catch (SQLException e) {
@@ -70,7 +73,7 @@ public class EventGroupService {
         }
         return eventGroups;
     }
-    //查看瓜圈
+    /**查看瓜圈*/
     public EventGroup viewEventGroup(String eventGroupName){
         EventGroup eventGroup = new EventGroup();
         try {
@@ -80,9 +83,9 @@ public class EventGroupService {
         }
         return eventGroup;
     }
-    //查看瓜圈里的所有瓜
+    /**查看瓜圈里的所有瓜*/
     public List<Event> viewEventOfEventGroup(String eventGroupName){
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         try {
             events = eventGroupDao.viewEventOfEventGroup(eventGroupName);
         } catch (SQLException e) {

@@ -145,7 +145,7 @@ public class LoginSwing extends JFrame implements ActionListener {
                     String securePassword=null;
                     if(judge==0){
                         //没有选择记住密码
-                         securePassword = new Md5Utils().toMD5(password);
+                         securePassword = new Md5Utils().toMd5(password);
                     }else {
                         securePassword = password;
                     }

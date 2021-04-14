@@ -10,8 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Mono
+ */
 public class AccuseDao {
-    //用户举报瓜
+    /**用户举报瓜*/
     public int accuseEvent(Accuse accuse) throws SQLException {
         int row=0;
         Connection conn = JdbcUtils.getConnection();
@@ -25,7 +28,7 @@ public class AccuseDao {
         JdbcUtils.release(conn,ps,null);
         return row;
     }
-    //管理员查看自己管理瓜圈的举报情况
+    /**管理员查看自己管理瓜圈的举报情况*/
     public List<Accuse> viewAccusation(int userId) throws SQLException {
         List<Accuse> accuses = new ArrayList<Accuse>();
         Connection conn = JdbcUtils.getConnection();
@@ -53,17 +56,15 @@ public class AccuseDao {
         //把查询的结果集返回到service层
         return accuses;
     }
-    //删除举报
-    public int deleteAccuse(Accuse accuse) throws SQLException {
-        int row=0;
+    /**删除举报*/
+    public void deleteAccuse(Accuse accuse) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         String sql ="DELETE FROM `accusation` WHERE `accused_event_id`= ? AND`accused_content`=? ";
         //联表查询
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1,accuse.getEventId());
         ps.setString(2,accuse.getAccusedContent());
-        row = ps.executeUpdate();
+        ps.executeUpdate();
         JdbcUtils.release(conn,ps,null);
-        return row;
     }
 }

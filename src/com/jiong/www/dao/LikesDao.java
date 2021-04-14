@@ -12,7 +12,7 @@ import java.util.List;
 
 public class LikesDao {
 
-    //点赞,同时更新用户点赞表
+    /**点赞,同时更新用户点赞表*/
     public void likes(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         conn.setAutoCommit(false);
@@ -30,7 +30,7 @@ public class LikesDao {
         JdbcUtils.release(conn,ps,null);
         //释放连接
     }
-    //取消点赞,同时删除用户点赞表中的相关数据
+    /**取消点赞,同时删除用户点赞表中的相关数据*/
     public void cancelLikes(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         conn.setAutoCommit(false);
@@ -49,7 +49,7 @@ public class LikesDao {
         JdbcUtils.release(conn,ps1,null);
         //释放连接
     }
-    //查看用户是否点赞
+    /**查看用户是否点赞*/
     public int likesIfOrNot(int userId,int eventId) throws SQLException {
         int judge=0;
         Connection conn = JdbcUtils.getConnection();
@@ -68,7 +68,7 @@ public class LikesDao {
         //释放连接
         return judge;
     }
-    //查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量
+    /**查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     public List<Event> viewEventOfLikes(int userId) throws SQLException {
         List<Event> events = new ArrayList<Event>();
         //创建一个容器返回 点赞瓜的信息

@@ -128,7 +128,7 @@ public class ImageUtils extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 boolean flag = new UserService().deleteIcon(userId);
                 if(!flag){
-                    JOptionPane.showMessageDialog(null,"还原失败","失败",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"已是原始头像","失败",JOptionPane.ERROR_MESSAGE);
                 }
             //刷新
                 File file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
@@ -143,9 +143,6 @@ public class ImageUtils extends JFrame {
         });
 
     }
-    //加一个保存图片按钮
-
-    //加一个恢复原来头像按钮
 
     /**从数据库中读取二进制文件再存入指定文件夹*/
     public void readBlob (InputStream in ,String targetPath){

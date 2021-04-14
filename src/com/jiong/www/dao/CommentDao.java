@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommentDao {
-    //进行评论，评论数+1，评论表更新
+    /**进行评论，评论数+1，评论表更新*/
     public void comment(int userId, int eventId, Comment comment) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         //事务
@@ -33,7 +33,7 @@ public class CommentDao {
         //释放连接
         //向上抛出到view层
     }
-    //删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除
+    /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
     public void cancelComment(int commentId,int eventId) throws SQLException{
         Connection conn = JdbcUtils.getConnection();
         conn.setAutoCommit(false);
@@ -51,7 +51,7 @@ public class CommentDao {
         JdbcUtils.release(conn,ps,null);
         //释放连接
     }
-    //删除瓜的所有评论，管理员
+    /**删除瓜的所有评论，管理员*/
     public void clearComment(int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
@@ -64,7 +64,7 @@ public class CommentDao {
         JdbcUtils.release(conn,ps,null);
         //释放连接
     }
-    //查看瓜的评论,也要返回评论人名
+    /**查看瓜的评论,也要返回评论人名*/
     public List<Comment> viewComment(int eventId) throws SQLException {
         List<Comment> comments = new ArrayList<Comment>();
         //创建一个容器返回 评论的信息

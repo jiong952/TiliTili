@@ -9,8 +9,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class UserService {
-    private UserDao userDao = new UserDao();
-    //放在类中，才能验证是不是同一个人
+    private final UserDao userDao = new UserDao();
+    /**放在类中，才能验证是不是同一个人*/
     public int register(String loginName,String loginPassword) {
         int row=0;
         // 用于接收dao层的返回值
@@ -28,7 +28,7 @@ public class UserService {
         return row;
         //返回结果集
     }
-    //用于注册时验证该用户名是否存在
+    /**用于注册时验证该用户名是否存在*/
     public int verifyUsername(String loginName){
         int row=0;
         try {
@@ -39,7 +39,7 @@ public class UserService {
         return row;
         //0不存在，1存在
     }
-    //完善用户信息
+    /**完善用户信息*/
     public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday,int isRememberPassword){
         int row =0;
         // 用于接收dao层的返回值
@@ -60,7 +60,7 @@ public class UserService {
         return row;
         //返回结果集
     }
-    //登录
+    /**登录*/
     public int login(String loginName,String loginPassword){
         // 用于接收dao层的返回值
         int userId=0;
@@ -73,7 +73,7 @@ public class UserService {
         //处理dao层的异常
         return userId;
     }
-    //验证用户的身份，吃瓜群众1管理员2游客3超管4
+    /**验证用户的身份，吃瓜群众1管理员2游客3超管4*/
     public int verifyRole(int userId){
         int roleId=0;
         try {
@@ -83,7 +83,7 @@ public class UserService {
         }
         return roleId;
     }
-    //验证要修改的密码
+    /**验证要修改的密码*/
     public int verifyPassword(String oldPassword,int userId){
         int row=0;
         // 用于接收dao层的返回值
@@ -97,7 +97,7 @@ public class UserService {
         return row;
         //返回结果集
     }
-    //修改密码
+    /**修改密码*/
     public int changePassword(String newPassword,int userId){
         int row2=0;
         // 用于接收dao层的返回值
@@ -110,7 +110,7 @@ public class UserService {
         }
         return row2;
     }
-    //查询用户的个人信息
+    /**查询用户的个人信息*/
     public User queryUserInformation(int userId){
         User userQuery = new User();
         //用集合来存数据
@@ -122,7 +122,7 @@ public class UserService {
         }
         return userQuery;
     }
-    //用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回
+    /**用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回*/
     public User isRememberPassword(String loginName){
         User user = new User();
         try {

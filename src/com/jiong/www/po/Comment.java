@@ -6,14 +6,15 @@ import java.util.Date;
  * @author Mono
  */
 public class Comment {
+    /**评论内容*/
     private String commentContent;
-    //评论的内容
+    /**评论人名*/
     private String commenterName;
-    //评论人的名字
+    /**评论人id*/
     private int commenterId;
-    //评论人的id
+    /**评论时间*/
     private Date commentTime;
-    //评论时间
+    /**评论id*/
     private int commentId;
 
     public int getCommentId() {
@@ -24,7 +25,6 @@ public class Comment {
         this.commentId = commentId;
     }
 
-    //评论的id
     public int getCommenterId() {
         return commenterId;
     }

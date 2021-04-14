@@ -11,10 +11,10 @@ import java.sql.*;
  * @author Mono
  */
 public class UserDao {
-    //注册，添加用户信息到用户表, 把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
+    /**注册，添加用户信息到用户表, 把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1*/
     public int register(User user) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
-        int row=0;
+        int row;
         conn.setAutoCommit(false);
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
         String sql1 ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES((SELECT `user_id`FROM `user` WHERE `login_name`=?),1)";
@@ -36,7 +36,7 @@ public class UserDao {
         return row;
         //向上抛出到view层
     }
-    //用于注册时验证该用户名是否存在
+    /**用于注册时验证该用户名是否存在*/
     public int verifyUsername(String loginName) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
@@ -54,7 +54,7 @@ public class UserDao {
         return row;
         //抛出到view层判断
     }
-    //完善用户信息,实现了每次只改动一个信息，其他的保存为上次的值
+    /**完善用户信息,实现了每次只改动一个信息，其他的保存为上次的值*/
     public int perfectInformation(User user,int userId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         String sql1="SELECT *FROM `user` WHERE `user_id`=?";
@@ -116,7 +116,7 @@ public class UserDao {
         //释放连接
         return row;
     }
-    //登录
+    /**登录*/
     public int login(String loginName,String loginPassword) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT `user_id`,`login_password`FROM `user` WHERE `login_name`=?";
@@ -125,11 +125,7 @@ public class UserDao {
         ResultSet rs = ps.executeQuery();
         int userId=0;
         //用户的id
-        if(!rs.isBeforeFirst()){
-            userId=0;
-        }
-        //结果集为空，则令返回值userId为0
-        else {
+        if(rs.isBeforeFirst()){
             String realPassword=null;
             //数据库中用户名对应的正确密码
             while (rs.next()){
@@ -144,10 +140,11 @@ public class UserDao {
                 //令userId为0
             }
         }
+        //结果集为空，则令返回值userId为0
         JdbcUtils.release(conn,ps,rs);
         return userId;
     }
-    //验证用户的身份，吃瓜群众1管理员2游客3超管4
+    /**验证用户的身份，吃瓜群众1管理员2游客3超管4*/
     public int verifyRole(int userId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT *FROM `user_role`WHERE`user_id`=?";
@@ -162,7 +159,7 @@ public class UserDao {
         JdbcUtils.release(conn,ps,rs);
         return roleId;
     }
-    //验证要修改的密码
+    /**验证要修改的密码*/
     public int verifyPassword(String oldPassword,int userId) throws SQLException {
         int row=0;
         Connection conn = JdbcUtils.getConnection();
@@ -183,9 +180,9 @@ public class UserDao {
         return row;
         //row1返回到view层用于验证
     }
-    //修改密码
+    /**修改密码*/
     public int changePassword(User user,int userId) throws SQLException {
-        int row2=0;
+        int row2;
         Connection conn = JdbcUtils.getConnection();
         String sql ="UPDATE `user` SET `login_password`=? WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -198,7 +195,7 @@ public class UserDao {
         //释放连接
         return row2;
     }
-    //查询用户的个人信息
+    /**查询用户的个人信息*/
     public User queryUserInformation(int userId) throws SQLException {
         User userQuery = new User();
         Connection conn = JdbcUtils.getConnection();
@@ -220,7 +217,7 @@ public class UserDao {
         //把查询的结果集返回到service层
         return userQuery;
     }
-    //用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回
+    /**用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回*/
     public User isRememberPassword(String loginName) throws SQLException {
         User user = new User();
         Connection conn = JdbcUtils.getConnection();
@@ -257,7 +254,7 @@ public class UserDao {
     }
     /**删除用户保存的头像文件*/
     public int deleteIcon(int userId) throws SQLException {
-        int judge=0;
+        int judge;
         Connection conn = JdbcUtils.getConnection();
         String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
         PreparedStatement ps = conn.prepareStatement(sql);

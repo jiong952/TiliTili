@@ -14,7 +14,7 @@ import java.util.List;
  * @author Mono
  */
 public class CollectionDao {
-    //收藏,同时更新收藏表
+    /**收藏,同时更新收藏表*/
     public void collection(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         conn.setAutoCommit(false);
@@ -32,7 +32,7 @@ public class CollectionDao {
         JdbcUtils.release(conn,ps,null);
         //释放连接
     }
-    //取消收藏,同时删除用户收藏表中的相关数据
+    /**取消收藏,同时删除用户收藏表中的相关数据*/
     public void cancelCollection(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         conn.setAutoCommit(false);
@@ -50,7 +50,7 @@ public class CollectionDao {
         JdbcUtils.release(conn,ps,null);
         //释放连接
     }
-    //查看用户是否点赞
+    /**查看用户是否点赞*/
     public int collectionIfOrNot(int userId,int eventId) throws SQLException {
         int judge=0;
         Connection conn = JdbcUtils.getConnection();
@@ -69,7 +69,7 @@ public class CollectionDao {
         //释放连接
         return judge;
     }
-    //查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量
+    /**查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     public List<Event> viewEventOfCollection(int userId) throws SQLException {
         List<Event> events = new ArrayList<Event>();
         //创建一个容器返回 收藏瓜的信息

@@ -1,6 +1,5 @@
 package com.jiong.www.dao;
 
-import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import com.jiong.www.util.JdbcUtils;
 
@@ -8,12 +7,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * @author Mono
+ */
 public class EventDao {
 
-    //创建瓜，添加瓜信息到瓜表
+    /**创建瓜，添加瓜信息到瓜表*/
     public int createEvent(int userId, int eventGroupId, Event event) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row;
@@ -32,7 +31,7 @@ public class EventDao {
         return row;
         //向上抛出到view层
     }
-    //创建瓜时验证瓜名是否存在
+    /**创建瓜时验证瓜名是否存在*/
     public int verifyEventName(String eventName) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=1;
@@ -50,7 +49,7 @@ public class EventDao {
         return row;
         //抛出到view层判断,1则无数据，0则有数据
     }
-    //删除瓜时验证是不是用户发的瓜
+    /**删除瓜时验证是不是用户发的瓜*/
     public int verifyEventOfUser(int userId,int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
@@ -69,7 +68,7 @@ public class EventDao {
         return row;
         //抛出到view层判断
     }
-    //删除瓜时查询这个瓜所在的瓜圈名
+    /**删除瓜时查询这个瓜所在的瓜圈名*/
     public String queryEventOfEventGroup(int eventId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         //进行数据库连接
@@ -90,7 +89,7 @@ public class EventDao {
         JdbcUtils.release(conn,ps,rs);
         return eventGroupName;
     }
-    //删除瓜
+    /**删除瓜*/
     public int deleteEvent(int eventId) throws SQLException {
         int row=0;
         Connection conn = JdbcUtils.getConnection();
@@ -103,7 +102,7 @@ public class EventDao {
         JdbcUtils.release(conn,ps,null);
         return row;
     }
-    //查看瓜和搜索瓜,返回瓜的所有信息，封装,返回eventId作为参数给其他方法用
+    /**查看瓜和搜索瓜,返回瓜的所有信息，封装,返回eventId作为参数给其他方法用*/
     public Event viewEvent(String eventName) throws SQLException {
         Event eventQuery = new Event();
         Connection conn = JdbcUtils.getConnection();

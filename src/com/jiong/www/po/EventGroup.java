@@ -6,11 +6,13 @@ import java.util.List;
  * @author Mono
  */
 public class EventGroup {
+    /**瓜圈名称*/
     private String eventGroupName;
-    //瓜圈名称
+    /**瓜圈简介*/
     private String eventGroupDescription;
-    //瓜圈简介
+    /**瓜圈id*/
     private int eventGroupId;
+
 
     public int getEventGroupId() {
         return eventGroupId;
@@ -19,8 +21,6 @@ public class EventGroup {
     public void setEventGroupId(int eventGroupId) {
         this.eventGroupId = eventGroupId;
     }
-
-    //瓜圈Id
     public String getEventGroupName() {
         return eventGroupName;
     }

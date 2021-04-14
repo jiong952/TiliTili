@@ -6,24 +6,23 @@ import java.util.Date;
  * @author Mono
  */
 public class Event {
+    /**瓜的内容*/
     private String eventContent;
-    //瓜的内容
+    /**瓜的名称*/
     private String eventName;
-    //瓜名
+    /**瓜的发布者名字*/
     private String publisherName;
-    //发布者的名字
+    /**瓜的发布时间*/
     private Date createTime;
-    //发布时间
+    /**瓜的点赞数*/
     private int likesNum;
-    //点赞的数目
+    /**瓜的评论数*/
     private int commentNum;
-    //评论的数目
+    /**瓜的收藏数*/
     private int collectionNum;
-    //收藏的数目
+    /**瓜id*/
     private int eventId;
-    //瓜的id
 
-    //举报瓜的内容
     public String getEventContent() {
         return eventContent;
     }

@@ -11,8 +11,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Mono
+ */
 public class EventGroupDao {
-    //创建瓜圈,添加瓜圈信息到瓜圈表，并且把管理员和瓜联系一起
+    /**创建瓜圈,添加瓜圈信息到瓜圈表，并且把管理员和瓜联系一起*/
     public int createEventGroup(int userId, EventGroup eventGroup) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
@@ -37,7 +40,7 @@ public class EventGroupDao {
         return row;
         //向上抛出到view层
     }
-    //验证瓜圈名是否存在,避免发生重复
+    /**验证瓜圈名是否存在,避免发生重复*/
     public int verifyEventGroupName(String eventGroupName) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
@@ -54,7 +57,7 @@ public class EventGroupDao {
         return row;
         //抛出到view层判断
     }
-    //验证是否是该管理员管理的瓜圈
+    /**验证是否是该管理员管理的瓜圈*/
     public int verifyEventGroupOfAdmin(int userId,String eventGroupName) throws SQLException {
         int row=0;
         //0表示不是
@@ -75,7 +78,7 @@ public class EventGroupDao {
         JdbcUtils.release(conn,ps,rs);
         return row;
     }
-    //删除瓜圈，同时在管理员所管理的数据删除关系,删除瓜圈瓜圈里瓜也要删除
+    /**删除瓜圈，同时在管理员所管理的数据删除关系,删除瓜圈瓜圈里瓜也要删除*/
     public int deleteEventGroup(String deleteEventGroupName,int userId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
         int row;
@@ -109,7 +112,7 @@ public class EventGroupDao {
         return row;
         //向上抛出到view层
     }
-    //查看瓜圈
+    /**查看瓜圈*/
     public EventGroup viewEventGroup(String eventGroupName) throws SQLException {
         EventGroup eventGroup = new EventGroup();
         Connection conn = JdbcUtils.getConnection();
@@ -126,7 +129,7 @@ public class EventGroupDao {
         //把查询的结果集返回到service层
         return eventGroup;
     }
-    //查看所有瓜圈
+    /**查看所有瓜圈*/
     public List<EventGroup> viewAllEventGroup() throws SQLException {
         List<EventGroup> eventGroups = new ArrayList<EventGroup>();
         Connection conn = JdbcUtils.getConnection();
@@ -144,7 +147,7 @@ public class EventGroupDao {
         //把查询的结果集返回到service层
         return eventGroups;
     }
-    //查看瓜圈里的所有瓜
+    /**查看瓜圈里的所有瓜*/
     public List<Event> viewEventOfEventGroup(String eventGroupName) throws SQLException {
         List<Event> events = new ArrayList<Event>();
         Connection conn = JdbcUtils.getConnection();

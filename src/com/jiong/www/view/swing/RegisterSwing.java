@@ -136,7 +136,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             }
             else {
                 String newName = usernameField.getText();
-                String securePassword = new Md5Utils().toMD5(comfirmPassword);
+                String securePassword = new Md5Utils().toMd5(comfirmPassword);
                 int judge = userService.register(newName, securePassword);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");

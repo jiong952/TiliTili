@@ -4,27 +4,30 @@ package com.jiong.www.util;
  * @author Mono
  */
 public class StringUtils {
+    static final char EMAIL_CHAR ='@';
+    static final char EMAIL_MIDDLE ='.';
+    static final String EMAIL_END ="com";
     public boolean isEmail(String email){
         int judge =0;
         //判断是否有仅有一个@且不能在开头或结尾
-        if(email.indexOf("@") > 0 && email.indexOf('@') == email.lastIndexOf('@') && email.indexOf('@') < email.length()-1) {
+        if(email.indexOf(EMAIL_CHAR) > 0 && email.indexOf(EMAIL_CHAR) == email.lastIndexOf(EMAIL_CHAR) && email.indexOf(EMAIL_CHAR) < email.length()-1) {
             judge++;
         }
 
         //判断"@"之后必须有"."
-        if(email.indexOf('.',email.indexOf('@')) > email.indexOf('@')+1 ) {
+        if(email.indexOf(EMAIL_MIDDLE,email.indexOf(EMAIL_CHAR)) > email.indexOf(EMAIL_CHAR)+1 ) {
             judge++;
         }
         //判断"@"之前或之后不能紧跟"."
-        if(email.indexOf('.') < email.indexOf('@')-1 || email.indexOf('.') > email.indexOf('@')+1 ) {
+        if(email.indexOf(EMAIL_MIDDLE) < email.indexOf(EMAIL_CHAR)-1 || email.indexOf(EMAIL_MIDDLE) > email.indexOf(EMAIL_CHAR)+1 ) {
             judge++;
         }
         //@之前要有6个字符
-        if(email.indexOf('@') > 5 ) {
+        if(email.indexOf(EMAIL_CHAR) > 5 ) {
             judge++;
         }
         //结尾的格式
-        if(email.endsWith("com")) {
+        if(email.endsWith(EMAIL_END)) {
             judge++;
         }
         return judge == 5;
