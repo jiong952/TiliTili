@@ -154,7 +154,22 @@ public class LoginSwing extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(null,"登录失败!","错误",JOptionPane.ERROR_MESSAGE);
                     }else {
                         JOptionPane.showMessageDialog(null,"登录成功！");
-                        //先在这里判断是否记住密码
+                        int roleId = new UserService().verifyRole(userId);
+                        User user = new UserService().queryUserInformation(userId);
+                        switch (roleId){
+                            case 1:
+                                JOptionPane.showMessageDialog(null,"您好！用户"+user.getLoginName());
+                                break;
+                            case 2:
+                                JOptionPane.showMessageDialog(null,"您好！管理员"+user.getLoginName());
+                                break;
+                            case 4:
+                                JOptionPane.showMessageDialog(null,"您好！超级管理员"+user.getLoginName());
+                                break;
+                            default:
+                                break;
+                        }
+                        //先在这里记录是否记住密码
                         if(jcheckbox.isSelected()){
                             new UserService().perfectInformation(null,null,2,null,userId,null,1);
                             //更新表中的记住密码

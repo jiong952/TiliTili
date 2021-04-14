@@ -2,6 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.User;
 import com.jiong.www.service.UserService;
+import com.jiong.www.util.ImageUtils;
 import com.jiong.www.util.StringUtils;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +22,7 @@ public class InformationSwing extends JFrame {
     String eventGroupName;
     //返回
     public static void main(String[] args) {
-        new InformationSwing(2,null);
+        new InformationSwing(10,null);
     }
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
@@ -60,6 +62,38 @@ public class InformationSwing extends JFrame {
         userName.setBounds(125,100,60,20);
         userName.setFont(font1);
         jPanel.add(userName);
+
+        JLabel iconLabel = new JLabel("头像:");
+        iconLabel.setBounds(520,100,100,20);
+        iconLabel.setFont(font1);
+        jPanel.add(iconLabel);
+        JLabel icon = new JLabel();
+        icon.setBounds(580,100,180,200);
+        jPanel.add(icon);
+
+        //先查看有没有存过头像，没有就变为默认头像
+        File file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+        if(!file.exists()){
+            file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\默认.jpg");
+        }
+        ImageIcon imageIcon = new ImageIcon(file.getAbsolutePath());
+        imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(icon.getWidth(),-1,Image.SCALE_DEFAULT));
+        //高度设置为-1可以缩放好图片大小
+        icon.setIcon(imageIcon);
+
+        JButton set = new JButton("新头像");
+        set.setBounds(550,310,90,30);
+        jPanel.add(set);
+
+        JButton saveIcon = new JButton("保存");
+        saveIcon.setBounds(680,310,60,30);
+        jPanel.add(saveIcon);
+
+        JButton resetIcon = new JButton("还原");
+        resetIcon.setBounds(780,310,60,30);
+        jPanel.add(resetIcon);
+
+        new ImageUtils(icon,jPanel,set,saveIcon,resetIcon,userId);
 
         //用于显示昵称标签+文本框
         JLabel nickNameLabel = new JLabel("昵称:");
@@ -270,7 +304,7 @@ public class InformationSwing extends JFrame {
                     stringBuilder.append(birthday.getSelectedItem());
                     //日
                     String userBirthday1 = stringBuilder.toString();
-                     userBirthday2 = java.sql.Date.valueOf(userBirthday1);
+                     userBirthday2 = Date.valueOf(userBirthday1);
                 }
 
                 //个人简介

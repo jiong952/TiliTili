@@ -14,7 +14,7 @@ public class WelcomeSwing extends JFrame implements ActionListener{
         //3个按钮
         JButton login;
         JButton register;
-        JButton visiter;
+        JButton visitor;
 
     public static void main(String[] args) {
         new WelcomeSwing();
@@ -46,15 +46,14 @@ public class WelcomeSwing extends JFrame implements ActionListener{
         welcome.add(jPanel2);
         login = new JButton("登录");
         register = new JButton("注册");
-        visiter = new JButton("游客");
+        visitor = new JButton("游客");
         jPanel2.add(login);
         jPanel2.add(register);
-        jPanel2.add(visiter);
+        jPanel2.add(visitor);
         login.addActionListener(this);
         register.addActionListener(this);
-        visiter.addActionListener(this);
+        visitor.addActionListener(this);
         //添加监听器
-
 
         welcome.setVisible(true);
         //窗口可见
@@ -73,10 +72,11 @@ public class WelcomeSwing extends JFrame implements ActionListener{
             //销毁当前页面
             new RegisterSwing();
             //进入注册界面
-        }else if(e.getSource()==visiter){
+        }else if(e.getSource()== visitor){
             int judge = JOptionPane.showConfirmDialog(null, "游客只能浏览瓜，您确定不登录吗？", "确认", JOptionPane.YES_NO_OPTION);
             if(judge==0){
                 //YES
+                JOptionPane.showMessageDialog(null,"您好！游客");
                 new GroupsSwing(0,null);
             }
         }

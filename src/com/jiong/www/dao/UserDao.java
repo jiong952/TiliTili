@@ -1,12 +1,11 @@
 package com.jiong.www.dao;
 
 import com.jiong.www.po.User;
+import com.jiong.www.util.ImageUtils;
 import com.jiong.www.util.JdbcUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.InputStream;
+import java.sql.*;
 
 /**
  * @author Mono
@@ -234,5 +233,37 @@ public class UserDao {
             user.setLoginPassword(rs.getString("login_password"));
         }
         return user;
+    }
+    /**保存用户设置的头像文件到数据库，把该二进制文件存到特定文件夹*/
+    public int saveIcon(InputStream inputStream,int userId) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        conn.setAutoCommit(false);
+        String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
+        String sql1 = "SELECT `icon` FROM `user` WHERE `user_id`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        PreparedStatement ps1 = conn.prepareStatement(sql1);
+        ps.setBinaryStream(1,inputStream);
+        ps.setInt(2,userId);
+        ps1.setInt(1,userId);
+        int judge = ps.executeUpdate();
+        ResultSet rs = ps1.executeQuery();
+        while (rs.next()){
+            InputStream binaryStream = rs.getBinaryStream("icon");
+            new ImageUtils().readBlob(binaryStream,"C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+        }
+        JdbcUtils.release(conn,ps,null);
+        JdbcUtils.release(conn,ps1,rs);
+        return judge;
+    }
+    /**删除用户保存的头像文件*/
+    public int deleteIcon(int userId) throws SQLException {
+        int judge=0;
+        Connection conn = JdbcUtils.getConnection();
+        String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setBinaryStream(1,null);
+        ps.setInt(2,userId);
+        judge=ps.executeUpdate();
+        return judge;
     }
 }

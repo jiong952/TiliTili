@@ -1,6 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.EventGroup;
+import com.jiong.www.po.User;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.MenuSwingUtils;
@@ -157,60 +158,57 @@ public class GroupsSwing extends JFrame {
         });
         jPanel.add(queryButton);
 
-        //直接用roleId来区分不同的身份，使不同角色看到不同的界面
-        int roleId = new UserService().verifyRole(userId);
-        //删除瓜圈 创建瓜圈
-        if(roleId==2||roleId==4){
-            //管理员或者是超级管理员
-            JButton delete = new JButton("删除瓜圈");
-            delete.setBounds(350,650,90,30);
-            delete.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if(list.getSelectedIndex()>0){
-                        int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, list.getSelectedValue());
-                        //判断是不是该管理员管理的瓜圈
-                        if(judge0==1){
-                            //是
-                            int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + list.getSelectedValue() + "瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
-                            if(judge==0){
-                                //选择是
-                                judge0 = eventGroupService.deleteEventGroup(list.getSelectedValue(), userId);
-                                if(judge0==1){
-                                    JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                                    //刷新
-                                    DefaultListModel<String> listModel1 = new DefaultListModel<String>();
-                                    List<EventGroup> eventGroups1 = eventGroupService.viewAllEventGroup();
-                                    for (int i = 0; i < eventGroups1.size(); i++) {
-                                        listModel1.add(i,eventGroups1.get(i).getEventGroupName());
-                                    }
-                                    //向列表框中加入所有的瓜圈名
-                                    list.setModel(listModel1);
+        //管理员或者是超级管理员
+        JButton delete = new JButton("删除瓜圈");
+        delete.setBounds(350,650,90,30);
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(list.getSelectedIndex()>0){
+                    int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, list.getSelectedValue());
+                    //判断是不是该管理员管理的瓜圈
+                    if(judge0==1){
+                        //是
+                        int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + list.getSelectedValue() + "瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
+                        if(judge==0){
+                            //选择是
+                            judge0 = eventGroupService.deleteEventGroup(list.getSelectedValue(), userId);
+                            if(judge0==1){
+                                JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
+                                //刷新
+                                DefaultListModel<String> listModel1 = new DefaultListModel<String>();
+                                List<EventGroup> eventGroups1 = eventGroupService.viewAllEventGroup();
+                                for (int i = 0; i < eventGroups1.size(); i++) {
+                                    listModel1.add(i,eventGroups1.get(i).getEventGroupName());
                                 }
+                                //向列表框中加入所有的瓜圈名
+                                list.setModel(listModel1);
                             }
-                        }else {
-                            //不是
-                            JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                         }
                     }else {
-                        JOptionPane.showMessageDialog(null,"请单击选择要删除的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
+                        //不是
+                        JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                     }
+                }else {
+                    JOptionPane.showMessageDialog(null,"请单击选择要删除的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                 }
-            });
-            jPanel.add(delete);
+            }
+        });
+        delete.setVisible(false);
+        jPanel.add(delete);
 
-            JButton create = new JButton("创建瓜圈");
-            create.setBounds(550,650,90,30);
-            create.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    //创建瓜圈
-                    new CreateGroupSwing(userId,eventGroupName);
-                }
-            });
-            //create.setVisible(false);
-            jPanel.add(create);
-        }
+        JButton create = new JButton("创建瓜圈");
+        create.setBounds(550,650,90,30);
+        create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //创建瓜圈
+                new CreateGroupSwing(userId,eventGroupName);
+            }
+        });
+        create.setVisible(false);
+        jPanel.add(create);
+        //刷新
         JButton refresh = new JButton("刷新");
         refresh.setBounds(720,650,90,30);
         refresh.addActionListener(new ActionListener() {
@@ -226,17 +224,22 @@ public class GroupsSwing extends JFrame {
             }
         });
         jPanel.add(refresh);
+        //直接用roleId来区分不同的身份，使不同角色看到不同的界面
+        int roleId = new UserService().verifyRole(userId);
+
+        //窗口可见
+        eventGroup.setVisible(true);
+        //删除瓜圈 创建瓜圈
+        if(roleId==2||roleId==4){
+            delete.setVisible(true);
+            create.setVisible(true);
+        }
         if(roleId==3){
             refresh.setVisible(false);
         }
 
-        //窗口可见
-        eventGroup.setVisible(true);
+
 
     }
-
-
-
-
 
 }

@@ -3,6 +3,8 @@ package com.jiong.www.service;
 import com.jiong.www.dao.UserDao;
 import com.jiong.www.po.User;
 
+import java.io.File;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -129,5 +131,32 @@ public class UserService {
             e.printStackTrace();
         }
         return user;
+    }
+    /**保存用户设置的头像文件到数据库，把该二进制文件存到特定文件夹*/
+    public int saveIcon(InputStream inputStream, int userId){
+        int judge=0;
+        try {
+            judge=userDao.saveIcon(inputStream,userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return judge;
+    }
+    /**删除用户保存的头像文件*/
+    public boolean deleteIcon(int userId){
+        int judge=0;
+        boolean flag=false;
+        try {
+            judge = userDao.deleteIcon(userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if(judge==1){
+            File file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+            if(file.exists()){
+                 flag = file.delete();
+            }
+        }
+        return flag;
     }
 }
