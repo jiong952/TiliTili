@@ -96,14 +96,19 @@ public class UserDao {
         else {
             ps.setString(4,user.getUserDescription());
         }
-
-
-        if(userDefault.getUserBirthday()==user.getUserBirthday()){
-            ps.setDate(5,userDefault.getUserBirthday());
+        if(user.getUserBirthday()==null){
+            if(userDefault.getUserBirthday()==null){
+                ps.setDate(5,null);
+            }else {
+                ps.setDate(5,userDefault.getUserBirthday());
+            }
         }else {
-            ps.setDate(5,user.getUserBirthday());
+            if (userDefault.getUserBirthday() == user.getUserBirthday()) {
+                ps.setDate(5, userDefault.getUserBirthday());
+            } else {
+                ps.setDate(5, user.getUserBirthday());
+            }
         }
-
 
 
         if(user.getIsRememberPassword()==2){

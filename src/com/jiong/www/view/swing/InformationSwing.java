@@ -318,6 +318,7 @@ public class InformationSwing extends JFrame {
                     //错误提示还在
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
+                    System.out.println(userBirthday2);
                     int judge =userService.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2,2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
