@@ -17,6 +17,7 @@ public class CreateGroupSwing extends JFrame {
     public CreateGroupSwing(int userId,String eventGroupName)  {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
+        EventGroupService eventGroupService = new EventGroupService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(500,560);
         //设置大小
@@ -57,7 +58,7 @@ public class CreateGroupSwing extends JFrame {
         JButton create = new JButton("创建");
         create.setBounds(50,350,60,20);
         create.addActionListener(e -> {
-            int judge = new EventGroupService().createEventGroup(userId, jTextField.getText(), jTextArea.getText());
+            int judge = eventGroupService.createEventGroup(userId, jTextField.getText(), jTextArea.getText());
             if(judge==1){
                 JOptionPane.showMessageDialog(null,"创建成功！");
             }

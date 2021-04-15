@@ -31,17 +31,18 @@ public class QueryEventSwing extends JFrame{
         //绝对布局
 
         Font font1 = new Font("黑体",Font.PLAIN,30);
+
         //查询瓜的标签+文本框
         JLabel query = new JLabel("查询瓜(输入名字)");
         query.setFont(font1);
         query.setForeground(Color.BLACK);
         query.setBounds(5,50,280,30);
         jPanel.add(query);
-        //文本框
+        //查询瓜文本框
         JTextField queryField = new JTextField(70);
         queryField.setBounds(50,150,200,30);
         jPanel.add(queryField);
-        //查询按钮
+        //查询瓜按钮
         JButton queryButton = new JButton("查询");
         queryButton.setBounds(200,200,60,30);
         queryButton.addActionListener(e -> {
@@ -50,6 +51,7 @@ public class QueryEventSwing extends JFrame{
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
                 int judge = eventService.verifyEventName(eventName);
+                //验证瓜名是否存在
                 Event event1 = eventService.viewEvent(eventName);
                 if(judge==0){
                     jFrame.dispose();
@@ -60,8 +62,7 @@ public class QueryEventSwing extends JFrame{
             }
         });
         jPanel.add(queryButton);
-
-        //默认关闭
         jFrame.setVisible(true);
+        //窗口可见
     }
 }

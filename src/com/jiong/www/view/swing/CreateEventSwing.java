@@ -12,10 +12,10 @@ import java.awt.*;
 public class CreateEventSwing {
     int userId;
     String eventGroupName;
-
     public CreateEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
+        EventGroupService eventGroupService = new EventGroupService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(500,560);
         //设置大小
@@ -74,14 +74,14 @@ public class CreateEventSwing {
         create.addActionListener(e -> {
             if(eventGroupName ==null){
                 String groupName = groupField.getText();
-                EventGroup eventGroup = new EventGroupService().viewEventGroup(groupName);
+                EventGroup eventGroup = eventGroupService.viewEventGroup(groupName);
                 int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }
             }
             else {
-                EventGroup eventGroup = new EventGroupService().viewEventGroup(eventGroupName);
+                EventGroup eventGroup = eventGroupService.viewEventGroup(eventGroupName);
                 int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");

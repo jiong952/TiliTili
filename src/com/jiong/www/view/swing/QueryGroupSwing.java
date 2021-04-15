@@ -36,11 +36,11 @@ public class QueryGroupSwing {
         query.setForeground(Color.BLACK);
         query.setBounds(5,50,280,30);
         jPanel.add(query);
-        //文本框
+        //查询瓜圈文本框
         JTextField queryField = new JTextField(70);
         queryField.setBounds(50,150,200,30);
         jPanel.add(queryField);
-        //查询按钮
+        //查询瓜圈按钮
         JButton queryButton = new JButton("查询");
         queryButton.setBounds(200,200,60,30);
         queryButton.addActionListener(e -> {
@@ -49,6 +49,7 @@ public class QueryGroupSwing {
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
                 int judge = eventGroupService.verifyEventGroupName(eventGroupName1);
+                //验证瓜圈名是否存在
                 if(judge==1){
                     jFrame.dispose();
                     new GroupSwing(userId, eventGroupName1);
@@ -58,7 +59,7 @@ public class QueryGroupSwing {
             }
         });
         jPanel.add(queryButton);
-        //默认关闭
         jFrame.setVisible(true);
+        //窗口可见
     }
 }

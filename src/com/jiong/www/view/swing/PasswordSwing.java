@@ -6,8 +6,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mono
@@ -56,11 +54,12 @@ public class PasswordSwing extends JFrame {
         jPanel.add(errorPassword);
         JPasswordField oldPasswordField = new JPasswordField(15);
         oldPasswordField.setBounds(180,85,100,20);
+        //密码文本框增删监听器
         oldPasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 int judge = userService.verifyPassword(new String(oldPasswordField.getPassword()), userId);
-                //密码错误
+                //密码错误，错误提示标签出现
                 errorPassword.setVisible(judge == 0);
 
             }
@@ -68,7 +67,7 @@ public class PasswordSwing extends JFrame {
             @Override
             public void removeUpdate(DocumentEvent e) {
                 int judge = userService.verifyPassword(oldPassword.getText(), userId);
-                //密码错误
+                //密码错误，错误提示标签出现
                 errorPassword.setVisible(judge == 0);
             }
 
@@ -107,13 +106,16 @@ public class PasswordSwing extends JFrame {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 if(!"".equals(new String(newPasswordField.getPassword()))&&"".equals(new String(confirmPasswordField.getPassword()))){
+                    //输入新密码还没输入确认密码，提示消失
                     errorPassword2.setVisible(false);
                 }
                 if("".equals(new String(newPasswordField.getPassword()))&&!"".equals(new String(confirmPasswordField.getPassword()))){
+                    //先输了确认密码，还没输入新密码
                     errorPassword2.setText("请先输入新密码");
                     errorPassword2.setVisible(true);
                     //提示先输入第一次密码
                 }else if(!"".equals(new String(newPasswordField.getPassword()))&&!"".equals(new String(confirmPasswordField.getPassword()))){
+                    //新密码和确认密码都输入
                     errorPassword2.setVisible(false);
                     String password0 = new String(newPasswordField.getPassword());
                     String password1 = new String(confirmPasswordField.getPassword());
@@ -129,15 +131,17 @@ public class PasswordSwing extends JFrame {
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-
                 if(!"".equals(new String(newPasswordField.getPassword()))&&"".equals(new String(confirmPasswordField.getPassword()))){
+                    //输入新密码还没输入确认密码，提示消失
                     errorPassword2.setVisible(false);
                 }
                 if("".equals(new String(newPasswordField.getPassword()))&&!"".equals(new String(confirmPasswordField.getPassword()))){
+                    //先输了确认密码，还没输入新密码
                     errorPassword2.setText("请先输入新密码");
                     errorPassword2.setVisible(true);
                     //提示先输入第一次密码
                 }else if(!"".equals(new String(newPasswordField.getPassword()))&&!"".equals(new String(confirmPasswordField.getPassword()))){
+                    //新密码和确认密码都输入
                     errorPassword2.setVisible(false);
                     String password0 = new String(newPasswordField.getPassword());
                     String password1 = new String(confirmPasswordField.getPassword());
@@ -159,7 +163,6 @@ public class PasswordSwing extends JFrame {
         confirmPasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-
                 if("".equals(new String(newPasswordField.getPassword()))&&!"".equals(new String(confirmPasswordField.getPassword()))){
                     //用户未输入新密码直接输入第二次密码
                     errorPassword2.setText("请先输入新密码");
@@ -229,7 +232,7 @@ public class PasswordSwing extends JFrame {
             }else if(userService.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
                 JOptionPane.showMessageDialog(null,"密码错误！","错误",JOptionPane.ERROR_MESSAGE);
             }
-                else if(!new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
+            else if(!new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
             }
             else {
@@ -257,7 +260,7 @@ public class PasswordSwing extends JFrame {
         jPanel.add(cancel);
 
         password.setVisible(true);
-        //可见
+        //窗口可见
 
     }
 }

@@ -12,13 +12,11 @@ public class AccuseSwing extends JFrame {
     int userId;
     int eventId;
     String eventName;
-    public static void main(String[] args) {
-        new AccuseSwing(5,"呱呱02",12);
-    }
     public AccuseSwing(int userId,String eventName, int eventId) throws HeadlessException {
         this.userId = userId;
         this.eventId = eventId;
         this.eventName=eventName;
+        AccuseService accuseService = new AccuseService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(300,300);
         //设置大小
@@ -59,7 +57,7 @@ public class AccuseSwing extends JFrame {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要举报" + eventName + "吗?", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    int row = new AccuseService().accuseEvent(eventId, userId, jTextArea.getText());
+                    int row = accuseService.accuseEvent(eventId, userId, jTextArea.getText());
                     if(row==1){
                         JOptionPane.showMessageDialog(null,"举报成功");
                         jFrame.dispose();

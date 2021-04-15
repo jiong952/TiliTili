@@ -16,14 +16,13 @@ import java.util.List;
 public class LikesEventSwing {
     int userId;
     String eventGroupName;
+    static final int DOUBLE_CLICK = 2;
 
-    public static void main(String[] args) {
-        new LikesEventSwing(10,"范冰冰");
-    }
     public LikesEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
         EventService eventService = new EventService();
+        LikesService likesService = new LikesService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
         //设置大小
@@ -45,16 +44,15 @@ public class LikesEventSwing {
         jLabel.setHorizontalAlignment(SwingConstants.CENTER);
         jPanel.add(jLabel);
 
-        //绝对布局
         Font font1 = new Font("黑体",Font.PLAIN,25);
-        //创建一个列表框放点赞合集,双击就可以跳转
+        //创建一个列表框放点赞合集,双击就可以跳转进瓜
         JList<String> list = new JList<>();
         list.setFont(font1);
         list.setFixedCellHeight(30);
         //单元格的大小
         list.setSelectionBackground(Color.gray);
         list.addListSelectionListener(e -> {
-            //单击是选择(单击会有tips提示内容简介) 双击是进入
+            //单击是选择(单击会有tips提示内容简介)
             if(!list.getValueIsAdjusting()){
                 Event event = eventService.viewEvent(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
@@ -65,15 +63,15 @@ public class LikesEventSwing {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(e.getClickCount()==2){
-                    //进入瓜界面
+                if(e.getClickCount()==DOUBLE_CLICK){
+                    //双击进入瓜界面
                     Event event = eventService.viewEvent(list.getSelectedValue());
                     new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
                 }
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        List<Event> events = new LikesService().viewEventOfLikes(userId);
+        List<Event> events = likesService.viewEventOfLikes(userId);
         for (int i = 0; i < events.size(); i++) {
             listModel.add(i,events.get(i).getEventName());
         }
@@ -85,7 +83,7 @@ public class LikesEventSwing {
         jScrollPane.setViewportView(list);
         jPanel.add(jScrollPane);
 
-        //取消点赞按钮实时刷新,返回按钮
+        //取消点赞按钮实时刷新点赞数和点赞合集
         JButton delete = new JButton("取消点赞");
         delete.setBounds(300,430,90,30);
         delete.addActionListener(e -> {
@@ -94,10 +92,10 @@ public class LikesEventSwing {
                 if(judge==0){
                     //YES
                     Event event = eventService.viewEvent(list.getSelectedValue());
-                    new LikesService().cancelLikes(userId,event.getEventId());
+                    likesService.cancelLikes(userId,event.getEventId());
                     //刷新
                     DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                    List<Event> events1 = new LikesService().viewEventOfLikes(userId);
+                    List<Event> events1 = likesService.viewEventOfLikes(userId);
                     for (int i = 0; i < events1.size(); i++) {
                         listModel1.add(i,events1.get(i).getEventName());
                     }

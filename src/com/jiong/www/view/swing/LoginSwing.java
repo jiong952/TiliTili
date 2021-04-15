@@ -11,26 +11,25 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * @author Mono
+ */
 public class LoginSwing extends JFrame implements ActionListener {
     JFrame login;
     JPanel jPanel;
-    //2个标签
     JLabel username;
     JLabel password;
-    //2个文本框
     JTextField usernameField;
     JPasswordField passwordField;
-    //3个按钮
     JButton loginButton;
     JButton reset;
     JButton cancel;
+
     int userId=0;
     String eventGroupName=null;
     UserService userService = new UserService();
     int judge = 0;
-    public static void main(String[] args) {
-        new LoginSwing();
-    }
+
     public LoginSwing()  {
         login = new JFrame("TiliTili瓜王系统");
         login.setSize(500,500);
@@ -53,33 +52,36 @@ public class LoginSwing extends JFrame implements ActionListener {
         jLabel.setBounds(0,0,250,100);
         jPanel.add(jLabel);
 
+        //用户名+输入文本框
         Font font1 = new Font("黑体",Font.PLAIN,18);
         username = new JLabel("用户名");
         username.setBounds(100,200,60,20);
         username.setFont(font1);
+        usernameField = new JTextField(10);
+        usernameField.setBounds(225,200,100,20);
+        jPanel.add(usernameField);
+        jPanel.add(username);
+
+        //密码加输入文本框
         password = new JLabel("密码");
         password.setBounds(100,250,60,20);
         password.setFont(font1);
-        jPanel.add(username);
         jPanel.add(password);
-
-        usernameField = new JTextField(10);
-        usernameField.setBounds(225,200,100,20);
-
         passwordField = new JPasswordField(10);
         passwordField.setBounds(225,250,100,20);
-        jPanel.add(usernameField);
         jPanel.add(passwordField);
 
-
+        //记住密码的复选框
         JCheckBox jcheckbox = new JCheckBox("记住密码");
         jcheckbox.setBounds(180,300,100,20);
         jPanel.add(jcheckbox);
+
+        //用户名文本框增删监听器 判断用户名存在吗 存在判断上一次有没有记住密码
         usernameField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String loginName = usernameField.getText();
-                User user = new UserService().isRememberPassword(loginName);
+                User user = userService.isRememberPassword(loginName);
                 if(user.getLoginPassword()==null){
                     //用户不存在
                     jcheckbox.setSelected(false);
@@ -104,7 +106,7 @@ public class LoginSwing extends JFrame implements ActionListener {
             public void removeUpdate(DocumentEvent e) {
 
                 String loginName = usernameField.getText();
-                User user = new UserService().isRememberPassword(loginName);
+                User user = userService.isRememberPassword(loginName);
                 if(user.getLoginPassword()==null){
                     //用户不存在
                     jcheckbox.setSelected(false);
@@ -131,10 +133,10 @@ public class LoginSwing extends JFrame implements ActionListener {
             }
         });
 
+        //登录按钮
         loginButton = new JButton("登录");
         loginButton.setBounds(75,400,80,20);
         loginButton.addActionListener(e -> {
-
             String userName = usernameField.getText();
             String password = new String(passwordField.getPassword());
             if("".equals(usernameField.getText())||"".equals(new String(passwordField.getPassword()))){
@@ -170,7 +172,7 @@ public class LoginSwing extends JFrame implements ActionListener {
                     //先在这里记录是否记住密码
                     if(jcheckbox.isSelected()){
                         new UserService().isRememberPassword(1,userId);
-                        //更新表中的记住密码
+                        //更新表中的记住密码项
                     }else {
                         new UserService().isRememberPassword(0,userId);
                     }
@@ -189,7 +191,6 @@ public class LoginSwing extends JFrame implements ActionListener {
         jPanel.add(loginButton);
         jPanel.add(reset);
         jPanel.add(cancel);
-
 
         login.setVisible(true);
     }

@@ -30,10 +30,6 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
     JButton reset;
     JButton cancel;
     UserService userService = new UserService();
-
-    public static void main(String[] args) {
-        new RegisterSwing();
-    }
     public RegisterSwing(){
         register = new JFrame("TiliTili瓜王系统");
         register.setSize(500,500);
@@ -123,6 +119,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //注册按钮的监听器
         if(e.getSource()==registerButton){
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());
@@ -135,8 +132,10 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
             }
             else {
+                //信息完整且正确
                 String newName = usernameField.getText();
                 String securePassword = new Md5Utils().toMd5(confirmPassword);
+                //密码加密
                 int judge = userService.register(newName, securePassword);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");
@@ -151,7 +150,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             usernameField.setText("");
             passwordField.setText("");
             confirmPasswordField.setText("");
-            //空白重置
+            //清空文本框
         }
         if(e.getSource()==cancel) {
             //取消则返回欢迎界面
@@ -164,12 +163,14 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
 
     @Override
     public void insertUpdate(DocumentEvent e) {
+        //用户名文本框增删监听器
         if(e.getDocument()==usernameField.getDocument()){
             String userName = usernameField.getText();
             int judge = userService.verifyUsername(userName);
             //提示用户用户名存在
             jLabel1.setVisible(judge == 1&&!"".equals(usernameField.getText()));
         }
+        //确认密码文本框监听器
         if(e.getDocument()==confirmPasswordField.getDocument()){
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());
@@ -196,6 +197,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
 
 
         }
+        //密码文本框增删监听器
         if(e.getDocument()==passwordField.getDocument()){
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());
@@ -225,12 +227,14 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
 
     @Override
     public void removeUpdate(DocumentEvent e) {
+        //用户名文本框增删监听器
         if(e.getDocument()==usernameField.getDocument()){
             String userName = usernameField.getText();
             int judge = userService.verifyUsername(userName);
             //提示用户用户名存在
             jLabel1.setVisible(judge == 1&&!"".equals(usernameField.getText()));
         }
+        //确认密码文本框监听器
         if(e.getDocument()==confirmPasswordField.getDocument()){
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());
@@ -257,6 +261,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
 
 
         }
+        //密码文本框增删监听器
         if(e.getDocument()==passwordField.getDocument()){
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());

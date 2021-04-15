@@ -4,7 +4,6 @@ import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
 import com.jiong.www.util.EventPagingUtils;
-import com.jiong.www.util.MenuSwingUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -19,9 +18,9 @@ public class EventSwing {
     String eventName;
     int eventId;
     String eventGroupName;
-    public static void main(String[] args) {
-        new EventSwing(2,"瓜瓜01",11,"唱歌");
-    }
+    static final int  ADMIN = 2;
+    static final int  SUPER_ADMIN = 4;
+    static final int  VISITOR = 3;
     public EventSwing(int userId, String eventName, int eventId, String eventGroupName) {
         this.userId = userId;
         this.eventName = eventName;
@@ -59,8 +58,7 @@ public class EventSwing {
         jPanel.add(jLabel);
 
         //加入顶部菜单栏
-        new MenuSwingUtils(userId,selectedEvent,eventGroupName);
-
+        new MenuSwing(userId,selectedEvent,eventGroupName);
         Event event = eventService.viewEvent(eventName);
 
         //显示作者+发布时间+点赞量+点赞的单选按钮+收藏量+收藏的单选按钮+评论数+评论按钮  查询的结果设置为醒目的红色
@@ -85,7 +83,6 @@ public class EventSwing {
         createTime.setFont(font1);
         createTime.setForeground(Color.red);
         jPanel.add(createTime);
-
         //点赞量标签 + 查询的点赞数 + 点赞的单选按钮 + 两个按钮加上监听器
         JLabel likesNumberLabel = new JLabel("点赞量:");
         likesNumberLabel.setBounds(150,110,100,60);
@@ -199,7 +196,6 @@ public class EventSwing {
         jPanel.add(jScrollPane);
 
 
-
         //评论区的标签
         JLabel commentLabel = new JLabel("评论区");
         commentLabel.setBounds(8,375,150,60);
@@ -246,17 +242,15 @@ public class EventSwing {
         jScrollPane1.setBounds(135,420,920,150);
         jScrollPane1.setViewportView(table);
         jPanel.add(jScrollPane1);
-
+        //分页处理
         new EventPagingUtils(comments,defaultTableModel,jPanel,pageSize);
-
-
-
+        //评论标签
         JLabel myComment = new JLabel("我要评论:");
         myComment.setFont(font1);
         myComment.setForeground(Color.PINK);
         myComment.setBounds(20,637,80,30);
         jPanel.add(myComment);
-
+        //评论区文本框
         JTextArea myCommentArea = new JTextArea();
         myCommentArea.setBounds(100,637,550,100);
         jPanel.add(myCommentArea);
@@ -264,7 +258,7 @@ public class EventSwing {
         jScrollPane2.setBounds(100,637,550,100);
         jScrollPane2.setViewportView(myCommentArea);
         jPanel.add(jScrollPane2);
-
+        //评论发送按钮
         JButton sendComment = new JButton("发送");
         sendComment.setBounds(700,707,60,30);
         jPanel.add(sendComment);
@@ -365,9 +359,10 @@ public class EventSwing {
         });
         clearComment.setVisible(false);
         jPanel.add(clearComment);
-        //只有在管理员时显示
+
+        //清空评论只有在管理员时显示
         int roleId = new UserService().verifyRole(userId);
-        if(roleId==2||roleId==4){
+        if(roleId==ADMIN||roleId==SUPER_ADMIN){
             clearComment.setVisible(true);
         }
 
@@ -376,7 +371,8 @@ public class EventSwing {
         accuse.setBounds(850,707,90,30);
         accuse.addActionListener(e -> new AccuseSwing(userId,eventName,eventId));
         jPanel.add(accuse);
-        //返回按钮
+
+        //返回上一层按钮
         JButton back = new JButton("返回");
         back.setBounds(1050,707,78,30);
         back.addActionListener(e -> {
@@ -385,7 +381,8 @@ public class EventSwing {
         });
         back.setFont(font1);
         jPanel.add(back);
-        if(roleId==3){
+
+        if(roleId==VISITOR){
             myComment.setVisible(false);
             myCommentArea.setVisible(false);
             sendComment.setVisible(false);
@@ -397,10 +394,6 @@ public class EventSwing {
             notCollected.setVisible(false);
         }
         selectedEvent.setVisible(true);
-
-
-
-
 
     }
 }

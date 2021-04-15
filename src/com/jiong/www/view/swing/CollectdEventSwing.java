@@ -17,13 +17,11 @@ public class CollectdEventSwing {
     int userId;
     String eventGroupName;
     static final int DOUBLE_CLICK = 2;
-    public static void main(String[] args) {
-        new CollectdEventSwing(10,null);
-    }
     public CollectdEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
         EventService eventService = new EventService();
+        CollectionService collectionService = new CollectionService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
         //设置大小
@@ -67,13 +65,13 @@ public class CollectdEventSwing {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
-                    com.jiong.www.po.Event event = eventService.viewEvent(list.getSelectedValue());
+                    Event event = eventService.viewEvent(list.getSelectedValue());
                     new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
                 }
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        java.util.List<Event> events = new CollectionService().viewEventOfCollection(userId);
+        java.util.List<Event> events = collectionService.viewEventOfCollection(userId);
         for (int i = 0; i < events.size(); i++) {
             listModel.add(i,events.get(i).getEventName());
         }
@@ -94,10 +92,10 @@ public class CollectdEventSwing {
                 if(judge==0){
                     //YES
                     Event event = eventService.viewEvent(list.getSelectedValue());
-                    new CollectionService().cancelCollection(userId,event.getEventId());
+                    collectionService.cancelCollection(userId,event.getEventId());
                     //刷新
                     DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                    List<Event> events1 = new CollectionService().viewEventOfCollection(userId);
+                    List<Event> events1 = collectionService.viewEventOfCollection(userId);
                     for (int i = 0; i < events1.size(); i++) {
                         listModel1.add(i,events1.get(i).getEventName());
                     }

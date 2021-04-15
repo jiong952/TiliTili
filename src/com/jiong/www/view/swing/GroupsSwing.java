@@ -3,7 +3,6 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.UserService;
-import com.jiong.www.util.MenuSwingUtils;
 import com.jiong.www.util.GroupsPagingUtils;
 
 import javax.swing.*;
@@ -20,7 +19,9 @@ import java.util.List;
 public class GroupsSwing extends JFrame {
     int userId;
     String eventGroupName;
-    //判断是否记住密码
+    static final int DOUBLE_CLICK = 2;
+    static final int PAGE_SIZE = 9;
+
     public GroupsSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -47,17 +48,17 @@ public class GroupsSwing extends JFrame {
         jLabel.setBounds(400,10,450,100);
         jPanel.add(jLabel);
 
-        new MenuSwingUtils(userId,eventGroup,eventGroupName);
+        new MenuSwing(userId,eventGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,36);
 
         JList<String> list = new JList<>();
         list.setFont(font1);
         list.setFixedCellHeight(56);
-        list.setSelectionBackground(Color.gray);
         //单元格的大小
+        list.setSelectionBackground(Color.gray);
         list.addListSelectionListener(e -> {
-            //单击是选择(单击会有tips提示内容简介) 双击是进入
+            //单击是选择(单击会有tips提示内容简介)
             if(!list.getValueIsAdjusting()){
                 list.setToolTipText("内容简介:"+eventGroupService.viewEventGroup(list.getSelectedValue()).getEventGroupDescription());
             }
@@ -66,7 +67,8 @@ public class GroupsSwing extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                if(e.getClickCount()==2){
+                //双击是进入瓜圈
+                if(e.getClickCount()==DOUBLE_CLICK){
                     eventGroup.dispose();
                     new GroupSwing(userId,list.getSelectedValue());
                 }
@@ -74,10 +76,10 @@ public class GroupsSwing extends JFrame {
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
         List<EventGroup> eventGroups = eventGroupService.viewAllEventGroup();
-        int pageSize = 9;
+
         //每一页页面的展示瓜圈数目
-        if(eventGroups.size()>=pageSize){
-            for (int i = 0; i < pageSize; i++) {
+        if(eventGroups.size()>= PAGE_SIZE){
+            for (int i = 0; i < PAGE_SIZE; i++) {
                 listModel.add(i,eventGroups.get(i).getEventGroupName());
             }
         }else {
@@ -88,13 +90,13 @@ public class GroupsSwing extends JFrame {
         //向列表框中加入所有的瓜圈名
         list.setModel(listModel);
         jPanel.add(list);
-
+        //加滚动面板
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setBounds(10,100,1150,400);
         jScrollPane.setViewportView(list);
         jPanel.add(jScrollPane);
-
-        new GroupsPagingUtils(eventGroups,listModel,jPanel,pageSize);
+        //分页处理
+        new GroupsPagingUtils(eventGroups,listModel,jPanel, PAGE_SIZE);
 
         //查询瓜圈的标签+文本框
         Font font2 = new Font("黑体",Font.PLAIN,25);
@@ -103,15 +105,18 @@ public class GroupsSwing extends JFrame {
         query.setForeground(Color.BLACK);
         query.setBounds(5,650,120,30);
         jPanel.add(query);
-        //输入瓜圈名字的提示
+
+        //输入瓜圈名字的提示标签
         JLabel tip = new JLabel("请输入要查询瓜圈的名字");
         tip.setForeground(Color.red);
         tip.setVisible(false);
         tip.setBounds(120,670,150,30);
         jPanel.add(tip);
-        //文本框
+
+        //查询瓜圈的名字文本框
         JTextField queryField = new JTextField(30);
         queryField.setBounds(120,650,120,30);
+        //文本框的增删监听器
         queryField.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -129,7 +134,7 @@ public class GroupsSwing extends JFrame {
             }
         });
         jPanel.add(queryField);
-        //查询按钮
+        //查询瓜圈按钮
         JButton queryButton = new JButton("查询");
         queryButton.setBounds(245,650,60,30);
         queryButton.addActionListener(e -> {
@@ -147,7 +152,7 @@ public class GroupsSwing extends JFrame {
         });
         jPanel.add(queryButton);
 
-        //管理员或者是超级管理员
+        //删除瓜圈的按钮
         JButton delete = new JButton("删除瓜圈");
         delete.setBounds(350,650,90,30);
         delete.addActionListener(e -> {
@@ -155,10 +160,10 @@ public class GroupsSwing extends JFrame {
                 int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, list.getSelectedValue());
                 //判断是不是该管理员管理的瓜圈
                 if(judge0==1){
-                    //是
+                    //YES
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + list.getSelectedValue() + "瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
                     if(judge==0){
-                        //选择是
+                        //确认是
                         judge0 = eventGroupService.deleteEventGroup(list.getSelectedValue(), userId);
                         if(judge0==1){
                             JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
@@ -183,6 +188,7 @@ public class GroupsSwing extends JFrame {
         delete.setVisible(false);
         jPanel.add(delete);
 
+        //创建瓜圈按钮
         JButton create = new JButton("创建瓜圈");
         create.setBounds(550,650,90,30);
         create.addActionListener(e -> {
@@ -191,7 +197,8 @@ public class GroupsSwing extends JFrame {
         });
         create.setVisible(false);
         jPanel.add(create);
-        //刷新
+
+        //解决创建瓜圈后无法更新的问题 刷新
         JButton refresh = new JButton("刷新");
         refresh.setBounds(720,650,90,30);
         refresh.addActionListener(e -> {
@@ -204,20 +211,22 @@ public class GroupsSwing extends JFrame {
             list.setModel(listModel1);
         });
         jPanel.add(refresh);
+
+
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
         int roleId = new UserService().verifyRole(userId);
 
         //窗口可见
         eventGroup.setVisible(true);
-        //删除瓜圈 创建瓜圈
+        //删除瓜圈 创建瓜圈 管理员超级管理员
         if(roleId==2||roleId==4){
             delete.setVisible(true);
             create.setVisible(true);
         }
+        //游客
         if(roleId==3){
             refresh.setVisible(false);
         }
-
 
 
     }

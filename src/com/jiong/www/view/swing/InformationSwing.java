@@ -14,6 +14,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * @author Mono
+ */
 public class InformationSwing extends JFrame {
 
     int userId;
@@ -27,6 +30,7 @@ public class InformationSwing extends JFrame {
     static final String DATE_DEFAULT ="---请选择---";
     static final int MALE=1;
     static final int FEMALE=0;
+    static final int GENDER_DEFAULT=2;
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -66,6 +70,7 @@ public class InformationSwing extends JFrame {
         userName.setFont(font1);
         jPanel.add(userName);
 
+        //头像标签和头像图片标签
         JLabel iconLabel = new JLabel("头像:");
         iconLabel.setBounds(520,100,100,20);
         iconLabel.setFont(font1);
@@ -84,18 +89,19 @@ public class InformationSwing extends JFrame {
         //高度设置为-1可以缩放好图片大小
         icon.setIcon(imageIcon);
 
+        //新头像按钮
         JButton set = new JButton("新头像");
         set.setBounds(550,310,90,30);
         jPanel.add(set);
-
+        //保存新头像按钮
         JButton saveIcon = new JButton("保存");
         saveIcon.setBounds(680,310,60,30);
         jPanel.add(saveIcon);
-
+        //还原默认头像按钮
         JButton resetIcon = new JButton("还原");
         resetIcon.setBounds(780,310,60,30);
         jPanel.add(resetIcon);
-
+        //图片处理工具类
         new ImageUtils(icon,jPanel,set,saveIcon,resetIcon,userId);
 
         //用于显示昵称标签+文本框
@@ -131,7 +137,6 @@ public class InformationSwing extends JFrame {
         jPanel.add(boy);
 
         //用于显示邮箱标签+文本框
-        // 邮箱要加一个监听器，监听后缀的格式
         JLabel email = new JLabel("邮箱:");
         email.setBounds(50,250,60,20);
         email.setFont(font1);
@@ -140,18 +145,19 @@ public class InformationSwing extends JFrame {
         emailTextField.setBounds(125,250,150,20);
         emailTextField.setText(user.getUserEmail());
         jPanel.add(emailTextField);
-
+        //提示邮箱输入的正确格式
         JLabel emailTips = new JLabel("正确邮箱格式：1017328759@qq.com");
         emailTips.setBounds(275,250,300,20);
         emailTips.setForeground(Color.red);
         emailTips.setVisible(false);
         jPanel.add(emailTips);
-
+        //邮箱输入框的增删监听器
         emailTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 if(!"".equals(emailTextField.getText())){
                     String email = emailTextField.getText();
+                    //邮箱格式工具类
                     boolean judge = new StringUtils().isEmail(email);
                     //合法
                     emailTips.setVisible(!judge);
@@ -173,6 +179,8 @@ public class InformationSwing extends JFrame {
 
             }
         });
+
+
         //生日+下拉列表+年月日标签
         JLabel birth = new JLabel("生日:");
         birth.setBounds(50,300,60,20);
@@ -201,15 +209,15 @@ public class InformationSwing extends JFrame {
         }
         String[] day = day1.toArray(new String[0]);
         //把年份数组放进下拉列表中
-        JComboBox<String> birthyear = new JComboBox<>(year);
-        birthyear.setBounds(125,300,100,20);
-        JComboBox<String> birthmonth = new JComboBox<>(month);
-        birthmonth.setBounds(265,300,100,20);
-        JComboBox<String> birthday = new JComboBox<>(day);
-        birthday.setBounds(405,300,100,20);
-        jPanel.add(birthyear);
-        jPanel.add(birthmonth);
-        jPanel.add(birthday);
+        JComboBox<String> birthYear = new JComboBox<>(year);
+        birthYear.setBounds(125,300,100,20);
+        JComboBox<String> birthMonth = new JComboBox<>(month);
+        birthMonth.setBounds(265,300,100,20);
+        JComboBox<String> birthDay = new JComboBox<>(day);
+        birthDay.setBounds(405,300,100,20);
+        jPanel.add(birthYear);
+        jPanel.add(birthMonth);
+        jPanel.add(birthDay);
         //年月日的标签提示
         JLabel yearLabel = new JLabel("年");
         yearLabel.setBounds(235,295,30,30);
@@ -231,18 +239,17 @@ public class InformationSwing extends JFrame {
             calendar.setTime(userBirthday);
             //获取年月日，同时选中
             String userYear = String.valueOf(calendar.get(Calendar.YEAR));
-            birthyear.setSelectedItem(userYear);
+            birthYear.setSelectedItem(userYear);
             String userMonth = String.valueOf(calendar.get(Calendar.MONTH)+1);
             //calendar默认从0月开始
-            birthmonth.setSelectedItem(userMonth);
+            birthMonth.setSelectedItem(userMonth);
             String userDay = String.valueOf(calendar.get(Calendar.DATE));
-            birthday.setSelectedItem(userDay);
+            birthDay.setSelectedItem(userDay);
         }else {
-            birthyear.setSelectedItem(DATE_DEFAULT);
-            birthmonth.setSelectedItem(DATE_DEFAULT);
-            birthday.setSelectedItem(DATE_DEFAULT);
+            birthYear.setSelectedItem(DATE_DEFAULT);
+            birthMonth.setSelectedItem(DATE_DEFAULT);
+            birthDay.setSelectedItem(DATE_DEFAULT);
         }
-
 
         //个人简介提示+文本域
         JLabel description = new JLabel("个人简介：");
@@ -256,6 +263,7 @@ public class InformationSwing extends JFrame {
         descriptionTextArea.setBounds(125,350,500,100);
         descriptionTextArea.setText(user.getUserDescription());
         jPanel.add(descriptionTextArea);
+        //加滚动面板
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setBounds(125,350,500,100);
         jScrollPane.setViewportView(descriptionTextArea);
@@ -278,12 +286,12 @@ public class InformationSwing extends JFrame {
             //昵称
             String userNickname = nickNameTextField.getText();
             //性别
-            int userGender1 =2;
+            int userGender1 =GENDER_DEFAULT;
             if(girl.isSelected()){
-                userGender1 =0;
+                userGender1 =FEMALE;
                 //女
             } else if(boy.isSelected()){
-                userGender1 =1;
+                userGender1 =MALE;
                 //男
             }
             //邮箱
@@ -291,40 +299,45 @@ public class InformationSwing extends JFrame {
 
             Date userBirthday2 = null;
             //生日
-            if(!DATE_DEFAULT.equals(birthyear.getSelectedItem())&&!DATE_DEFAULT.equals(birthmonth.getSelectedItem())&&!DATE_DEFAULT.equals(birthday.getSelectedItem())){
-                String userBirthday1 = birthyear.getSelectedItem() +
+            //用户生日信息完全
+            if(!DATE_DEFAULT.equals(birthYear.getSelectedItem())&&!DATE_DEFAULT.equals(birthMonth.getSelectedItem())&&!DATE_DEFAULT.equals(birthDay.getSelectedItem())){
+                String userBirthday1 = birthYear.getSelectedItem() +
                         //年
                         "-" +
-                        birthmonth.getSelectedItem() +
+                        birthMonth.getSelectedItem() +
                         //月
                         "-" +
-                        birthday.getSelectedItem()
+                        birthDay.getSelectedItem()
                         //日
                         ;
                  userBirthday2 = Date.valueOf(userBirthday1);
             }
-
             //个人简介
             String userDescription = descriptionTextArea.getText();
+
             int judgement =1;
-            if(DATE_DEFAULT.equals(birthyear.getSelectedItem())&&DATE_DEFAULT.equals(birthmonth.getSelectedItem())&&DATE_DEFAULT.equals(birthday.getSelectedItem())){
+            //用户没有填写生日
+            if(DATE_DEFAULT.equals(birthYear.getSelectedItem())&&DATE_DEFAULT.equals(birthMonth.getSelectedItem())&&DATE_DEFAULT.equals(birthDay.getSelectedItem())){
                 int confirm = JOptionPane.showConfirmDialog(null, "您还没有填写生日，确定继续吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(confirm!=0){
                     //NO
                     judgement=0;
                     userBirthday2=null;
                 }
+            }else {
+                //用户信息填不完整
+                if(DATE_DEFAULT.equals(birthYear.getSelectedItem())||DATE_DEFAULT.equals(birthMonth.getSelectedItem())||DATE_DEFAULT.equals(birthDay.getSelectedItem())){
+                    JOptionPane.showMessageDialog(null,"请填写完整的生日信息","错误",JOptionPane.ERROR_MESSAGE);
+                    judgement=0;
+                }
             }
-            if((DATE_DEFAULT.equals(birthyear.getSelectedItem())||DATE_DEFAULT.equals(birthmonth.getSelectedItem())||DATE_DEFAULT.equals(birthday.getSelectedItem()))
-            &&!(DATE_DEFAULT.equals(birthyear.getSelectedItem())&&DATE_DEFAULT.equals(birthmonth.getSelectedItem())&&DATE_DEFAULT.equals(birthday.getSelectedItem()))){
-                JOptionPane.showMessageDialog(null,"请填写完整的生日信息","错误",JOptionPane.ERROR_MESSAGE);
-                judgement=0;
-            }
+
             if(judgement==1){
                 if(emailTips.isVisible()){
-                    //错误提示还在
+                    //错误提示还在,说明邮箱格式不正确
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
+                    //所有信息正确
                     int judge =userService.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
@@ -343,39 +356,40 @@ public class InformationSwing extends JFrame {
             //昵称
             nickNameTextField.setText(user.getUserNickname());
             //性别
-            int userGender12 = user.getUserGender();
-            if(userGender12 ==0){
+            int userGender1 = user.getUserGender();
+            if(userGender1 ==FEMALE){
                 girl.setSelected(true);
-            }else {
+            }
+            if(userGender1==MALE){
                 boy.setSelected(true);
             }
             //邮箱
             emailTextField.setText(user.getUserEmail());
             //生日
-            Date userBirthday12 = user.getUserBirthday();
+            Date userBirthday1 = user.getUserBirthday();
             //从数据库里获取生日
             Calendar calendar1 = Calendar.getInstance();
-            if(userBirthday12 !=null){
-                calendar1.setTime(userBirthday12);
+            if(userBirthday1 !=null){
+                calendar1.setTime(userBirthday1);
                 //获取年月日，同时选中
                 String userYear = String.valueOf(calendar1.get(Calendar.YEAR));
-                birthyear.setSelectedItem(userYear);
+                birthYear.setSelectedItem(userYear);
                 String userMonth = String.valueOf(calendar1.get(Calendar.MONTH)+1);
                 //calendar默认从0月开始
-                birthmonth.setSelectedItem(userMonth);
+                birthMonth.setSelectedItem(userMonth);
                 String userDay = String.valueOf(calendar1.get(Calendar.DATE));
-                birthday.setSelectedItem(userDay);
+                birthDay.setSelectedItem(userDay);
             }else {
-                birthyear.setSelectedItem(DATE_DEFAULT);
-                birthmonth.setSelectedItem(DATE_DEFAULT);
-                birthday.setSelectedItem(DATE_DEFAULT);
+                birthYear.setSelectedItem(DATE_DEFAULT);
+                birthMonth.setSelectedItem(DATE_DEFAULT);
+                birthDay.setSelectedItem(DATE_DEFAULT);
             }
             //个人简介
             descriptionTextArea.setText(user.getUserDescription());
         });
         jPanel.add(reset);
 
-        //返回按钮
+        //返回上一层按钮
         JButton cancel = new JButton("返回");
         cancel.setBounds(375,500,80,20);
         cancel.addActionListener(e -> {
