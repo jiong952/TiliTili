@@ -4,8 +4,6 @@ import com.jiong.www.service.EventGroupService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mono
@@ -58,35 +56,26 @@ public class CreateGroupSwing extends JFrame {
 
         JButton create = new JButton("创建");
         create.setBounds(50,350,60,20);
-        create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int judge = new EventGroupService().createEventGroup(userId, jTextField.getText(), jTextArea.getText());
-                if(judge==1){
-                    JOptionPane.showMessageDialog(null,"创建成功！");
-                }
-                jFrame.dispose();
+        create.addActionListener(e -> {
+            int judge = new EventGroupService().createEventGroup(userId, jTextField.getText(), jTextArea.getText());
+            if(judge==1){
+                JOptionPane.showMessageDialog(null,"创建成功！");
             }
+            jFrame.dispose();
         });
         jPanel.add(create);
         JButton reset = new JButton("重置");
         reset.setBounds(150,350,60,20);
-        reset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jTextField.setText("");
-                jTextArea.setText("");
-            }
+        reset.addActionListener(e -> {
+            jTextField.setText("");
+            jTextArea.setText("");
         });
         jPanel.add(reset);
         JButton back = new JButton("返回");
         back.setBounds(250,350,60,20);
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jFrame.dispose();
-                new GroupsSwing(userId,eventGroupName);
-            }
+        back.addActionListener(e -> {
+            jFrame.dispose();
+            new GroupsSwing(userId,eventGroupName);
         });
         jPanel.add(back);
 

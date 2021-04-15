@@ -6,9 +6,6 @@ import com.jiong.www.service.EventService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
  * @author Mono
  */
@@ -74,47 +71,37 @@ public class CreateEventSwing {
 
         JButton create = new JButton("创建");
         create.setBounds(50,350,60,20);
-        create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(eventGroupName ==null){
-                    String groupName = groupField.getText();
-                    EventGroup eventGroup = new EventGroupService().viewEventGroup(groupName);
-                    int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
-                    if(judge==1){
-                        JOptionPane.showMessageDialog(null,"创建成功！");
-                    }
-                    jFrame.dispose();
-                }
-                else {
-                    EventGroup eventGroup = new EventGroupService().viewEventGroup(eventGroupName);
-                    int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
-                    if(judge==1){
-                        JOptionPane.showMessageDialog(null,"创建成功！");
-                    }
-                    jFrame.dispose();
+        create.addActionListener(e -> {
+            if(eventGroupName ==null){
+                String groupName = groupField.getText();
+                EventGroup eventGroup = new EventGroupService().viewEventGroup(groupName);
+                int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
+                if(judge==1){
+                    JOptionPane.showMessageDialog(null,"创建成功！");
                 }
             }
+            else {
+                EventGroup eventGroup = new EventGroupService().viewEventGroup(eventGroupName);
+                int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
+                if(judge==1){
+                    JOptionPane.showMessageDialog(null,"创建成功！");
+                }
+            }
+            jFrame.dispose();
         });
         jPanel.add(create);
         JButton reset = new JButton("重置");
         reset.setBounds(150,350,60,20);
-        reset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jTextField.setText("");
-                jTextArea.setText("");
-            }
+        reset.addActionListener(e -> {
+            jTextField.setText("");
+            jTextArea.setText("");
         });
         jPanel.add(reset);
         JButton back = new JButton("返回");
         back.setBounds(250,350,60,20);
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jFrame.dispose();
-                new GroupsSwing(userId, eventGroupName);
-            }
+        back.addActionListener(e -> {
+            jFrame.dispose();
+            new GroupsSwing(userId, eventGroupName);
         });
         jPanel.add(back);
 

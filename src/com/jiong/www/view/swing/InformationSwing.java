@@ -9,8 +9,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -20,10 +18,7 @@ public class InformationSwing extends JFrame {
 
     int userId;
     String eventGroupName;
-    //返回
-    public static void main(String[] args) {
-        new InformationSwing(10,null);
-    }
+
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -177,7 +172,7 @@ public class InformationSwing extends JFrame {
         jPanel.add(birth);
         //用集合先存放string,转为数组，数组直接放进列表框
         //产生年份
-        ArrayList<String> year1 = new ArrayList<String>();
+        ArrayList<String> year1 = new ArrayList<>();
         year1.add("---请选择---");
         for (int i = 2021;i>=1950;i--){
             year1.add(String.valueOf(i));
@@ -261,62 +256,69 @@ public class InformationSwing extends JFrame {
         //修改密码的按钮，加监听器，跳转界面
         JButton changePassword = new JButton("修改密码");
         changePassword.setBounds(65,500,90,20);
-        changePassword.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //修改密码界面
-                userInformation.dispose();
-                new PasswordSwing(userId,eventGroupName);
-            }
+        changePassword.addActionListener(e -> {
+            //修改密码界面
+            userInformation.dispose();
+            new PasswordSwing(userId,eventGroupName);
         });
         jPanel.add(changePassword);
 
         //保存按钮,加监听器，获取上方的信息，判断修改个人信息是否完成
         JButton save = new JButton("保存");
         save.setBounds(175,500,80,20);
-        save.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //昵称
-                String userNickname = nickNameTextField.getText();
-                //性别
-                int userGender =2;
-                if(girl.isSelected()){
-                    userGender=0;
-                    //女
-                } else if(boy.isSelected()){
-                    userGender=1;
-                    //男
-                }
-                //邮箱
-                String userEmail = emailTextField.getText();
-                
-                Date userBirthday2 = null;
-                //生日
-                if(!("---请选择---").equals(birthyear.getSelectedItem())&&!("---请选择---").equals(birthmonth.getSelectedItem())&&!("---请选择---").equals(birthday.getSelectedItem())){
-                    StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append(birthyear.getSelectedItem());
-                    //年
-                    stringBuilder.append("-");
-                    stringBuilder.append(birthmonth.getSelectedItem());
-                    //月
-                    stringBuilder.append("-");
-                    stringBuilder.append(birthday.getSelectedItem());
-                    //日
-                    String userBirthday1 = stringBuilder.toString();
-                     userBirthday2 = Date.valueOf(userBirthday1);
-                }
+        save.addActionListener(e -> {
+            //昵称
+            String userNickname = nickNameTextField.getText();
+            //性别
+            int userGender1 =2;
+            if(girl.isSelected()){
+                userGender1 =0;
+                //女
+            } else if(boy.isSelected()){
+                userGender1 =1;
+                //男
+            }
+            //邮箱
+            String userEmail = emailTextField.getText();
 
-                //个人简介
-                String userDescription = descriptionTextArea.getText();
+            Date userBirthday2 = null;
+            //生日
+            if(!("---请选择---").equals(birthyear.getSelectedItem())&&!("---请选择---").equals(birthmonth.getSelectedItem())&&!("---请选择---").equals(birthday.getSelectedItem())){
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(birthyear.getSelectedItem());
+                //年
+                stringBuilder.append("-");
+                stringBuilder.append(birthmonth.getSelectedItem());
+                //月
+                stringBuilder.append("-");
+                stringBuilder.append(birthday.getSelectedItem());
+                //日
+                String userBirthday1 = stringBuilder.toString();
+                 userBirthday2 = Date.valueOf(userBirthday1);
+            }
 
-                if(("---请选择---").equals(birthyear.getSelectedItem())||("---请选择---").equals(birthmonth.getSelectedItem())||("---请选择---").equals(birthday.getSelectedItem())){
-                    JOptionPane.showMessageDialog(null,"请填写正确的生日信息","错误",JOptionPane.ERROR_MESSAGE);
-                }if(emailTips.isVisible()){
+            //个人简介
+            String userDescription = descriptionTextArea.getText();
+            int judgement =1;
+            if(("---请选择---").equals(birthyear.getSelectedItem())&&("---请选择---").equals(birthmonth.getSelectedItem())&&("---请选择---").equals(birthday.getSelectedItem())){
+                int confirm = JOptionPane.showConfirmDialog(null, "您还没有填写生日，确定继续吗？", "确认", JOptionPane.YES_NO_OPTION);
+                if(confirm!=0){
+                    //NO
+                    judgement=0;
+                    userBirthday2=null;
+                }
+            }
+            if((("---请选择---").equals(birthyear.getSelectedItem())||("---请选择---").equals(birthmonth.getSelectedItem())||("---请选择---").equals(birthday.getSelectedItem()))
+            &&!(("---请选择---").equals(birthyear.getSelectedItem())&&("---请选择---").equals(birthmonth.getSelectedItem())&&("---请选择---").equals(birthday.getSelectedItem()))){
+                JOptionPane.showMessageDialog(null,"请填写完整的生日信息","错误",JOptionPane.ERROR_MESSAGE);
+                judgement=0;
+            }
+            if(judgement==1){
+                if(emailTips.isVisible()){
                     //错误提示还在
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
-                    int judge =userService.perfectInformation(userEmail, userNickname, userGender, userDescription, 2, userBirthday2,0);
+                    int judge =userService.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2,2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {
@@ -330,55 +332,49 @@ public class InformationSwing extends JFrame {
         //重置按钮：恢复未保存前的原状
         JButton reset = new JButton("重置");
         reset.setBounds(275,500,80,20);
-        reset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //昵称
-                nickNameTextField.setText(user.getUserNickname());
-                //性别
-                int userGender = user.getUserGender();
-                if(userGender==0){
-                    girl.setSelected(true);
-                }else {
-                    boy.setSelected(true);
-                }
-                //邮箱
-                emailTextField.setText(user.getUserEmail());
-                //生日
-                Date userBirthday = user.getUserBirthday();
-                //从数据库里获取生日
-                Calendar calendar = Calendar.getInstance();
-                if(userBirthday!=null){
-                    calendar.setTime(userBirthday);
-                    //获取年月日，同时选中
-                    String userYear = String.valueOf(calendar.get(Calendar.YEAR));
-                    birthyear.setSelectedItem(userYear);
-                    String userMonth = String.valueOf(calendar.get(Calendar.MONTH)+1);
-                    //calendar默认从0月开始
-                    birthmonth.setSelectedItem(userMonth);
-                    String userDay = String.valueOf(calendar.get(Calendar.DATE));
-                    birthday.setSelectedItem(userDay);
-                }else {
-                    birthyear.setSelectedItem("---请选择---");
-                    birthmonth.setSelectedItem("---请选择---");
-                    birthday.setSelectedItem("---请选择---");
-                }
-                //个人简介
-                descriptionTextArea.setText(user.getUserDescription());
+        reset.addActionListener(e -> {
+            //昵称
+            nickNameTextField.setText(user.getUserNickname());
+            //性别
+            int userGender12 = user.getUserGender();
+            if(userGender12 ==0){
+                girl.setSelected(true);
+            }else {
+                boy.setSelected(true);
             }
+            //邮箱
+            emailTextField.setText(user.getUserEmail());
+            //生日
+            Date userBirthday12 = user.getUserBirthday();
+            //从数据库里获取生日
+            Calendar calendar1 = Calendar.getInstance();
+            if(userBirthday12 !=null){
+                calendar1.setTime(userBirthday12);
+                //获取年月日，同时选中
+                String userYear = String.valueOf(calendar1.get(Calendar.YEAR));
+                birthyear.setSelectedItem(userYear);
+                String userMonth = String.valueOf(calendar1.get(Calendar.MONTH)+1);
+                //calendar默认从0月开始
+                birthmonth.setSelectedItem(userMonth);
+                String userDay = String.valueOf(calendar1.get(Calendar.DATE));
+                birthday.setSelectedItem(userDay);
+            }else {
+                birthyear.setSelectedItem("---请选择---");
+                birthmonth.setSelectedItem("---请选择---");
+                birthday.setSelectedItem("---请选择---");
+            }
+            //个人简介
+            descriptionTextArea.setText(user.getUserDescription());
         });
         jPanel.add(reset);
 
         //返回按钮
         JButton cancel = new JButton("返回");
         cancel.setBounds(375,500,80,20);
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                userInformation.dispose();
-                //退出当前界面
-                new GroupsSwing(userId,eventGroupName);
-            }
+        cancel.addActionListener(e -> {
+            userInformation.dispose();
+            //退出当前界面
+            new GroupsSwing(userId,eventGroupName);
         });
         jPanel.add(cancel);
 

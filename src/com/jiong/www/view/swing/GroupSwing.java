@@ -10,15 +10,14 @@ import com.jiong.www.util.MenuSwingUtils;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+/**
+ * @author Mono
+ */
 public class GroupSwing extends JFrame {
     int userId;
     String eventGroupName;
@@ -84,15 +83,12 @@ public class GroupSwing extends JFrame {
         list.setFixedCellHeight(56);
         //单元格的大小
         list.setSelectionBackground(Color.gray);
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                //单击是选择(单击会有tips提示内容简介) 双击是进入
-                if(!list.getValueIsAdjusting()){
-                    Event event = eventService.viewEvent(list.getSelectedValue());
-                    list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
-                    +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
-                }
+        list.addListSelectionListener(e -> {
+            //单击是选择(单击会有tips提示内容简介) 双击是进入
+            if(!list.getValueIsAdjusting()){
+                Event event = eventService.viewEvent(list.getSelectedValue());
+                list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
+                +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
         });
         list.addMouseListener(new MouseAdapter() {
@@ -107,7 +103,7 @@ public class GroupSwing extends JFrame {
                 }
             }
         });
-        DefaultListModel<String> listModel = new DefaultListModel<String>();
+        DefaultListModel<String> listModel = new DefaultListModel<>();
 
         List<Event> events = eventGroupService.viewEventOfEventGroup(eventGroupName);
         int pageSize = 9;
@@ -166,20 +162,17 @@ public class GroupSwing extends JFrame {
         //查询按钮
         JButton queryButton = new JButton("查询");
         queryButton.setBounds(380,650,60,30);
-        queryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String eventName = queryField.getText();
-                if("".equals(eventName)){
-                    JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
+        queryButton.addActionListener(e -> {
+            String eventName = queryField.getText();
+            if("".equals(eventName)){
+                JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
+            }else {
+                int judge = eventService.verifyEventName(eventName);
+                Event event1 = eventService.viewEvent(eventName);
+                if(judge==0){
+                    new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
                 }else {
-                    int judge = eventService.verifyEventName(eventName);
-                    Event event1 = eventService.viewEvent(eventName);
-                    if(judge==0){
-                        new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
-                    }else {
-                        JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);
-                    }
+                    JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -188,12 +181,9 @@ public class GroupSwing extends JFrame {
         //返回按钮
         JButton back = new JButton("返回");
         back.setBounds(1050,700,78,30);
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                eventOfGroup.dispose();
-                new GroupsSwing(userId,eventGroupName);
-            }
+        back.addActionListener(e -> {
+            eventOfGroup.dispose();
+            new GroupsSwing(userId,eventGroupName);
         });
 
         //删除按钮
@@ -204,28 +194,25 @@ public class GroupSwing extends JFrame {
             //管理员或者是超级管理员
             JButton delete = new JButton("删除瓜圈");
             delete.setBounds(500,650,90,30);
-            delete.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                        int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
-                        //判断是不是该管理员管理的瓜圈
-                        if(judge0==1){
-                            //是
-                            int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
-                            if(judge==0){
-                                //选择是
-                                judge0 = eventGroupService.deleteEventGroup(eventGroupName, userId);
-                                if(judge0==1){
-                                    JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                                    new GroupsSwing(userId,eventGroupName);
-                                }
+            delete.addActionListener(e -> {
+                    int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                    //判断是不是该管理员管理的瓜圈
+                    if(judge0==1){
+                        //是
+                        int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
+                        if(judge==0){
+                            //选择是
+                            judge0 = eventGroupService.deleteEventGroup(eventGroupName, userId);
+                            if(judge0==1){
+                                JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
+                                new GroupsSwing(userId,eventGroupName);
                             }
-                        }else {
-                            //不是
-                            JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                         }
+                    }else {
+                        //不是
+                        JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
+                    }
 
-                }
             });
             jPanel.add(delete);
         }
@@ -235,26 +222,18 @@ public class GroupSwing extends JFrame {
         //创建瓜的按钮
         JButton create = new JButton("创建本瓜圈瓜");
         create.setBounds(700,650,120,30);
-        create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CreateEventSwing(userId,eventGroupName);
-            }
-        });
+        create.addActionListener(e -> new CreateEventSwing(userId,eventGroupName));
         jPanel.add(create);
         JButton refresh = new JButton("刷新");
         refresh.setBounds(820,650,90,30);
-        refresh.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DefaultListModel<String> listModel1 = new DefaultListModel<String>();
-                List<Event> events1 = eventGroupService.viewEventOfEventGroup(eventGroupName);
-                for (int i = 0; i < events1.size(); i++) {
-                    listModel1.add(i,events1.get(i).getEventName());
-                }
-                //向列表框中加入该瓜圈的所有瓜名
-                list.setModel(listModel1);
+        refresh.addActionListener(e -> {
+            DefaultListModel<String> listModel1 = new DefaultListModel<>();
+            List<Event> events1 = eventGroupService.viewEventOfEventGroup(eventGroupName);
+            for (int i = 0; i < events1.size(); i++) {
+                listModel1.add(i,events1.get(i).getEventName());
             }
+            //向列表框中加入该瓜圈的所有瓜名
+            list.setModel(listModel1);
         });
         jPanel.add(refresh);
         if(roleId==3){

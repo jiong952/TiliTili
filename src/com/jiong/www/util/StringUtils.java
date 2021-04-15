@@ -7,6 +7,9 @@ public class StringUtils {
     static final char EMAIL_CHAR ='@';
     static final char EMAIL_MIDDLE ='.';
     static final String EMAIL_END ="com";
+    static final int EMAIL_NUMBER =5;
+    static final int NUM_COUNT =2;
+    static final int ALL_COUNT =8;
     public boolean isEmail(String email){
         int judge =0;
         //判断是否有仅有一个@且不能在开头或结尾
@@ -23,7 +26,7 @@ public class StringUtils {
             judge++;
         }
         //@之前要有6个字符
-        if(email.indexOf(EMAIL_CHAR) > 5 ) {
+        if(email.indexOf(EMAIL_CHAR) > EMAIL_NUMBER ) {
             judge++;
         }
         //结尾的格式
@@ -52,7 +55,7 @@ public class StringUtils {
                 break;
             }
         }
-        if (numCount >= 2 && (charNumber+numCount) >= 8&&charNumber>0){
+        if (numCount >= NUM_COUNT && (charNumber+numCount) >= ALL_COUNT &&charNumber>0){
             flag = true;
         }
         return flag;

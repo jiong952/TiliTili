@@ -8,8 +8,6 @@ import com.jiong.www.service.EventService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -76,30 +74,27 @@ public class AccuseHandleSwing {
         //删除瓜
         JButton delete = new JButton("删除瓜");
         delete.setBounds(200,430,90,30);
-        delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(table.getSelectedRow()<0){
-                    JOptionPane.showMessageDialog(null,"请先单击选择要删除的瓜!","错误",JOptionPane.ERROR_MESSAGE);
-                }else {
-                    String deleteEventName = (String)rowData[table.getSelectedRow()][1];
-                    int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + deleteEventName + "吗？", "确认", JOptionPane.YES_NO_OPTION);
-                    if(judge==0){
-                        //YES
-                        Event event = eventService.viewEvent(deleteEventName);
-                        eventService.deleteEvent(event.getEventId());
-                        //刷新待处理列表
-                        List<Accuse> accuses1 = new AccuseService().viewAccusation(userId);
-                        Object[][] rowData1 = new Object[accuses1.size()][4];
-                        for (int i = 0; i < accuses1.size(); i++) {
-                            rowData1[i][0]=accuses1.get(i).getAccusedUserName();
-                            rowData1[i][1]=accuses1.get(i).getAccusedEventName();
-                            rowData1[i][2]=accuses1.get(i).getAccusedContent();
-                            rowData1[i][3]=accuses1.get(i).getAccuseTime();
-                        }
-                        //重新设置数据源
-                        defaultTableModel.setDataVector(rowData1,columnNames);
+        delete.addActionListener(e -> {
+            if(table.getSelectedRow()<0){
+                JOptionPane.showMessageDialog(null,"请先单击选择要删除的瓜!","错误",JOptionPane.ERROR_MESSAGE);
+            }else {
+                String deleteEventName = (String)rowData[table.getSelectedRow()][1];
+                int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + deleteEventName + "吗？", "确认", JOptionPane.YES_NO_OPTION);
+                if(judge==0){
+                    //YES
+                    Event event = eventService.viewEvent(deleteEventName);
+                    eventService.deleteEvent(event.getEventId());
+                    //刷新待处理列表
+                    List<Accuse> accuses1 = new AccuseService().viewAccusation(userId);
+                    Object[][] rowData1 = new Object[accuses1.size()][4];
+                    for (int i = 0; i < accuses1.size(); i++) {
+                        rowData1[i][0]=accuses1.get(i).getAccusedUserName();
+                        rowData1[i][1]=accuses1.get(i).getAccusedEventName();
+                        rowData1[i][2]=accuses1.get(i).getAccusedContent();
+                        rowData1[i][3]=accuses1.get(i).getAccuseTime();
                     }
+                    //重新设置数据源
+                    defaultTableModel.setDataVector(rowData1,columnNames);
                 }
             }
         });
@@ -107,25 +102,22 @@ public class AccuseHandleSwing {
         //举报静默处理按钮
         JButton notDelete = new JButton("静默处理");
         notDelete.setBounds(350,430,90,30);
-        notDelete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String accusedEventName = (String)rowData[table.getSelectedRow()][1];
-                Event event = eventService.viewEvent(accusedEventName);
-                String accusedContent = (String)rowData[table.getSelectedRow()][2];
-                new AccuseService().deleteAccuse(event.getEventId(),accusedContent);
-                //刷新待处理列表
-                List<Accuse> accuses1 = new AccuseService().viewAccusation(userId);
-                Object[][] rowData1 = new Object[accuses1.size()][4];
-                for (int i = 0; i < accuses1.size(); i++) {
-                    rowData1[i][0]=accuses1.get(i).getAccusedUserName();
-                    rowData1[i][1]=accuses1.get(i).getAccusedEventName();
-                    rowData1[i][2]=accuses1.get(i).getAccusedContent();
-                    rowData1[i][3]=accuses1.get(i).getAccuseTime();
-                }
-                //重新设置数据源
-                defaultTableModel.setDataVector(rowData1,columnNames);
+        notDelete.addActionListener(e -> {
+            String accusedEventName = (String)rowData[table.getSelectedRow()][1];
+            Event event = eventService.viewEvent(accusedEventName);
+            String accusedContent = (String)rowData[table.getSelectedRow()][2];
+            new AccuseService().deleteAccuse(event.getEventId(),accusedContent);
+            //刷新待处理列表
+            List<Accuse> accuses1 = new AccuseService().viewAccusation(userId);
+            Object[][] rowData1 = new Object[accuses1.size()][4];
+            for (int i = 0; i < accuses1.size(); i++) {
+                rowData1[i][0]=accuses1.get(i).getAccusedUserName();
+                rowData1[i][1]=accuses1.get(i).getAccusedEventName();
+                rowData1[i][2]=accuses1.get(i).getAccusedContent();
+                rowData1[i][3]=accuses1.get(i).getAccuseTime();
             }
+            //重新设置数据源
+            defaultTableModel.setDataVector(rowData1,columnNames);
         });
         jPanel.add(notDelete);
         //可见

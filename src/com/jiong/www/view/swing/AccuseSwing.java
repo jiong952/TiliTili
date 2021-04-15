@@ -1,12 +1,9 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.service.AccuseService;
-import com.jiong.www.service.EventService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mono
@@ -22,7 +19,6 @@ public class AccuseSwing extends JFrame {
         this.userId = userId;
         this.eventId = eventId;
         this.eventName=eventName;
-        EventService eventService = new EventService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(300,300);
         //设置大小
@@ -58,24 +54,21 @@ public class AccuseSwing extends JFrame {
         //查询按钮
         JButton jButton = new JButton("举报");
         jButton.setBounds(110,200,60,30);
-        jButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!"".equals(jTextArea.getText())){
-                    int judge = JOptionPane.showConfirmDialog(null, "您确定要举报" + eventName + "吗?", "确认", JOptionPane.YES_NO_OPTION);
-                    if(judge==0){
-                        //YES
-                        int row = new AccuseService().accuseEvent(eventId, userId, jTextArea.getText());
-                        if(row==1){
-                            JOptionPane.showMessageDialog(null,"举报成功");
-                            jFrame.dispose();
-                        }
-                    }else {
-                        JOptionPane.showMessageDialog(null,"做一个文明吃瓜群众！");
+        jButton.addActionListener(e -> {
+            if(!"".equals(jTextArea.getText())){
+                int judge = JOptionPane.showConfirmDialog(null, "您确定要举报" + eventName + "吗?", "确认", JOptionPane.YES_NO_OPTION);
+                if(judge==0){
+                    //YES
+                    int row = new AccuseService().accuseEvent(eventId, userId, jTextArea.getText());
+                    if(row==1){
+                        JOptionPane.showMessageDialog(null,"举报成功");
+                        jFrame.dispose();
                     }
-               }else {
-                    JOptionPane.showMessageDialog(null,"举报理由不可以为空","错误",JOptionPane.ERROR_MESSAGE);
+                }else {
+                    JOptionPane.showMessageDialog(null,"做一个文明吃瓜群众！");
                 }
+           }else {
+                JOptionPane.showMessageDialog(null,"举报理由不可以为空","错误",JOptionPane.ERROR_MESSAGE);
             }
         });
         jPanel.add(jButton);

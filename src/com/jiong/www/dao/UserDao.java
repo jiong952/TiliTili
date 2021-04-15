@@ -74,13 +74,13 @@ public class UserDao {
         //查询并储存该用户的信息的原先值
         String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=?,`password_remember` =? WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        if(user.getUserEmail() ==null){
+        if(user.getUserEmail()==null){
             ps.setString(1,userDefault.getUserEmail());
         }else {
             ps.setString(1, user.getUserEmail());
         }
-        if(user.getUserNickname() ==null){
-            ps.setString(2, userDefault.getLoginName());
+        if(user.getUserNickname()==null){
+            ps.setString(2, userDefault.getUserNickname());
         }else {
             ps.setString(2,user.getUserNickname());
         }
@@ -90,21 +90,26 @@ public class UserDao {
         }else {
             ps.setInt(3,user.getUserGender());
         }
-        if(user.getUserDescription() ==null){
+        if(user.getUserDescription()==null){
             ps.setString(4,userDefault.getUserDescription());
         }
         else {
             ps.setString(4,user.getUserDescription());
         }
-        if(user.getUserBirthday()==null){
+
+
+        if(userDefault.getUserBirthday()==user.getUserBirthday()){
             ps.setDate(5,userDefault.getUserBirthday());
         }else {
             ps.setDate(5,user.getUserBirthday());
         }
-        if(user.getIsRememberPassword()==0){
-            ps.setInt(6,0);
+
+
+
+        if(user.getIsRememberPassword()==2){
+            ps.setInt(6,userDefault.getIsRememberPassword());
         }else {
-            ps.setInt(6,1);
+            ps.setInt(6,user.getIsRememberPassword());
         }
         //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
         ps.setInt(7,userId);

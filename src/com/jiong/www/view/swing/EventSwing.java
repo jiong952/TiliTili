@@ -4,14 +4,11 @@ import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
 import com.jiong.www.util.EventPagingUtils;
-import com.jiong.www.util.GroupPagingUtils;
 import com.jiong.www.util.MenuSwingUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -111,26 +108,20 @@ public class EventSwing {
             notLike.setSelected(true);
         }
         //点赞
-        like.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                likesService.likes(userId,eventId);
-                Event event1 = eventService.viewEvent(eventName);
-                likesNumber.setText(String.valueOf(event1.getLikesNum()));
-            }
+        like.addActionListener(e -> {
+            likesService.likes(userId,eventId);
+            Event event1 = eventService.viewEvent(eventName);
+            likesNumber.setText(String.valueOf(event1.getLikesNum()));
         });
         //取消点赞
-        notLike.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int judge = JOptionPane.showConfirmDialog(null, "您确定要取消点赞吗？", "删除提示", JOptionPane.YES_NO_OPTION);
-                if(judge==0){
-                likesService.cancelLikes(userId,eventId);
-                Event event1 = eventService.viewEvent(eventName);
-                likesNumber.setText(String.valueOf(event1.getLikesNum()));
-                }else {
-                    like.setSelected(true);
-                }
+        notLike.addActionListener(e -> {
+            int judge12 = JOptionPane.showConfirmDialog(null, "您确定要取消点赞吗？", "删除提示", JOptionPane.YES_NO_OPTION);
+            if(judge12 ==0){
+            likesService.cancelLikes(userId,eventId);
+            Event event1 = eventService.viewEvent(eventName);
+            likesNumber.setText(String.valueOf(event1.getLikesNum()));
+            }else {
+                like.setSelected(true);
             }
         });
         //把单选按钮放进按钮组
@@ -162,26 +153,20 @@ public class EventSwing {
             notCollected.setSelected(true);
         }
         //收藏
-        collected.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                collectionService.collection(userId,eventId);
-                Event event1 = eventService.viewEvent(eventName);
-                collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
-            }
+        collected.addActionListener(e -> {
+            collectionService.collection(userId,eventId);
+            Event event1 = eventService.viewEvent(eventName);
+            collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
         });
         //取消收藏
-        notCollected.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int judge = JOptionPane.showConfirmDialog(null, "您确定要取消收藏吗？", "删除提示", JOptionPane.YES_NO_OPTION);
-                if(judge==0){
-                    collectionService.cancelCollection(userId,eventId);
-                    Event event1 = eventService.viewEvent(eventName);
-                    collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
-                }else {
-                    collected.setSelected(true);
-                }
+        notCollected.addActionListener(e -> {
+            int judge2 = JOptionPane.showConfirmDialog(null, "您确定要取消收藏吗？", "删除提示", JOptionPane.YES_NO_OPTION);
+            if(judge2 ==0){
+                collectionService.cancelCollection(userId,eventId);
+                Event event1 = eventService.viewEvent(eventName);
+                collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
+            }else {
+                collected.setSelected(true);
             }
         });
         //把两个按钮放进按钮组
@@ -284,78 +269,72 @@ public class EventSwing {
         sendComment.setBounds(700,707,60,30);
         jPanel.add(sendComment);
         //发送按钮的监听器
-        sendComment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CommentService().comment(userId,eventId,myCommentArea.getText());
-                JOptionPane.showMessageDialog(null,"评论成功！");
-                myCommentArea.setText("");
-                //刷新评论
-                List<Comment> comments1 = commentService.viewComment(event.getEventId());
-                Object[][] rowData1 = new Object[comments1.size()][3];
-                for (int i = 0; i < comments1.size(); i++) {
-                    rowData1[i][0]=comments1.get(i).getCommenterName();
-                    rowData1[i][1]=comments1.get(i).getCommentContent();
-                    rowData1[i][2]=comments1.get(i).getCommentTime().toString();
-                }
-                //重新设置数据源
-                defaultTableModel.setDataVector(rowData1,columnNames);
-                //重新设置评论数
-                commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+        sendComment.addActionListener(e -> {
+            new CommentService().comment(userId,eventId,myCommentArea.getText());
+            JOptionPane.showMessageDialog(null,"评论成功！");
+            myCommentArea.setText("");
+            //刷新评论
+            List<Comment> comments1 = commentService.viewComment(event.getEventId());
+            Object[][] rowData1 = new Object[comments1.size()][3];
+            for (int i = 0; i < comments1.size(); i++) {
+                rowData1[i][0]=comments1.get(i).getCommenterName();
+                rowData1[i][1]=comments1.get(i).getCommentContent();
+                rowData1[i][2]=comments1.get(i).getCommentTime().toString();
             }
+            //重新设置数据源
+            defaultTableModel.setDataVector(rowData1,columnNames);
+            //重新设置评论数
+            commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
         });
 
 
         //删除评论+清空评论
         JButton deleteComment= new JButton("删除评论");
         deleteComment.setBounds(750,637,90,30);
-        deleteComment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(table.getSelectedRow()<0){
-                    JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
+        deleteComment.addActionListener(e -> {
+            if(table.getSelectedRow()<0){
+                JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
+            }
+            int judge22 = userService.verifyRole(userId);
+            List<Comment> comments0 = commentService.viewComment(event.getEventId());
+            if(judge22 ==1){
+                //吃瓜群众
+                if(userId==comments0.get(table.getSelectedRow()).getCommenterId()){
+                    commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommentId(),eventId);
+                    JOptionPane.showMessageDialog(null,"删除成功");
+                    List<Comment> comments1 = commentService.viewComment(event.getEventId());
+                    Object[][] rowData1 = new Object[comments1.size()][3];
+                    for (int i = 0; i < comments1.size(); i++) {
+                        rowData1[i][0]=comments1.get(i).getCommenterName();
+                        rowData1[i][1]=comments1.get(i).getCommentContent();
+                        rowData1[i][2]=comments1.get(i).getCommentTime().toString();
+                    }
+                    //重新设置数据源
+                    defaultTableModel.setDataVector(rowData1,columnNames);
+                    //重新设置评论数
+                    commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+                }else {
+                    JOptionPane.showMessageDialog(null,"您没有权限","错误",JOptionPane.ERROR_MESSAGE);
                 }
-                int judge = userService.verifyRole(userId);
-                List<Comment> comments0 = commentService.viewComment(event.getEventId());
-                if(judge==1){
-                    //吃瓜群众
-                    if(userId==comments0.get(table.getSelectedRow()).getCommenterId()){
-                        commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommentId(),eventId);
-                        JOptionPane.showMessageDialog(null,"删除成功");
-                        List<Comment> comments1 = commentService.viewComment(event.getEventId());
-                        Object[][] rowData1 = new Object[comments1.size()][3];
-                        for (int i = 0; i < comments1.size(); i++) {
-                            rowData1[i][0]=comments1.get(i).getCommenterName();
-                            rowData1[i][1]=comments1.get(i).getCommentContent();
-                            rowData1[i][2]=comments1.get(i).getCommentTime().toString();
-                        }
-                        //重新设置数据源
-                        defaultTableModel.setDataVector(rowData1,columnNames);
-                        //重新设置评论数
-                        commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
-                    }else {
-                        JOptionPane.showMessageDialog(null,"您没有权限","错误",JOptionPane.ERROR_MESSAGE);
+            }else if(judge22 ==2){
+                //管理员
+                int judge11 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                if(judge11 ==1){
+                    commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommenterId(),eventId);
+                    JOptionPane.showMessageDialog(null,"删除成功！");
+                    List<Comment> comments1 = commentService.viewComment(event.getEventId());
+                    Object[][] rowData1 = new Object[comments1.size()][3];
+                    for (int i = 0; i < comments1.size(); i++) {
+                        rowData1[i][0]=comments1.get(i).getCommenterName();
+                        rowData1[i][1]=comments1.get(i).getCommentContent();
+                        rowData1[i][2]=comments1.get(i).getCommentTime().toString();
                     }
-                }else if(judge==2){
-                    //管理员
-                    int judge1 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
-                    if(judge1==1){
-                        commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommenterId(),eventId);
-                        JOptionPane.showMessageDialog(null,"删除成功！");
-                        List<Comment> comments1 = commentService.viewComment(event.getEventId());
-                        Object[][] rowData1 = new Object[comments1.size()][3];
-                        for (int i = 0; i < comments1.size(); i++) {
-                            rowData1[i][0]=comments1.get(i).getCommenterName();
-                            rowData1[i][1]=comments1.get(i).getCommentContent();
-                            rowData1[i][2]=comments1.get(i).getCommentTime().toString();
-                        }
-                        //重新设置数据源
-                        defaultTableModel.setDataVector(rowData1,columnNames);
-                        //重新设置评论数
-                        commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
-                    }else {
-                        JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
-                    }
+                    //重新设置数据源
+                    defaultTableModel.setDataVector(rowData1,columnNames);
+                    //重新设置评论数
+                    commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+                }else {
+                    JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -363,27 +342,24 @@ public class EventSwing {
 
         JButton clearComment= new JButton("清空评论");
         clearComment.setBounds(850,637,90,30);
-        clearComment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int judge = userService.verifyRole(userId);
-                if(judge==1){
-                    //吃瓜群众
-                    JOptionPane.showMessageDialog(null,"您没有权限","错误",JOptionPane.ERROR_MESSAGE);
-                }else if(judge==2){
-                    //管理员
-                    int judge1 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
-                    if(judge1==1){
-                        commentService.clearComment(eventId);
-                        JOptionPane.showMessageDialog(null,"删除成功！");
-                        //清空
-                        //重新设置数据源
-                        defaultTableModel.setDataVector(null,columnNames);
-                        //重新设置评论数
-                        commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
-                    }else {
-                        JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
-                    }
+        clearComment.addActionListener(e -> {
+            int judge23 = userService.verifyRole(userId);
+            if(judge23 ==1){
+                //吃瓜群众
+                JOptionPane.showMessageDialog(null,"您没有权限","错误",JOptionPane.ERROR_MESSAGE);
+            }else if(judge23 ==2){
+                //管理员
+                int judge112 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                if(judge112 ==1){
+                    commentService.clearComment(eventId);
+                    JOptionPane.showMessageDialog(null,"删除成功！");
+                    //清空
+                    //重新设置数据源
+                    defaultTableModel.setDataVector(null,columnNames);
+                    //重新设置评论数
+                    commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+                }else {
+                    JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -398,22 +374,14 @@ public class EventSwing {
         //举报按钮
         JButton accuse = new JButton("举报");
         accuse.setBounds(850,707,90,30);
-        accuse.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new AccuseSwing(userId,eventName,eventId);
-            }
-        });
+        accuse.addActionListener(e -> new AccuseSwing(userId,eventName,eventId));
         jPanel.add(accuse);
         //返回按钮
         JButton back = new JButton("返回");
         back.setBounds(1050,707,78,30);
-        back.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                selectedEvent.dispose();
-                new GroupSwing(userId,eventGroupName);
-            }
+        back.addActionListener(e -> {
+            selectedEvent.dispose();
+            new GroupSwing(userId,eventGroupName);
         });
         back.setFont(font1);
         jPanel.add(back);
