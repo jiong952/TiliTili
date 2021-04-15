@@ -18,7 +18,7 @@ public class EventGroupDao {
     /**创建瓜圈,添加瓜圈信息到瓜圈表，并且把管理员和瓜联系一起*/
     public int createEventGroup(int userId, EventGroup eventGroup) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
-        int row=0;
+        int row;
         conn.setAutoCommit(false);
         String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
         String sql1 ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
@@ -45,7 +45,7 @@ public class EventGroupDao {
         Connection conn = JdbcUtils.getConnection();
         int row=0;
         //用来抛出到view层做判断
-        String sql="SELECT *FROM `eventgroup` WHERE `eventGroup_name`=?";
+        String sql="SELECT `eventGroup_id` FROM `eventgroup` WHERE `eventGroup_name`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1,eventGroupName);
         ResultSet rs = ps.executeQuery();
@@ -116,7 +116,7 @@ public class EventGroupDao {
     public EventGroup viewEventGroup(String eventGroupName) throws SQLException {
         EventGroup eventGroup = new EventGroup();
         Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT *FROM `eventgroup` WHERE `eventGroup_name` = ?";
+        String sql ="SELECT `eventGroup_description`,`eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name` = ?";
         //联表查询
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1,eventGroupName);
@@ -131,9 +131,9 @@ public class EventGroupDao {
     }
     /**查看所有瓜圈*/
     public List<EventGroup> viewAllEventGroup() throws SQLException {
-        List<EventGroup> eventGroups = new ArrayList<EventGroup>();
+        List<EventGroup> eventGroups = new ArrayList<>();
         Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT *FROM `eventgroup`";
+        String sql ="SELECT `eventGroup_name`,`eventGroup_description` FROM `eventgroup`";
         //联表查询
         PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
@@ -149,7 +149,7 @@ public class EventGroupDao {
     }
     /**查看瓜圈里的所有瓜*/
     public List<Event> viewEventOfEventGroup(String eventGroupName) throws SQLException {
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT `event_name`,`login_name`,`comment_num`,`likes_num`,`collection_num`,s.`create_time`\n" +
                 "FROM `event` s\n" +

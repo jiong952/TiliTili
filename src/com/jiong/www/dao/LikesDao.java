@@ -53,7 +53,7 @@ public class LikesDao {
     public int likesIfOrNot(int userId,int eventId) throws SQLException {
         int judge=0;
         Connection conn = JdbcUtils.getConnection();
-        String sql1="SELECT * FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
+        String sql1="SELECT `id` FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
         PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps1.setInt(1,eventId);
         ps1.setInt(2,userId);
@@ -70,7 +70,7 @@ public class LikesDao {
     }
     /**查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     public List<Event> viewEventOfLikes(int userId) throws SQLException {
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         //创建一个容器返回 点赞瓜的信息
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT `login_name`,`event_name`,`event_content`,`comment_num`,`likes_num`,s.`create_time`,s.`event_id`,`collection_num`\n" +

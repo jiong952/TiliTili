@@ -42,7 +42,7 @@ public class UserDao {
         int row=0;
         //默认为0不存在
         //用来抛出到view层做判断
-        String sql="SELECT *FROM `user` WHERE `login_name`=?";
+        String sql="SELECT `user_id` FROM `user` WHERE `login_name`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1,loginName);
         ResultSet rs = ps.executeQuery();
@@ -107,6 +107,7 @@ public class UserDao {
                 userId=rs.getInt("user_id");
                 //查询userId
             }
+            assert realPassword != null;
             if (!realPassword.equals(loginPassword)){
                 //loginPassword是用户输入的密码
                 //查无用户名或者密码错误都无法进入
@@ -121,7 +122,7 @@ public class UserDao {
     /**验证用户的身份，吃瓜群众1管理员2游客3超管4*/
     public int verifyRole(int userId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT *FROM `user_role`WHERE`user_id`=?";
+        String sql ="SELECT `role_id` FROM `user_role`WHERE`user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1,userId);
         ResultSet rs = ps.executeQuery();
@@ -137,7 +138,7 @@ public class UserDao {
     public int verifyPassword(String oldPassword,int userId) throws SQLException {
         int row=0;
         Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT *FROM `user` WHERE `user_id`=?";
+        String sql ="SELECT `login_password` FROM `user` WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1,userId);
         ResultSet rs = ps.executeQuery();
@@ -146,6 +147,7 @@ public class UserDao {
         while(rs.next()){
             realPassword=rs.getString("login_password");
         }
+        assert realPassword != null;
         if(realPassword.equals(oldPassword)){
             //验证密码成功则令结果为1
             row=1;
@@ -173,7 +175,8 @@ public class UserDao {
     public User queryUserInformation(int userId) throws SQLException {
         User userQuery = new User();
         Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT *FROM `user` WHERE `user_id`=?";
+        String sql ="SELECT `login_name`,`user_e-mail`,`user_nickname`,\n" +
+                "`user_gender`,`user_description`,`user_birthday`,`login_password`,`password_remember`FROM `user` WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1,userId);
         ResultSet rs = ps.executeQuery();
@@ -195,7 +198,7 @@ public class UserDao {
     public User isRememberPassword(String loginName) throws SQLException {
         User user = new User();
         Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT *FROM `user` WHERE `login_name`=?";
+        String sql ="SELECT `password_remember`,`login_password` FROM `user` WHERE `login_name`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1,loginName);
         ResultSet rs = ps.executeQuery();

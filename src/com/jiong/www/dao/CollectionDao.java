@@ -54,7 +54,7 @@ public class CollectionDao {
     public int collectionIfOrNot(int userId,int eventId) throws SQLException {
         int judge=0;
         Connection conn = JdbcUtils.getConnection();
-        String sql1="SELECT * FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
+        String sql1="SELECT `id` FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
         PreparedStatement ps1 = conn.prepareStatement(sql1);
         ps1.setInt(1,eventId);
         ps1.setInt(2,userId);
@@ -71,7 +71,7 @@ public class CollectionDao {
     }
     /**查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     public List<Event> viewEventOfCollection(int userId) throws SQLException {
-        List<Event> events = new ArrayList<Event>();
+        List<Event> events = new ArrayList<>();
         //创建一个容器返回 收藏瓜的信息
         Connection conn = JdbcUtils.getConnection();
         String sql ="SELECT `login_name`,`event_name`,`event_content`,`comment_num`,`likes_num`,s.`create_time`,s.`event_id`,`collection_num`\n" +

@@ -37,7 +37,7 @@ public class EventDao {
         int row=1;
         //row为1表示不存在
         //用来抛出到view层做判断
-        String sql="SELECT *FROM `event`WHERE `event_name`=?";
+        String sql="SELECT `event_id` FROM `event`WHERE `event_name`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1,eventName);
         ResultSet rs = ps.executeQuery();
@@ -91,7 +91,7 @@ public class EventDao {
     }
     /**删除瓜*/
     public int deleteEvent(int eventId) throws SQLException {
-        int row=0;
+        int row;
         Connection conn = JdbcUtils.getConnection();
         //进行数据库连接
         String sql ="DELETE FROM `event` WHERE `event_id` =?";
