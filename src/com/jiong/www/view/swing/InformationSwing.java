@@ -18,7 +18,13 @@ public class InformationSwing extends JFrame {
 
     int userId;
     String eventGroupName;
-
+    static final int YEAR_MAX =2021;
+    static final int YEAR_MIN =1950;
+    static final int MONTH_MAX =12;
+    static final int MONTH_MIN =0;
+    static final int DAY_MAX =31;
+    static final int DAY_MIN =1;
+    static final String DATE_DEFAULT ="---请选择---";
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -173,25 +179,25 @@ public class InformationSwing extends JFrame {
         //用集合先存放string,转为数组，数组直接放进列表框
         //产生年份
         ArrayList<String> year1 = new ArrayList<>();
-        year1.add("---请选择---");
-        for (int i = 2021;i>=1950;i--){
+        year1.add(DATE_DEFAULT);
+        for (int i = YEAR_MAX;i>=YEAR_MIN;i--){
             year1.add(String.valueOf(i));
         }
-        String[] year = year1.toArray(new String[year1.size()]);
+        String[] year = year1.toArray(new String[0]);
         //产生月份
         ArrayList<String> month1 = new ArrayList();
-        month1.add("---请选择---");
-        for (int i = 0;i<12;i++){
+        month1.add(DATE_DEFAULT);
+        for (int i = MONTH_MIN;i<MONTH_MAX;i++){
             month1.add(String.valueOf(i+1));
         }
-        String[] month = month1.toArray(new String[month1.size()]);
+        String[] month = month1.toArray(new String[0]);
         //产生日期
         ArrayList<String> day1 = new ArrayList<>();
-        day1.add("---请选择---");
-        for (int i = 1; i< 30;i++){
+        day1.add(DATE_DEFAULT);
+        for (int i = DAY_MIN; i< DAY_MAX;i++){
             day1.add(String.valueOf(i));
         }
-        String[] day = day1.toArray(new String[month1.size()]);
+        String[] day = day1.toArray(new String[0]);
         //把年份数组放进下拉列表中
         JComboBox<String> birthyear = new JComboBox<>(year);
         birthyear.setBounds(125,300,100,20);
@@ -230,9 +236,9 @@ public class InformationSwing extends JFrame {
             String userDay = String.valueOf(calendar.get(Calendar.DATE));
             birthday.setSelectedItem(userDay);
         }else {
-            birthyear.setSelectedItem("---请选择---");
-            birthmonth.setSelectedItem("---请选择---");
-            birthday.setSelectedItem("---请选择---");
+            birthyear.setSelectedItem(DATE_DEFAULT);
+            birthmonth.setSelectedItem(DATE_DEFAULT);
+            birthday.setSelectedItem(DATE_DEFAULT);
         }
 
 
@@ -318,8 +324,7 @@ public class InformationSwing extends JFrame {
                     //错误提示还在
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
-                    System.out.println(userBirthday2);
-                    int judge =userService.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2,2);
+                    int judge =userService.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {

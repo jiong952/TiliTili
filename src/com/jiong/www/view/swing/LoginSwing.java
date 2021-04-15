@@ -171,10 +171,10 @@ public class LoginSwing extends JFrame implements ActionListener {
                         }
                         //先在这里记录是否记住密码
                         if(jcheckbox.isSelected()){
-                            new UserService().perfectInformation(null,null,2,null,userId,null,1);
+                            new UserService().isRememberPassword(1,userId);
                             //更新表中的记住密码
                         }else {
-                            new UserService().perfectInformation(null,null,2,null,userId,null,0);
+                            new UserService().isRememberPassword(0,userId);
                         }
                         //进入下一个页面
                         login.dispose();

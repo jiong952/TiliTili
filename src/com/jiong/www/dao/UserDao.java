@@ -57,72 +57,36 @@ public class UserDao {
     /**完善用户信息,实现了每次只改动一个信息，其他的保存为上次的值*/
     public int perfectInformation(User user,int userId) throws SQLException {
         Connection conn = JdbcUtils.getConnection();
-        String sql1="SELECT *FROM `user` WHERE `user_id`=?";
-        PreparedStatement ps1 = conn.prepareStatement(sql1);
-        ps1.setInt(1,userId);
-        ResultSet resultSet = ps1.executeQuery();
-        User userDefault = new User();
-        //userDefault用来封装表中数据地初始值
-        while(resultSet.next()){
-            userDefault.setUserEmail(resultSet.getString("user_e-mail"));
-            userDefault.setUserNickname(resultSet.getString("user_nickname"));
-            userDefault.setUserGender(resultSet.getInt("user_gender"));
-            userDefault.setUserDescription(resultSet.getString("user_description"));
-            userDefault.setUserBirthday(resultSet.getDate("user_birthday"));
-            userDefault.setIsRememberPassword(resultSet.getInt("password_remember"));
-        }
         //查询并储存该用户的信息的原先值
-        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=?,`password_remember` =? WHERE `user_id`=?";
+        String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=?WHERE `user_id`=?";
         PreparedStatement ps = conn.prepareStatement(sql);
-        if(user.getUserEmail()==null){
-            ps.setString(1,userDefault.getUserEmail());
-        }else {
-            ps.setString(1, user.getUserEmail());
-        }
-        if(user.getUserNickname()==null){
-            ps.setString(2, userDefault.getUserNickname());
-        }else {
-            ps.setString(2,user.getUserNickname());
-        }
-        if(user.getUserGender() ==2){
-            //2是性别为空的默认值
-            ps.setInt(3, userDefault.getUserGender());
-        }else {
-            ps.setInt(3,user.getUserGender());
-        }
-        if(user.getUserDescription()==null){
-            ps.setString(4,userDefault.getUserDescription());
-        }
-        else {
-            ps.setString(4,user.getUserDescription());
-        }
-        if(user.getUserBirthday()==null){
-            if(userDefault.getUserBirthday()==null){
-                ps.setDate(5,null);
-            }else {
-                ps.setDate(5,userDefault.getUserBirthday());
-            }
-        }else {
-            if (userDefault.getUserBirthday() == user.getUserBirthday()) {
-                ps.setDate(5, userDefault.getUserBirthday());
-            } else {
-                ps.setDate(5, user.getUserBirthday());
-            }
-        }
-
-
-        if(user.getIsRememberPassword()==2){
-            ps.setInt(6,userDefault.getIsRememberPassword());
-        }else {
-            ps.setInt(6,user.getIsRememberPassword());
-        }
+        ps.setString(1, user.getUserEmail());
+        ps.setString(2,user.getUserNickname());
+        ps.setInt(3,user.getUserGender());
+        ps.setString(4,user.getUserDescription());
+        ps.setDate(5, user.getUserBirthday());
         //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
-        ps.setInt(7,userId);
+        ps.setInt(6,userId);
         int row = ps.executeUpdate();
         //sql语句返回结果判断
         //row是返回值，用于判断
         JdbcUtils.release(conn,ps,null);
-        JdbcUtils.release(conn,ps1,null);
+        //释放连接
+        return row;
+    }
+    /**是否记住密码*/
+    public int isRememberPassword(int isRememberPassword,int userId) throws SQLException {
+        Connection conn = JdbcUtils.getConnection();
+        //查询并储存该用户的信息的原先值
+        String sql ="UPDATE `user` SET `password_remember`=? WHERE `user_id`=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
+        ps.setInt(1,isRememberPassword);
+        ps.setInt(2,userId);
+        int row = ps.executeUpdate();
+        //sql语句返回结果判断
+        //row是返回值，用于判断
+        JdbcUtils.release(conn,ps,null);
         //释放连接
         return row;
     }

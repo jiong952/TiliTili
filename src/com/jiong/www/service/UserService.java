@@ -40,7 +40,7 @@ public class UserService {
         //0不存在，1存在
     }
     /**完善用户信息*/
-    public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday,int isRememberPassword){
+    public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday){
         int row =0;
         // 用于接收dao层的返回值
         //封装对象
@@ -50,7 +50,6 @@ public class UserService {
         user.setUserGender(userGender);
         user.setUserDescription(userDescription);
         user.setUserBirthday(userBirthday);
-        user.setIsRememberPassword(isRememberPassword);
         try {
             row=userDao.perfectInformation(user,userId);
         } catch (SQLException e) {
@@ -59,6 +58,16 @@ public class UserService {
         //处理dao层的异常
         return row;
         //返回结果集
+    }
+    /**是否记住密码*/
+    public int isRememberPassword(int isRememberPassword,int userId){
+        int row=0;
+        try {
+            row=userDao.isRememberPassword(isRememberPassword,userId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
     }
     /**登录*/
     public int login(String loginName,String loginPassword){

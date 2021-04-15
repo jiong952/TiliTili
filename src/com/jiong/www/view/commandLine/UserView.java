@@ -168,7 +168,7 @@ public class UserView {
                     }
                     break;
                 case 8:
-                    int row = userService.perfectInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday,0);
+                    int row = userService.perfectInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday);
                     if(row>0){
                         System.out.println("保存成功!");
                     }else {
