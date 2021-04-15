@@ -5,8 +5,6 @@ import com.jiong.www.service.EventService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * @author Mono
@@ -46,21 +44,18 @@ public class QueryEventSwing extends JFrame{
         //查询按钮
         JButton queryButton = new JButton("查询");
         queryButton.setBounds(200,200,60,30);
-        queryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String eventName = queryField.getText();
-                if("".equals(eventName)){
-                    JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
+        queryButton.addActionListener(e -> {
+            String eventName = queryField.getText();
+            if("".equals(eventName)){
+                JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
+            }else {
+                int judge = eventService.verifyEventName(eventName);
+                Event event1 = eventService.viewEvent(eventName);
+                if(judge==0){
+                    jFrame.dispose();
+                    new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
                 }else {
-                    int judge = eventService.verifyEventName(eventName);
-                    Event event1 = eventService.viewEvent(eventName);
-                    if(judge==0){
-                        jFrame.dispose();
-                        new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
-                    }else {
-                        JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);
-                    }
+                    JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

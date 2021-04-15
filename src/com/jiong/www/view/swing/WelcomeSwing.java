@@ -4,14 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * @author Mono
+ */
 public class WelcomeSwing extends JFrame implements ActionListener{
         JFrame welcome;
-        //2个面板
         JPanel jPanel1;
         JPanel jPanel2;
-        //1个标签
         JLabel jLabel;
-        //3个按钮
         JButton login;
         JButton register;
         JButton visitor;

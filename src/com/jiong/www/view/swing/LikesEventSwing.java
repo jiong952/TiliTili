@@ -5,11 +5,7 @@ import com.jiong.www.service.EventService;
 import com.jiong.www.service.LikesService;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -57,15 +53,12 @@ public class LikesEventSwing {
         list.setFixedCellHeight(30);
         //单元格的大小
         list.setSelectionBackground(Color.gray);
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                //单击是选择(单击会有tips提示内容简介) 双击是进入
-                if(!list.getValueIsAdjusting()){
-                    Event event = eventService.viewEvent(list.getSelectedValue());
-                    list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
-                            +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
-                }
+        list.addListSelectionListener(e -> {
+            //单击是选择(单击会有tips提示内容简介) 双击是进入
+            if(!list.getValueIsAdjusting()){
+                Event event = eventService.viewEvent(list.getSelectedValue());
+                list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
+                        +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
         });
         list.addMouseListener(new MouseAdapter() {
@@ -79,7 +72,7 @@ public class LikesEventSwing {
                 }
             }
         });
-        DefaultListModel<String> listModel = new DefaultListModel<String>();
+        DefaultListModel<String> listModel = new DefaultListModel<>();
         List<Event> events = new LikesService().viewEventOfLikes(userId);
         for (int i = 0; i < events.size(); i++) {
             listModel.add(i,events.get(i).getEventName());
@@ -95,26 +88,23 @@ public class LikesEventSwing {
         //取消点赞按钮实时刷新,返回按钮
         JButton delete = new JButton("取消点赞");
         delete.setBounds(300,430,90,30);
-        delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(list.getSelectedIndex()>=0){
-                    int judge = JOptionPane.showConfirmDialog(null, "您确定要取消点赞" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
-                    if(judge==0){
-                        //YES
-                        Event event = eventService.viewEvent(list.getSelectedValue());
-                        new LikesService().cancelLikes(userId,event.getEventId());
-                        //刷新
-                        DefaultListModel<String> listModel1 = new DefaultListModel<String>();
-                        List<Event> events1 = new LikesService().viewEventOfLikes(userId);
-                        for (int i = 0; i < events1.size(); i++) {
-                            listModel1.add(i,events1.get(i).getEventName());
-                        }
-                        list.setModel(listModel1);
+        delete.addActionListener(e -> {
+            if(list.getSelectedIndex()>=0){
+                int judge = JOptionPane.showConfirmDialog(null, "您确定要取消点赞" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
+                if(judge==0){
+                    //YES
+                    Event event = eventService.viewEvent(list.getSelectedValue());
+                    new LikesService().cancelLikes(userId,event.getEventId());
+                    //刷新
+                    DefaultListModel<String> listModel1 = new DefaultListModel<>();
+                    List<Event> events1 = new LikesService().viewEventOfLikes(userId);
+                    for (int i = 0; i < events1.size(); i++) {
+                        listModel1.add(i,events1.get(i).getEventName());
                     }
-                }else {
-                    JOptionPane.showMessageDialog(null,"请单击选择要取消点赞的瓜！","错误",JOptionPane.ERROR_MESSAGE);
+                    list.setModel(listModel1);
                 }
+            }else {
+                JOptionPane.showMessageDialog(null,"请单击选择要取消点赞的瓜！","错误",JOptionPane.ERROR_MESSAGE);
             }
         });
         jPanel.add(delete);

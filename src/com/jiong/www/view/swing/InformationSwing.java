@@ -25,6 +25,8 @@ public class InformationSwing extends JFrame {
     static final int DAY_MAX =31;
     static final int DAY_MIN =1;
     static final String DATE_DEFAULT ="---请选择---";
+    static final int MALE=1;
+    static final int FEMALE=0;
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -116,10 +118,10 @@ public class InformationSwing extends JFrame {
         JRadioButton boy = new JRadioButton("男");
         boy.setBounds(225,195,80,30);
         int userGender = user.getUserGender();
-        if(userGender==0){
+        if(userGender==FEMALE){
             girl.setSelected(true);
         }
-        if(userGender==1) {
+        if(userGender==MALE) {
             boy.setSelected(true);
         }
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -185,7 +187,7 @@ public class InformationSwing extends JFrame {
         }
         String[] year = year1.toArray(new String[0]);
         //产生月份
-        ArrayList<String> month1 = new ArrayList();
+        ArrayList<String> month1 = new ArrayList<>();
         month1.add(DATE_DEFAULT);
         for (int i = MONTH_MIN;i<MONTH_MAX;i++){
             month1.add(String.valueOf(i+1));
@@ -289,24 +291,23 @@ public class InformationSwing extends JFrame {
 
             Date userBirthday2 = null;
             //生日
-            if(!("---请选择---").equals(birthyear.getSelectedItem())&&!("---请选择---").equals(birthmonth.getSelectedItem())&&!("---请选择---").equals(birthday.getSelectedItem())){
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(birthyear.getSelectedItem());
-                //年
-                stringBuilder.append("-");
-                stringBuilder.append(birthmonth.getSelectedItem());
-                //月
-                stringBuilder.append("-");
-                stringBuilder.append(birthday.getSelectedItem());
-                //日
-                String userBirthday1 = stringBuilder.toString();
+            if(!DATE_DEFAULT.equals(birthyear.getSelectedItem())&&!DATE_DEFAULT.equals(birthmonth.getSelectedItem())&&!DATE_DEFAULT.equals(birthday.getSelectedItem())){
+                String userBirthday1 = birthyear.getSelectedItem() +
+                        //年
+                        "-" +
+                        birthmonth.getSelectedItem() +
+                        //月
+                        "-" +
+                        birthday.getSelectedItem()
+                        //日
+                        ;
                  userBirthday2 = Date.valueOf(userBirthday1);
             }
 
             //个人简介
             String userDescription = descriptionTextArea.getText();
             int judgement =1;
-            if(("---请选择---").equals(birthyear.getSelectedItem())&&("---请选择---").equals(birthmonth.getSelectedItem())&&("---请选择---").equals(birthday.getSelectedItem())){
+            if(DATE_DEFAULT.equals(birthyear.getSelectedItem())&&DATE_DEFAULT.equals(birthmonth.getSelectedItem())&&DATE_DEFAULT.equals(birthday.getSelectedItem())){
                 int confirm = JOptionPane.showConfirmDialog(null, "您还没有填写生日，确定继续吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(confirm!=0){
                     //NO
@@ -314,8 +315,8 @@ public class InformationSwing extends JFrame {
                     userBirthday2=null;
                 }
             }
-            if((("---请选择---").equals(birthyear.getSelectedItem())||("---请选择---").equals(birthmonth.getSelectedItem())||("---请选择---").equals(birthday.getSelectedItem()))
-            &&!(("---请选择---").equals(birthyear.getSelectedItem())&&("---请选择---").equals(birthmonth.getSelectedItem())&&("---请选择---").equals(birthday.getSelectedItem()))){
+            if((DATE_DEFAULT.equals(birthyear.getSelectedItem())||DATE_DEFAULT.equals(birthmonth.getSelectedItem())||DATE_DEFAULT.equals(birthday.getSelectedItem()))
+            &&!(DATE_DEFAULT.equals(birthyear.getSelectedItem())&&DATE_DEFAULT.equals(birthmonth.getSelectedItem())&&DATE_DEFAULT.equals(birthday.getSelectedItem()))){
                 JOptionPane.showMessageDialog(null,"请填写完整的生日信息","错误",JOptionPane.ERROR_MESSAGE);
                 judgement=0;
             }
@@ -365,9 +366,9 @@ public class InformationSwing extends JFrame {
                 String userDay = String.valueOf(calendar1.get(Calendar.DATE));
                 birthday.setSelectedItem(userDay);
             }else {
-                birthyear.setSelectedItem("---请选择---");
-                birthmonth.setSelectedItem("---请选择---");
-                birthday.setSelectedItem("---请选择---");
+                birthyear.setSelectedItem(DATE_DEFAULT);
+                birthmonth.setSelectedItem(DATE_DEFAULT);
+                birthday.setSelectedItem(DATE_DEFAULT);
             }
             //个人简介
             descriptionTextArea.setText(user.getUserDescription());

@@ -11,21 +11,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * @author Mono
+ */
 public class RegisterSwing extends JFrame implements ActionListener , DocumentListener {
     JFrame register;
     JPanel jPanel;
-    //2个标签
     JLabel username;
     JLabel password;
     JLabel confirmPassword;
     JLabel jLabel1;
     JLabel jLabel2;
     JLabel jLabel3;
-    //2个文本框
     JTextField usernameField;
     JPasswordField passwordField;
     JPasswordField confirmPasswordField;
-    //3个按钮
     JButton registerButton;
     JButton reset;
     JButton cancel;
@@ -125,18 +125,18 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==registerButton){
             String password = new String(passwordField.getPassword());
-            String comfirmPassword = new String(confirmPasswordField.getPassword());
-            if("".equals(usernameField.getText()) || "".equals(password) ||"".equals(comfirmPassword)){
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+            if("".equals(usernameField.getText()) || "".equals(password) ||"".equals(confirmPassword)){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
                 //让用户填写所有
             }else if(userService.verifyUsername(usernameField.getText())==1){
                 JOptionPane.showMessageDialog(null,"用户名已存在！","错误",JOptionPane.ERROR_MESSAGE);
-            }else if(!password.equals(comfirmPassword)){
+            }else if(!password.equals(confirmPassword)){
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
             }
             else {
                 String newName = usernameField.getText();
-                String securePassword = new Md5Utils().toMd5(comfirmPassword);
+                String securePassword = new Md5Utils().toMd5(confirmPassword);
                 int judge = userService.register(newName, securePassword);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");
@@ -172,16 +172,16 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         }
         if(e.getDocument()==confirmPasswordField.getDocument()){
             String password = new String(passwordField.getPassword());
-            String comfirmPassword = new String(confirmPasswordField.getPassword());
-            if("".equals(password)&&!"".equals(comfirmPassword)){
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+            if("".equals(password)&&!"".equals(confirmPassword)){
                 //用户未输入第一次直接输入第二次密码
                 jLabel2.setText("请先输入初始密码");
                 jLabel2.setVisible(true);
                 //提示先输入第一次密码
-            }else if(!"".equals(password)&&!"".equals(comfirmPassword)){
+            }else if(!"".equals(password)&&!"".equals(confirmPassword)){
                 //用户输入了两次密码
                 jLabel2.setVisible(false);
-                if(!password.equals(comfirmPassword)){
+                if(!password.equals(confirmPassword)){
                     jLabel2.setText("两次输入密码不一致");
                     jLabel2.setVisible(true);
                     //提示确认密码
@@ -189,7 +189,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
                     jLabel2.setVisible(false);
                 }
             }
-            else if("".equals(password)&&"".equals(comfirmPassword)){
+            else if("".equals(password)){
                 //用户没有输入任何密码
                 jLabel2.setVisible(false);
             }
@@ -198,21 +198,21 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         }
         if(e.getDocument()==passwordField.getDocument()){
             String password = new String(passwordField.getPassword());
-            String comfirmPassword = new String(confirmPasswordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
             if(!"".equals(password)){
                 boolean judge = new StringUtils().isPassword(password);
                 jLabel3.setVisible(!judge);
             }
-            if(!"".equals(password)&&"".equals(comfirmPassword)){
+            if(!"".equals(password)&&"".equals(confirmPassword)){
                 jLabel2.setVisible(false);
             }
-            if("".equals(password)&&!"".equals(comfirmPassword)){
+            if("".equals(password)&&!"".equals(confirmPassword)){
                 jLabel2.setText("请先输入初始密码");
                 jLabel2.setVisible(true);
                 //提示先输入第一次密码
-            }else if(!"".equals(password)&&!"".equals(comfirmPassword)){
+            }else if(!"".equals(password)&&!"".equals(confirmPassword)){
                 jLabel2.setVisible(false);
-                if(!password.equals(comfirmPassword)){
+                if(!password.equals(confirmPassword)){
                     jLabel2.setText("两次输入密码不一致");
                     jLabel2.setVisible(true);
                     //提示确认密码
@@ -233,16 +233,16 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         }
         if(e.getDocument()==confirmPasswordField.getDocument()){
             String password = new String(passwordField.getPassword());
-            String comfirmPassword = new String(confirmPasswordField.getPassword());
-            if("".equals(password)&&!"".equals(comfirmPassword)){
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+            if("".equals(password)&&!"".equals(confirmPassword)){
                 //用户未输入第一次直接输入第二次密码
                 jLabel2.setText("请先输入初始密码");
                 jLabel2.setVisible(true);
                 //提示先输入第一次密码
-            }else if(!"".equals(password)&&!"".equals(comfirmPassword)){
+            }else if(!"".equals(password)&&!"".equals(confirmPassword)){
                 //用户输入了两次密码
                 jLabel2.setVisible(false);
-                if(!password.equals(comfirmPassword)){
+                if(!password.equals(confirmPassword)){
                     jLabel2.setText("两次输入密码不一致");
                     jLabel2.setVisible(true);
                     //提示确认密码
@@ -250,7 +250,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
                     jLabel2.setVisible(false);
                 }
             }
-            else if("".equals(password)&&"".equals(comfirmPassword)){
+            else if("".equals(password)){
                 //用户没有输入任何密码
                 jLabel2.setVisible(false);
             }
@@ -259,21 +259,21 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         }
         if(e.getDocument()==passwordField.getDocument()){
             String password = new String(passwordField.getPassword());
-            String comfirmPassword = new String(confirmPasswordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
             if(!"".equals(password)){
                 boolean judge = new StringUtils().isPassword(password);
                 jLabel3.setVisible(!judge);
             }
-            if(!"".equals(password)&&"".equals(comfirmPassword)){
+            if(!"".equals(password)&&"".equals(confirmPassword)){
                 jLabel2.setVisible(false);
             }
-            if("".equals(password)&&!"".equals(comfirmPassword)){
+            if("".equals(password)&&!"".equals(confirmPassword)){
                 jLabel2.setText("请先输入初始密码");
                 jLabel2.setVisible(true);
                 //提示先输入第一次密码
-            }else if(!"".equals(password)&&!"".equals(comfirmPassword)){
+            }else if(!"".equals(password)&&!"".equals(confirmPassword)){
                 jLabel2.setVisible(false);
-                if(!password.equals(comfirmPassword)){
+                if(!password.equals(confirmPassword)){
                     jLabel2.setText("两次输入密码不一致");
                     jLabel2.setVisible(true);
                     //提示确认密码

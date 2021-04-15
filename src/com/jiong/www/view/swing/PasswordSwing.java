@@ -60,24 +60,16 @@ public class PasswordSwing extends JFrame {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 int judge = userService.verifyPassword(new String(oldPasswordField.getPassword()), userId);
-                if(judge==0){
-                    //密码错误
-                    errorPassword.setVisible(true);
-                }else {
-                    errorPassword.setVisible(false);
-                }
+                //密码错误
+                errorPassword.setVisible(judge == 0);
 
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 int judge = userService.verifyPassword(oldPassword.getText(), userId);
-                if(judge==0){
-                    //密码错误
-                    errorPassword.setVisible(true);
-                }else {
-                    errorPassword.setVisible(false);
-                }
+                //密码错误
+                errorPassword.setVisible(judge == 0);
             }
 
             @Override
@@ -230,28 +222,25 @@ public class PasswordSwing extends JFrame {
         //确认修改的按钮，按钮加监听器。对各种错误输入进行判断并报错
         JButton confirm = new JButton("确认修改");
         confirm.setBounds(100,350,100,20);
-        confirm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if("".equals(new String(oldPasswordField.getPassword())) || "".equals(new String(newPasswordField.getPassword())) ||"".equals(new String(confirmPasswordField.getPassword()))){
-                    JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
-                    //让用户填写所有
-                }else if(userService.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
-                    JOptionPane.showMessageDialog(null,"密码错误！","错误",JOptionPane.ERROR_MESSAGE);
-                }
-                    else if(!new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
-                    JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
-                }
-                else {
-                    String userNewPassword=new String(newPasswordField.getPassword());
-                    int judge = userService.changePassword(userNewPassword, userId);
-                    if(judge>0){
-                        JOptionPane.showMessageDialog(null,"修改成功！");
-                        password.dispose();
-                        new InformationSwing(userId,eventGroupName);
-                    }else {
-                        JOptionPane.showMessageDialog(null,"修改失败！","错误",JOptionPane.ERROR_MESSAGE);
-                    }
+        confirm.addActionListener(e -> {
+            if("".equals(new String(oldPasswordField.getPassword())) || "".equals(new String(newPasswordField.getPassword())) ||"".equals(new String(confirmPasswordField.getPassword()))){
+                JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
+                //让用户填写所有
+            }else if(userService.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
+                JOptionPane.showMessageDialog(null,"密码错误！","错误",JOptionPane.ERROR_MESSAGE);
+            }
+                else if(!new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
+                JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                String userNewPassword=new String(newPasswordField.getPassword());
+                int judge = userService.changePassword(userNewPassword, userId);
+                if(judge>0){
+                    JOptionPane.showMessageDialog(null,"修改成功！");
+                    password.dispose();
+                    new InformationSwing(userId,eventGroupName);
+                }else {
+                    JOptionPane.showMessageDialog(null,"修改失败！","错误",JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -260,13 +249,10 @@ public class PasswordSwing extends JFrame {
         //返回的按钮，加监听器
         JButton cancel = new JButton("返回");
         cancel.setBounds(300,350,60,20);
-        cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                password.dispose();
-                //销毁当前界面
-                new InformationSwing(userId,eventGroupName);
-            }
+        cancel.addActionListener(e -> {
+            password.dispose();
+            //销毁当前界面
+            new InformationSwing(userId,eventGroupName);
         });
         jPanel.add(cancel);
 
