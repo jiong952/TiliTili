@@ -2,9 +2,9 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
-import com.jiong.www.service.AccuseServiceImpl;
+import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
 import com.jiong.www.service.EventService;
-import com.jiong.www.service.IAccuseService;
+import com.jiong.www.service.Iservice.IAccuseService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

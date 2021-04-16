@@ -1,8 +1,10 @@
-package com.jiong.www.service;
+package com.jiong.www.service.serviceImpl;
 
-import com.jiong.www.dao.AccuseDaoImpl;
-import com.jiong.www.dao.IAccuseDao;
+import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
+import com.jiong.www.dao.Idao.IAccuseDao;
 import com.jiong.www.po.Accuse;
+import com.jiong.www.service.Iservice.IAccuseService;
+
 import java.util.List;
 
 /**

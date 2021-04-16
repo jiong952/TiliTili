@@ -1,8 +1,9 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.service.CollectionService;
+import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
 import com.jiong.www.service.EventService;
+import com.jiong.www.service.Iservice.ICollectionService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,7 @@ public class CollectdEventSwing {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
         EventService eventService = new EventService();
-        CollectionService collectionService = new CollectionService();
+        ICollectionService iCollectionService = new CollectionServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
         //设置大小
@@ -71,7 +72,7 @@ public class CollectdEventSwing {
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        java.util.List<Event> events = collectionService.viewEventOfCollection(userId);
+        List<Event> events = iCollectionService.findAll(userId);
         for (int i = 0; i < events.size(); i++) {
             listModel.add(i,events.get(i).getEventName());
         }
@@ -92,10 +93,10 @@ public class CollectdEventSwing {
                 if(judge==0){
                     //YES
                     Event event = eventService.viewEvent(list.getSelectedValue());
-                    collectionService.cancelCollection(userId,event.getEventId());
+                    iCollectionService.doCancelCollect(userId,event.getEventId());
                     //刷新
                     DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                    List<Event> events1 = collectionService.viewEventOfCollection(userId);
+                    List<Event> events1 = iCollectionService.findAll(userId);
                     for (int i = 0; i < events1.size(); i++) {
                         listModel1.add(i,events1.get(i).getEventName());
                     }

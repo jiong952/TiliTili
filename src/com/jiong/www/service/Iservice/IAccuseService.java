@@ -1,4 +1,4 @@
-package com.jiong.www.service;
+package com.jiong.www.service.Iservice;
 
 import com.jiong.www.po.Accuse;
 

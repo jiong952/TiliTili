@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.service.AccuseServiceImpl;
-import com.jiong.www.service.IAccuseService;
+import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
+import com.jiong.www.service.Iservice.IAccuseService;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,5 +1,6 @@
-package com.jiong.www.dao;
+package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.Idao.IAccuseDao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.util.JdbcUtils;
 

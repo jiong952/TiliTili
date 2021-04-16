@@ -3,6 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
+import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
 import com.jiong.www.util.EventPagingUtils;
 
 import javax.swing.*;
@@ -30,7 +31,7 @@ public class EventSwing {
         EventGroupService eventGroupService = new EventGroupService();
         EventService eventService = new EventService();
         LikesService likesService = new LikesService();
-        CollectionService collectionService = new CollectionService();
+        CollectionServiceImpl collectionServiceImpl = new CollectionServiceImpl();
         CommentService commentService = new CommentService();
         //设置窗口
         JFrame selectedEvent = new JFrame("TiliTili瓜王系统");
@@ -143,7 +144,7 @@ public class EventSwing {
         JRadioButton notCollected = new JRadioButton("不收藏");
         notCollected.setBounds(530,126,70,30);
         //查询是否已经收藏
-        int judge1 = collectionService.collectionIfOrNot(userId, eventId);
+        int judge1 = collectionServiceImpl.queryCollect(userId, eventId);
         if(judge1==1){
             collected.setSelected(true);
         }else {
@@ -151,7 +152,7 @@ public class EventSwing {
         }
         //收藏
         collected.addActionListener(e -> {
-            collectionService.collection(userId,eventId);
+            collectionServiceImpl.doCollect(userId,eventId);
             Event event1 = eventService.viewEvent(eventName);
             collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
         });
@@ -159,7 +160,7 @@ public class EventSwing {
         notCollected.addActionListener(e -> {
             int judge2 = JOptionPane.showConfirmDialog(null, "您确定要取消收藏吗？", "删除提示", JOptionPane.YES_NO_OPTION);
             if(judge2 ==0){
-                collectionService.cancelCollection(userId,eventId);
+                collectionServiceImpl.doCancelCollect(userId,eventId);
                 Event event1 = eventService.viewEvent(eventName);
                 collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
             }else {
