@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.service.EventService;
+import com.jiong.www.service.EventServiceImpl;
 import com.jiong.www.service.LikesService;
 
 import javax.swing.*;
@@ -21,7 +21,7 @@ public class LikesEventSwing {
     public LikesEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventService eventService = new EventService();
+        EventServiceImpl eventServiceImpl = new EventServiceImpl();
         LikesService likesService = new LikesService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
@@ -54,7 +54,7 @@ public class LikesEventSwing {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介)
             if(!list.getValueIsAdjusting()){
-                Event event = eventService.viewEvent(list.getSelectedValue());
+                Event event = eventServiceImpl.doView(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                         +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
@@ -65,8 +65,8 @@ public class LikesEventSwing {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //双击进入瓜界面
-                    Event event = eventService.viewEvent(list.getSelectedValue());
-                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventService.queryEventOfEventGroup(event.getEventId()));
+                    Event event = eventServiceImpl.doView(list.getSelectedValue());
+                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), eventServiceImpl.queryGroupName(event.getEventId()));
                 }
             }
         });
@@ -91,7 +91,7 @@ public class LikesEventSwing {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要取消点赞" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    Event event = eventService.viewEvent(list.getSelectedValue());
+                    Event event = eventServiceImpl.doView(list.getSelectedValue());
                     likesService.cancelLikes(userId,event.getEventId());
                     //刷新
                     DefaultListModel<String> listModel1 = new DefaultListModel<>();

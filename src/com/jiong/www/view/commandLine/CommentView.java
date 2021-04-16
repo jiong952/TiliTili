@@ -3,7 +3,7 @@ package com.jiong.www.view.commandLine;
 import com.jiong.www.po.Comment;
 import com.jiong.www.service.serviceImpl.CommentServiceImpl;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventService;
+import com.jiong.www.service.EventServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class CommentView {
 
     Scanner scanner = new Scanner(System.in);
     CommentServiceImpl commentServiceImpl = new CommentServiceImpl();
-    EventService eventService = new EventService();
+    EventServiceImpl eventServiceImpl = new EventServiceImpl();
     EventGroupService eventGroupService = new EventGroupService();
     //进行评论，评论数+1，评论表更新
     public void comment(int userId,int eventId){
@@ -43,7 +43,7 @@ public class CommentView {
         if(roleId==1){
             //为普通用户
             //验证这个瓜是不是该用户发的
-            int row = eventService.verifyEventOfUser(userId,eventId);
+            int row = eventServiceImpl.doVerify(userId,eventId);
             if(row==1){
                 //row1==1表示是该用户发的
                 //进行删除
@@ -57,7 +57,7 @@ public class CommentView {
             //先查这个瓜在哪个组,查出瓜圈名
             String eventGroupName;
             //eventGroupName为查询的瓜圈名
-            eventGroupName = eventService.queryEventOfEventGroup(eventId);
+            eventGroupName = eventServiceImpl.queryGroupName(eventId);
             //验证这个组是不是归管理员管
             int row = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
             //row==1表示是该管理员管理的,0表示不是管理员管

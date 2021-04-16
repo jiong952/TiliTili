@@ -2,7 +2,7 @@ package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventService;
+import com.jiong.www.service.EventServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class EventView {
 
     Scanner scanner = new Scanner(System.in);
-    EventService eventService = new EventService();
+    EventServiceImpl eventServiceImpl = new EventServiceImpl();
     EventGroupService eventGroupService = new EventGroupService();
     public void createEvent(int userId,int eventGroupId){
         boolean flag=false;
@@ -19,7 +19,7 @@ public class EventView {
             System.out.println("请输入新创建的瓜的名称");
             String eventName=scanner.nextLine();
             //验证瓜名
-            int judge=eventService.verifyEventName(eventName);
+            int judge= eventServiceImpl.verifyExist(eventName);
             if(judge==0)
             //judge==0表示瓜圈名不存在
             {
@@ -37,7 +37,7 @@ public class EventView {
                 String eventContent = stringBuilder.toString();
                 int row=0;
                 //创建瓜
-                row=eventService.createEvent(userId,eventGroupId,eventName,eventContent);
+                row= eventServiceImpl.doCreate(userId,eventGroupId,eventName,eventContent);
                 if(row>0){
                     System.out.println("创建成功！");
                     flag=true;
@@ -60,11 +60,11 @@ public class EventView {
         if(roleId==1){
             //为普通用户
             //验证这个瓜是不是该用户发的
-            int row = eventService.verifyEventOfUser(userId,eventId);
+            int row = eventServiceImpl.doVerify(userId,eventId);
             if(row==1){
                 //row1==1表示是该用户发的
                 //进行删除
-                int judge=eventService.deleteEvent(eventId);
+                int judge= eventServiceImpl.doDelete(eventId);
                 if(judge==1){
                     System.out.println("删除瓜成功！");
                 }else {
@@ -80,13 +80,13 @@ public class EventView {
             //先查这个瓜在哪个组,查出瓜圈名
             String eventGroupName ;
             //eventGroupName为查询的瓜圈名
-            eventGroupName=eventService.queryEventOfEventGroup(eventId);
+            eventGroupName= eventServiceImpl.queryGroupName(eventId);
             //验证这个组是不是归管理员管
             int row = eventGroupService.verifyEventGroupOfAdmin(userId,eventGroupName);
             //row==1表示是该管理员管理的,0表示不是管理员管
             if(row==1){
                 //进行删除
-                int judge=eventService.deleteEvent(eventId);
+                int judge= eventServiceImpl.doDelete(eventId);
                 if(judge==1){
                     System.out.println("删除瓜成功！");
                 }else {
@@ -102,7 +102,7 @@ public class EventView {
     //查看瓜,返回瓜的所有信息，封装
     public int viewEvent(String eventName){
         Event eventQuery;
-        eventQuery=eventService.viewEvent(eventName);
+        eventQuery= eventServiceImpl.doView(eventName);
         System.out.println(eventQuery.getEventName());
         System.out.println("发布者:"+eventQuery.getPublisherName());
         System.out.println("发布时间:"+eventQuery.getCreateTime());

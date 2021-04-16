@@ -2,7 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventService;
+import com.jiong.www.service.EventServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,14 +75,14 @@ public class CreateEventSwing {
             if(eventGroupName ==null){
                 String groupName = groupField.getText();
                 EventGroup eventGroup = eventGroupService.viewEventGroup(groupName);
-                int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
+                int judge = new EventServiceImpl().doCreate(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }
             }
             else {
                 EventGroup eventGroup = eventGroupService.viewEventGroup(eventGroupName);
-                int judge = new EventService().createEvent(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
+                int judge = new EventServiceImpl().doCreate(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }

@@ -30,12 +30,14 @@ public class EventSwing {
         this.eventName = eventName;
         this.eventId=eventId;
         this.eventGroupName=eventGroupName;
+
         UserService userService = new UserService();
         EventGroupService eventGroupService = new EventGroupService();
-        EventService eventService = new EventService();
+        IEventService iEventService = new EventServiceImpl();
         LikesService likesService = new LikesService();
         ICollectionService iCollectionService = new CollectionServiceImpl();
         ICommentService iCommentService = new CommentServiceImpl();
+
         //设置窗口
         JFrame selectedEvent = new JFrame("TiliTili瓜王系统");
         selectedEvent.setSize(1200,800);
@@ -63,7 +65,7 @@ public class EventSwing {
 
         //加入顶部菜单栏
         new MenuSwing(userId,selectedEvent,eventGroupName);
-        Event event = eventService.viewEvent(eventName);
+        Event event = iEventService.doView(eventName);
 
         //显示作者+发布时间+点赞量+点赞的单选按钮+收藏量+收藏的单选按钮+评论数+评论按钮  查询的结果设置为醒目的红色
         Font font1 = new Font("黑体",Font.PLAIN,15);
@@ -111,15 +113,16 @@ public class EventSwing {
         //点赞
         like.addActionListener(e -> {
             likesService.likes(userId,eventId);
-            Event event1 = eventService.viewEvent(eventName);
+            Event event1 = iEventService.doView(eventName);
             likesNumber.setText(String.valueOf(event1.getLikesNum()));
         });
         //取消点赞
         notLike.addActionListener(e -> {
             int judge1 = JOptionPane.showConfirmDialog(null, "您确定要取消点赞吗？", "删除提示", JOptionPane.YES_NO_OPTION);
             if(judge1 ==0){
+                //YES
             likesService.cancelLikes(userId,eventId);
-            Event event1 = eventService.viewEvent(eventName);
+            Event event1 = iEventService.doView(eventName);
             likesNumber.setText(String.valueOf(event1.getLikesNum()));
             }else {
                 like.setSelected(true);
@@ -156,7 +159,7 @@ public class EventSwing {
         //收藏
         collected.addActionListener(e -> {
             iCollectionService.doCollect(userId,eventId);
-            Event event1 = eventService.viewEvent(eventName);
+            Event event1 = iEventService.doView(eventName);
             collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
         });
         //取消收藏
@@ -164,7 +167,7 @@ public class EventSwing {
             int judge3 = JOptionPane.showConfirmDialog(null, "您确定要取消收藏吗？", "删除提示", JOptionPane.YES_NO_OPTION);
             if(judge3 ==0){
                 iCollectionService.doCancelCollect(userId,eventId);
-                Event event1 = eventService.viewEvent(eventName);
+                Event event1 = iEventService.doView(eventName);
                 collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
             }else {
                 collected.setSelected(true);
@@ -264,7 +267,7 @@ public class EventSwing {
             //重新设置数据源
             defaultTableModel.setDataVector(rowData1,columnNames);
             //重新设置评论数
-            commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+            commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
         });
 
 
@@ -286,7 +289,7 @@ public class EventSwing {
                     //重新设置数据源
                     defaultTableModel.setDataVector(rowData1,columnNames);
                     //重新设置评论数
-                    commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+                    commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
                 }else {
                     JOptionPane.showMessageDialog(null,"您没有权限","错误",JOptionPane.ERROR_MESSAGE);
                 }
@@ -300,7 +303,7 @@ public class EventSwing {
                     //重新设置数据源
                     defaultTableModel.setDataVector(rowData1,columnNames);
                     //重新设置评论数
-                    commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+                    commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
                 }else {
                     JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
                 }
@@ -319,7 +322,7 @@ public class EventSwing {
                 //重新设置数据源
                 defaultTableModel.setDataVector(null,columnNames);
                 //重新设置评论数
-                commentNumber.setText(String.valueOf(eventService.viewEvent(eventName).getCommentNum()));
+                commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
             }else {
                 JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
             }

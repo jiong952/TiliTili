@@ -2,7 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventService;
+import com.jiong.www.service.EventServiceImpl;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.GroupPagingUtils;
 
@@ -29,7 +29,7 @@ public class GroupSwing extends JFrame {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
         EventGroupService eventGroupService =new EventGroupService();
-        EventService eventService = new EventService();
+        EventServiceImpl eventServiceImpl = new EventServiceImpl();
         JFrame eventOfGroup = new JFrame("TiliTili瓜王系统");
         eventOfGroup.setSize(1200,800);
         //设置大小
@@ -89,7 +89,7 @@ public class GroupSwing extends JFrame {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介) 双击是进入
             if(!list.getValueIsAdjusting()){
-                Event event = eventService.viewEvent(list.getSelectedValue());
+                Event event = eventServiceImpl.doView(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                 +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
@@ -100,7 +100,7 @@ public class GroupSwing extends JFrame {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
-                    Event event = eventService.viewEvent(list.getSelectedValue());
+                    Event event = eventServiceImpl.doView(list.getSelectedValue());
                     eventOfGroup.dispose();
                     new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
                 }
@@ -175,9 +175,10 @@ public class GroupSwing extends JFrame {
             if("".equals(eventName)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = eventService.verifyEventName(eventName);
-                Event event1 = eventService.viewEvent(eventName);
-                if(judge==0){
+                int judge = eventServiceImpl.verifyExist(eventName);
+                Event event1 = eventServiceImpl.doView(eventName);
+                if(judge==1){
+                    //瓜存在
                     new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
                 }else {
                     JOptionPane.showMessageDialog(null,"查无此瓜！","错误",JOptionPane.ERROR_MESSAGE);

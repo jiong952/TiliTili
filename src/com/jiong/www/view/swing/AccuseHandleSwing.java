@@ -3,7 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
-import com.jiong.www.service.EventService;
+import com.jiong.www.service.EventServiceImpl;
 import com.jiong.www.service.Iservice.IAccuseService;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ public class AccuseHandleSwing {
     }
     public AccuseHandleSwing(int userId) {
         this.userId = userId;
-        EventService eventService = new EventService();
+        EventServiceImpl eventServiceImpl = new EventServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
         //设置大小
@@ -83,8 +83,8 @@ public class AccuseHandleSwing {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + deleteEventName + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    Event event = eventService.viewEvent(deleteEventName);
-                    eventService.deleteEvent(event.getEventId());
+                    Event event = eventServiceImpl.doView(deleteEventName);
+                    eventServiceImpl.doDelete(event.getEventId());
                     //刷新待处理列表
                     Object[][] rowData1 = iAccuseService.doRefresh(userId);
                     //重新设置数据源
@@ -98,7 +98,7 @@ public class AccuseHandleSwing {
         notDelete.setBounds(350,430,90,30);
         notDelete.addActionListener(e -> {
             String accusedEventName = (String)rowData[table.getSelectedRow()][1];
-            Event event = eventService.viewEvent(accusedEventName);
+            Event event = eventServiceImpl.doView(accusedEventName);
             String accusedContent = (String)rowData[table.getSelectedRow()][2];
             iAccuseService.doDelete(event.getEventId(),accusedContent);
             //刷新待处理列表
