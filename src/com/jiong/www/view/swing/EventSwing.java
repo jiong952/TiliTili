@@ -5,8 +5,10 @@ import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
 import com.jiong.www.service.Iservice.ICollectionService;
 import com.jiong.www.service.Iservice.ICommentService;
+import com.jiong.www.service.Iservice.IEventService;
 import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
 import com.jiong.www.service.serviceImpl.CommentServiceImpl;
+import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.util.EventPagingUtils;
 
 import javax.swing.*;

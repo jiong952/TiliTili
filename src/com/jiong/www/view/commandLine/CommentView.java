@@ -3,7 +3,7 @@ package com.jiong.www.view.commandLine;
 import com.jiong.www.po.Comment;
 import com.jiong.www.service.serviceImpl.CommentServiceImpl;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventServiceImpl;
+import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.EventServiceImpl;
+import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;

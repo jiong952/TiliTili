@@ -2,7 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
-import com.jiong.www.service.EventServiceImpl;
+import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.Iservice.ICollectionService;
 
 import javax.swing.*;

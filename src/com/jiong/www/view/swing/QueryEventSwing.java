@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.service.EventServiceImpl;
+import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
