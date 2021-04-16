@@ -4,8 +4,14 @@ import com.jiong.www.dao.daoImpl.CommentDaoImpl;
 import com.jiong.www.dao.Idao.ICommentDao;
 import com.jiong.www.po.Comment;
 import com.jiong.www.service.Iservice.ICommentService;
+import com.jiong.www.util.EventPagingUtils;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mono
@@ -58,17 +64,22 @@ public class CommentServiceImpl implements ICommentService {
 
         return rowData;
     }
-    /**刷新评论列表*/
+
     @Override
-    public Object[][] doRefresh(int eventId) {
-        List<Comment> comments = findAll(eventId);
-        Object[][] rowData = new Object[comments.size()][3];
+    public  List<Comment> doRefresh(List<Comment> comments, DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils) {
+        comments=findAll(eventId);
+        Object[][] rowData1 = new Object[comments.size()][3];
         for (int i = 0; i < comments.size(); i++) {
-            rowData[i][0]=comments.get(i).getCommenterName();
-            rowData[i][1]=comments.get(i).getCommentContent();
-            rowData[i][2]=comments.get(i).getCommentTime().toString();
+            rowData1[i][0]=comments.get(i).getCommenterName();
+            rowData1[i][1]=comments.get(i).getCommentContent();
+            rowData1[i][2]=comments.get(i).getCommentTime().toString();
         }
-        return rowData;
+        //重新设置数据源
+        defaultTableModel.setDataVector(rowData1,columnNames);
+        eventPagingUtils.setList(comments);
+        eventPagingUtils.setDefaultTableModel(defaultTableModel);
+        return comments;
     }
+
 
 }

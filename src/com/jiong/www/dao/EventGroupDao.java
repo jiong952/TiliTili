@@ -16,27 +16,39 @@ import java.util.List;
  */
 public class EventGroupDao {
     /**创建瓜圈,添加瓜圈信息到瓜圈表，并且把管理员和瓜联系一起*/
-    public int createEventGroup(int userId, EventGroup eventGroup) throws SQLException {
-        Connection conn = JdbcUtils.getConnection();
-        int row;
-        conn.setAutoCommit(false);
-        String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
-        String sql1 ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
-        //`eventGroup_name`加了唯一约束，在数据库设计上可以防止重名
-        PreparedStatement ps = conn.prepareStatement(sql);
-        PreparedStatement ps1 = conn.prepareStatement(sql1);
-        ps.setString(1,eventGroup.getEventGroupName());
-        ps.setString(2, eventGroup.getEventGroupDescription());
-        ps1.setInt(1,userId);
-        ps1.setString(2,eventGroup.getEventGroupName());
-        row= ps.executeUpdate();
-        ps1.executeUpdate();
-        //sql语句返回结果判断
-        //row是返回值，用于判断
-        conn.commit();
-        JdbcUtils.release(conn,ps,null);
-        JdbcUtils.release(conn,ps1,null);
-        //释放连接
+    public int createEventGroup(int userId, EventGroup eventGroup) {
+        int row = 0;
+        Connection conn = null;
+        PreparedStatement ps =null;
+        PreparedStatement ps1 = null;
+        try {
+            conn = JdbcUtils.getConnection();
+            conn.setAutoCommit(false);
+            String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
+            String sql1 ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
+            //`eventGroup_name`加了唯一约束，在数据库设计上可以防止重名
+            ps = conn.prepareStatement(sql);
+            ps1 = conn.prepareStatement(sql1);
+            ps.setString(1,eventGroup.getEventGroupName());
+            ps.setString(2, eventGroup.getEventGroupDescription());
+            ps1.setInt(1,userId);
+            ps1.setString(2,eventGroup.getEventGroupName());
+            row= ps.executeUpdate();
+            ps1.executeUpdate();
+            //sql语句返回结果判断
+            //row是返回值，用于判断
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,null);
+                JdbcUtils.release(conn,ps1,null);
+                //释放连接
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return row;
         //向上抛出到view层
     }

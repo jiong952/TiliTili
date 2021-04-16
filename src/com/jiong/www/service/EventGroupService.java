@@ -15,17 +15,13 @@ public class EventGroupService {
     private final EventGroupDao eventGroupDao = new EventGroupDao();
     /**创建瓜圈*/
     public int createEventGroup(int userId,String eventGroupName,String eventGroupDescription){
-        int row=0;
+        int row;
         // 用于接收dao层的返回值
         //封装eventGroup对象
         EventGroup eventGroup = new EventGroup();
         eventGroup.setEventGroupName(eventGroupName);
         eventGroup.setEventGroupDescription(eventGroupDescription);
-        try {
-            row=eventGroupDao.createEventGroup(userId,eventGroup);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        row=eventGroupDao.createEventGroup(userId,eventGroup);
         return row;
     }
     /**验证瓜圈名是否存在*/

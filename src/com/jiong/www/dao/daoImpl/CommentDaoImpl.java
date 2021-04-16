@@ -86,13 +86,18 @@ public class CommentDaoImpl implements ICommentDao {
     public void doClear(int eventId){
         Connection conn = null;
         PreparedStatement ps = null;
+        PreparedStatement ps2 =null;
         try {
             conn = JdbcUtils.getConnection();
             String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
+            String sql2="UPDATE `event` SET `comment_num` = 0 WHERE `event_id` =?";
             //清空所有评论
             ps = conn.prepareStatement(sql);
+            ps2 = conn.prepareStatement(sql2);
             ps.setInt(1,eventId);
+            ps2.setInt(1,eventId);
             ps.executeUpdate();
+            ps2.executeUpdate();
             //sql语句返回结果判断
             //row是返回值，用于判断 0表示执行失败,1表示执行成功
         } catch (SQLException e) {
@@ -100,6 +105,7 @@ public class CommentDaoImpl implements ICommentDao {
         }finally {
             try {
                 JdbcUtils.release(conn,ps,null);
+                JdbcUtils.release(conn,ps2,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

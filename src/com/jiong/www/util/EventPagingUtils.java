@@ -17,10 +17,22 @@ public class EventPagingUtils {
     List<Comment> list;
     private int currentPage = 1;
     private int lastPage;
+    JButton first;
+    JButton previous;
+    JButton next;
+    JButton last;
     /**页面的展示数目*/
     private final int pageSize ;
     DefaultTableModel defaultTableModel;
-    JPanel jPanel;
+
+    public void setList(List<Comment> list) {
+        this.list = list;
+    }
+
+    public void setDefaultTableModel(DefaultTableModel defaultTableModel) {
+        this.defaultTableModel = defaultTableModel;
+    }
+
     /**常量，避免魔法值*/
     static final String FIRST_PAGE = "首页";
     static final String LAST_PAGE = "尾页";
@@ -46,40 +58,18 @@ public class EventPagingUtils {
         return pageSize;
     }
     /**有参构造*/
-    public EventPagingUtils(List<Comment> list, DefaultTableModel defaultTableModel, JPanel jPanel,int pageSize)  {
+    public EventPagingUtils(List<Comment> list, DefaultTableModel defaultTableModel,int pageSize,JButton first,JButton previous,JButton next,JButton last)  {
         this.list = list;
         this.defaultTableModel=defaultTableModel;
-        this.jPanel=jPanel;
         this.pageSize=pageSize;
-        //设置末页
-        if(list.size()%pageSize==0){
-            setLastPage(list.size()/getPageSize());
-        }else {
-            setLastPage(list.size()/getPageSize()+1);
-        }
-        JButton first = new JButton("首页");
-        first.setBounds(245,575,60,30);
-        first.setActionCommand("首页");
+        this.first=first;
+        this.previous=previous;
+        this.next=next;
+        this.last=last;
         first.addActionListener(new MyTable());
-        jPanel.add(first);
-
-        JButton previous = new JButton("上一页");
-        previous.setBounds(345,575,90,30);
-        previous.setActionCommand("上一页");
         previous.addActionListener(new MyTable());
-        jPanel.add(previous);
-
-        JButton next = new JButton("下一页");
-        next.setBounds(475,575,90,30);
-        next.setActionCommand("下一页");
         next.addActionListener(new MyTable());
-        jPanel.add(next);
-
-        JButton last = new JButton("尾页");
-        last.setBounds(605,575,60,30);
-        last.setActionCommand("尾页");
         last.addActionListener(new MyTable());
-        jPanel.add(last);
 
     }
 
@@ -105,6 +95,12 @@ public class EventPagingUtils {
     }
 
     public void showList(int currentPage){
+        //设置末页
+        if(list.size()%pageSize==0){
+            setLastPage(list.size()/getPageSize());
+        }else {
+            setLastPage(list.size()/getPageSize()+1);
+        }
         defaultTableModel.setRowCount(0);
         //清除原有数据
         setCurrentPage(currentPage);
@@ -117,7 +113,6 @@ public class EventPagingUtils {
             defaultTableModel.addRow(vector);
         }
     }
-
     /**监听器类*/
     class MyTable implements ActionListener {
         @Override

@@ -1,8 +1,13 @@
 package com.jiong.www.service.Iservice;
 
 import com.jiong.www.po.Comment;
+import com.jiong.www.util.EventPagingUtils;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Mono
@@ -30,9 +35,5 @@ public interface ICommentService {
      * @return 返回第一页的评论信息
      * */
     Object[][] doDataProcess(int pageSize,List<Comment> comments);
-    /**刷新列表信息
-     * @param eventId 瓜id
-     * @return 返回列表信息
-     * */
-    Object[][] doRefresh(int eventId);
+    List<Comment> doRefresh (List<Comment> comments,DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils);
 }
