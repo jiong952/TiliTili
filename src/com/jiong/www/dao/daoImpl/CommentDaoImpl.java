@@ -1,5 +1,6 @@
-package com.jiong.www.dao;
+package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.Idao.ICommentDao;
 import com.jiong.www.po.Comment;
 import com.jiong.www.util.JdbcUtils;
 

@@ -95,11 +95,8 @@ public class CollectdEventSwing {
                     Event event = eventService.viewEvent(list.getSelectedValue());
                     iCollectionService.doCancelCollect(userId,event.getEventId());
                     //刷新
-                    DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                    List<Event> events1 = iCollectionService.findAll(userId);
-                    for (int i = 0; i < events1.size(); i++) {
-                        listModel1.add(i,events1.get(i).getEventName());
-                    }
+                    DefaultListModel<String> listModel1;
+                    listModel1 = iCollectionService.doRefresh(userId);
                     list.setModel(listModel1);
                 }
             }else {
@@ -107,7 +104,6 @@ public class CollectdEventSwing {
             }
         });
         jPanel.add(delete);
-
         jFrame.setVisible(true);
     }
 }

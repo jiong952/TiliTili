@@ -1,7 +1,7 @@
 package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.Comment;
-import com.jiong.www.service.CommentServiceImpl;
+import com.jiong.www.service.serviceImpl.CommentServiceImpl;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.EventService;
 

@@ -5,6 +5,7 @@ import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.Iservice.ICollectionService;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -36,6 +37,16 @@ public class CollectionServiceImpl implements ICollectionService {
         List<Event> events;
         events= iCollectionDao.findAll(userId);
         return events;
+    }
+    /**刷新列表信息*/
+    @Override
+    public DefaultListModel<String> doRefresh(int userId) {
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        List<Event> events1 = findAll(userId);
+        for (int i = 0; i < events1.size(); i++) {
+            listModel.add(i,events1.get(i).getEventName());
+        }
+        return listModel;
     }
 
 }

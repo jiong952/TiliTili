@@ -2,6 +2,7 @@ package com.jiong.www.service.Iservice;
 
 import com.jiong.www.po.Event;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -28,4 +29,9 @@ public interface ICollectionService {
      * @param userId 用户id
      * @return 返回查询结果*/
     List<Event> findAll(int userId);
+    /**刷新列表信息
+     * @param userId 用户id
+     * @return 刷新后的数据源
+     * */
+    DefaultListModel<String> doRefresh(int userId);
 }
