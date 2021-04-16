@@ -13,11 +13,11 @@ import java.util.List;
 /**
  * @author Mono
  */
-public class IAccuseDaoImpl implements IAccuseDao {
+public class AccuseDaoImpl implements IAccuseDao {
 
     /**用户举报瓜*/
     @Override
-    public int accuseEvent(Accuse accuse)  {
+    public int doAccuse(Accuse accuse)  {
         int row = 0;
         Connection conn = null;
         PreparedStatement ps =null;
@@ -44,7 +44,7 @@ public class IAccuseDaoImpl implements IAccuseDao {
     }
     /**管理员查看自己管理瓜圈的举报情况*/
     @Override
-    public List<Accuse> viewAccusation(int userId){
+    public List<Accuse> findAll(int userId){
         List<Accuse> accuses = new ArrayList<>();
         Connection conn = null;
         PreparedStatement ps = null;
@@ -84,7 +84,7 @@ public class IAccuseDaoImpl implements IAccuseDao {
     }
     /**删除举报*/
     @Override
-    public void deleteAccuse(Accuse accuse)  {
+    public void doDelete(Accuse accuse)  {
         Connection conn = null;
         PreparedStatement ps = null;
         try {

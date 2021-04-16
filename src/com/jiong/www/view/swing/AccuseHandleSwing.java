@@ -2,8 +2,9 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
-import com.jiong.www.service.AccuseService;
+import com.jiong.www.service.AccuseServiceImpl;
 import com.jiong.www.service.EventService;
+import com.jiong.www.service.IAccuseService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -15,14 +16,13 @@ import java.util.List;
  */
 public class AccuseHandleSwing {
     int userId;
-
+    IAccuseService iAccuseService = new AccuseServiceImpl();
     public static void main(String[] args) {
         new AccuseHandleSwing(8);
     }
     public AccuseHandleSwing(int userId) {
         this.userId = userId;
         EventService eventService = new EventService();
-        AccuseService accuseService = new AccuseService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
         //设置大小
@@ -46,7 +46,7 @@ public class AccuseHandleSwing {
         //创建一个表格来放举报信息
         String[] columnNames = {"举报人","举报的瓜","举报理由","举报时间"};
         //查询所有的举报信息
-        List<Accuse> accuses = accuseService.viewAccusation(userId);
+        List<Accuse> accuses = iAccuseService.findAll(userId);
         Object[][] rowData = new Object[accuses.size()][4];
         for (int i = 0; i < accuses.size(); i++) {
             rowData[i][0]=accuses.get(i).getAccusedUserName();
@@ -86,14 +86,7 @@ public class AccuseHandleSwing {
                     Event event = eventService.viewEvent(deleteEventName);
                     eventService.deleteEvent(event.getEventId());
                     //刷新待处理列表
-                    List<Accuse> accuses1 = accuseService.viewAccusation(userId);
-                    Object[][] rowData1 = new Object[accuses1.size()][4];
-                    for (int i = 0; i < accuses1.size(); i++) {
-                        rowData1[i][0]=accuses1.get(i).getAccusedUserName();
-                        rowData1[i][1]=accuses1.get(i).getAccusedEventName();
-                        rowData1[i][2]=accuses1.get(i).getAccusedContent();
-                        rowData1[i][3]=accuses1.get(i).getAccuseTime();
-                    }
+                    Object[][] rowData1 = iAccuseService.doRefresh(userId);
                     //重新设置数据源
                     defaultTableModel.setDataVector(rowData1,columnNames);
                 }
@@ -107,16 +100,9 @@ public class AccuseHandleSwing {
             String accusedEventName = (String)rowData[table.getSelectedRow()][1];
             Event event = eventService.viewEvent(accusedEventName);
             String accusedContent = (String)rowData[table.getSelectedRow()][2];
-            accuseService.deleteAccuse(event.getEventId(),accusedContent);
+            iAccuseService.doDelete(event.getEventId(),accusedContent);
             //刷新待处理列表
-            List<Accuse> accuses1 = accuseService.viewAccusation(userId);
-            Object[][] rowData1 = new Object[accuses1.size()][4];
-            for (int i = 0; i < accuses1.size(); i++) {
-                rowData1[i][0]=accuses1.get(i).getAccusedUserName();
-                rowData1[i][1]=accuses1.get(i).getAccusedEventName();
-                rowData1[i][2]=accuses1.get(i).getAccusedContent();
-                rowData1[i][3]=accuses1.get(i).getAccuseTime();
-            }
+            Object[][] rowData1 = iAccuseService.doRefresh(userId);
             //重新设置数据源
             defaultTableModel.setDataVector(rowData1,columnNames);
         });

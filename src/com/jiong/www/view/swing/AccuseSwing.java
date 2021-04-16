@@ -1,6 +1,7 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.service.AccuseService;
+import com.jiong.www.service.AccuseServiceImpl;
+import com.jiong.www.service.IAccuseService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,11 +13,11 @@ public class AccuseSwing extends JFrame {
     int userId;
     int eventId;
     String eventName;
+    IAccuseService iAccuseService = new AccuseServiceImpl();
     public AccuseSwing(int userId,String eventName, int eventId) throws HeadlessException {
         this.userId = userId;
         this.eventId = eventId;
         this.eventName=eventName;
-        AccuseService accuseService = new AccuseService();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(300,300);
         //设置大小
@@ -57,7 +58,7 @@ public class AccuseSwing extends JFrame {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要举报" + eventName + "吗?", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    int row = accuseService.accuseEvent(eventId, userId, jTextArea.getText());
+                    int row = iAccuseService.doAccuse(eventId, userId, jTextArea.getText());
                     if(row==1){
                         JOptionPane.showMessageDialog(null,"举报成功");
                         jFrame.dispose();
