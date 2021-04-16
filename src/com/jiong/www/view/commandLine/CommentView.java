@@ -1,7 +1,7 @@
 package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.Comment;
-import com.jiong.www.service.CommentService;
+import com.jiong.www.service.CommentServiceImpl;
 import com.jiong.www.service.EventGroupService;
 import com.jiong.www.service.EventService;
 
@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class CommentView {
 
     Scanner scanner = new Scanner(System.in);
-    CommentService commentService = new CommentService();
+    CommentServiceImpl commentServiceImpl = new CommentServiceImpl();
     EventService eventService = new EventService();
     EventGroupService eventGroupService = new EventGroupService();
     //进行评论，评论数+1，评论表更新
@@ -31,12 +31,12 @@ public class CommentView {
         String commentContent = stringBuilder.toString();
         scanner.nextLine();
         //用于缓冲最后的@
-        commentService.comment(userId,eventId,commentContent);
+        commentServiceImpl.doComment(userId,eventId,commentContent);
 
     }
     //删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除
     public void cancelComment(int commentId,int eventId){
-        commentService.cancelComment(commentId,eventId);
+        commentServiceImpl.doCancel(commentId,eventId);
     }
     //删除瓜的所有评论,管理员,事件发布者
     public void clearComment(int userId,int roleId,int eventId){
@@ -47,7 +47,7 @@ public class CommentView {
             if(row==1){
                 //row1==1表示是该用户发的
                 //进行删除
-                commentService.clearComment(eventId);
+                commentServiceImpl.doClear(eventId);
             }else {
                 //不是用户发的，没有删除的权限
                 System.out.println("这不是您发布的瓜！没有权限");
@@ -63,7 +63,7 @@ public class CommentView {
             //row==1表示是该管理员管理的,0表示不是管理员管
             if (row == 1) {
                 //进行删除
-                commentService.clearComment(eventId);
+                commentServiceImpl.doClear(eventId);
             } else {
                 //不是管理员所管理的瓜圈,没有权限
                 System.out.println("这不是您管理的瓜圈！没有权限");
@@ -72,7 +72,7 @@ public class CommentView {
     }
     //查看瓜的评论,也要返回评论人名
     public void viewComment(int eventId){
-        List<Comment> comments = commentService.viewComment(eventId);
+        List<Comment> comments = commentServiceImpl.findAll(eventId);
         System.out.println("评论：");
         for (int i = 0; i < comments.size(); i++) {
             Comment comment ;

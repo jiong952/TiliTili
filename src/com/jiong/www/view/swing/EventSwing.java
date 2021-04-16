@@ -32,7 +32,7 @@ public class EventSwing {
         EventService eventService = new EventService();
         LikesService likesService = new LikesService();
         CollectionServiceImpl collectionServiceImpl = new CollectionServiceImpl();
-        CommentService commentService = new CommentService();
+        CommentServiceImpl commentServiceImpl = new CommentServiceImpl();
         //设置窗口
         JFrame selectedEvent = new JFrame("TiliTili瓜王系统");
         selectedEvent.setSize(1200,800);
@@ -207,7 +207,7 @@ public class EventSwing {
 
         String[] columnNames = {"评论人","评论内容","评论时间"};
         //查询瓜的所有评论
-        List<Comment> comments = commentService.viewComment(event.getEventId());
+        List<Comment> comments = commentServiceImpl.findAll(event.getEventId());
         int pageSize = 6;
         //每一页展示评论数目
         Object[][] rowData = new Object[Math.min(comments.size(), pageSize)][3];
@@ -265,11 +265,11 @@ public class EventSwing {
         jPanel.add(sendComment);
         //发送按钮的监听器
         sendComment.addActionListener(e -> {
-            new CommentService().comment(userId,eventId,myCommentArea.getText());
+            new CommentServiceImpl().doComment(userId,eventId,myCommentArea.getText());
             JOptionPane.showMessageDialog(null,"评论成功！");
             myCommentArea.setText("");
             //刷新评论
-            List<Comment> comments1 = commentService.viewComment(event.getEventId());
+            List<Comment> comments1 = commentServiceImpl.findAll(event.getEventId());
             Object[][] rowData1 = new Object[comments1.size()][3];
             for (int i = 0; i < comments1.size(); i++) {
                 rowData1[i][0]=comments1.get(i).getCommenterName();
@@ -291,13 +291,13 @@ public class EventSwing {
                 JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
             }
             int judge22 = userService.verifyRole(userId);
-            List<Comment> comments0 = commentService.viewComment(event.getEventId());
+            List<Comment> comments0 = commentServiceImpl.findAll(event.getEventId());
             if(judge22 ==1){
                 //吃瓜群众
                 if(userId==comments0.get(table.getSelectedRow()).getCommenterId()){
-                    commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommentId(),eventId);
+                    commentServiceImpl.doCancel(comments0.get(table.getSelectedRow()).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功");
-                    List<Comment> comments1 = commentService.viewComment(event.getEventId());
+                    List<Comment> comments1 = commentServiceImpl.findAll(event.getEventId());
                     Object[][] rowData1 = new Object[comments1.size()][3];
                     for (int i = 0; i < comments1.size(); i++) {
                         rowData1[i][0]=comments1.get(i).getCommenterName();
@@ -315,9 +315,9 @@ public class EventSwing {
                 //管理员
                 int judge11 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
                 if(judge11 ==1){
-                    commentService.cancelComment(comments0.get(table.getSelectedRow()).getCommenterId(),eventId);
+                    commentServiceImpl.doCancel(comments0.get(table.getSelectedRow()).getCommenterId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功！");
-                    List<Comment> comments1 = commentService.viewComment(event.getEventId());
+                    List<Comment> comments1 = commentServiceImpl.findAll(event.getEventId());
                     Object[][] rowData1 = new Object[comments1.size()][3];
                     for (int i = 0; i < comments1.size(); i++) {
                         rowData1[i][0]=comments1.get(i).getCommenterName();
@@ -346,7 +346,7 @@ public class EventSwing {
                 //管理员
                 int judge112 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
                 if(judge112 ==1){
-                    commentService.clearComment(eventId);
+                    commentServiceImpl.doClear(eventId);
                     JOptionPane.showMessageDialog(null,"删除成功！");
                     //清空
                     //重新设置数据源

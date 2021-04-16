@@ -67,7 +67,7 @@ public class CollectdEventSwing {
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
                     Event event = eventService.viewEvent(list.getSelectedValue());
-                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
+                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventService.queryEventOfEventGroup(event.getEventId()));
                 }
             }
         });
