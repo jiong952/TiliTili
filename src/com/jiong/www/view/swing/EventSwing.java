@@ -272,6 +272,7 @@ public class EventSwing {
         myComment.setForeground(Color.PINK);
         myComment.setBounds(20,637,80,30);
         jPanel.add(myComment);
+
         //评论区文本框
         JTextArea myCommentArea = new JTextArea();
         myCommentArea.setBounds(100,637,550,100);
@@ -311,6 +312,7 @@ public class EventSwing {
             if(judge4 ==1){
                 //吃瓜群众
                 if(userId==comments.get(table.getSelectedRow()).getCommenterId()){
+                    //由第一页的相应行数推得删除行的实际行数
                     iCommentService.doCancel(comments.get(((eventPagingUtils.getCurrentPage()-1)*pageSize+table.getSelectedRow())).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功");
                     //重新设置数据源重新分页

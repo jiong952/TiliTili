@@ -2,10 +2,11 @@ package com.jiong.www.po;
 
 import java.util.Date;
 
+
 /**
  * @author Mono
  */
-public class Accuse {
+public class Accuse implements Comparable<Accuse>{
     /**举报人的id*/
     private int accusedUserId;
     /**举报人的名字*/
@@ -65,5 +66,10 @@ public class Accuse {
 
     public void setAccusedEventName(String accusedEventName) {
         this.accusedEventName = accusedEventName;
+    }
+
+    @Override
+    public int compareTo(Accuse accuse) {
+        return Long.compare(this.getAccuseTime().getTime(), accuse.getAccuseTime().getTime());
     }
 }

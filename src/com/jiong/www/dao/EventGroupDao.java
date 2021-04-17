@@ -141,6 +141,63 @@ public class EventGroupDao {
         //把查询的结果集返回到service层
         return eventGroup;
     }
+    /**查看管理员管理的所有瓜圈*/
+    public List<Integer> viewAdminGroup(int userId){
+        Connection conn = null;
+        PreparedStatement ps=null;
+        ResultSet rs = null;
+        List<Integer> list = new ArrayList<>();
+        try {
+            conn=JdbcUtils.getConnection();
+            String sql = "SELECT `administrator_groupid` FROM `administrator` WHERE `administrator_id` = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,userId);
+            rs=ps.executeQuery();
+            while (rs.next()){
+                list.add(rs.getInt("administrator_groupid"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,rs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+    /**用瓜圈id查该瓜圈里的所有瓜的瓜id*/
+    public List<Event> viewEventGroup(List<Integer> list){
+        Connection conn = null;
+        PreparedStatement ps=null;
+        ResultSet rs = null;
+        List<Event> eventList = new ArrayList<>();
+        try {
+            conn=JdbcUtils.getConnection();
+            for (Integer integer : list) {
+                String sql = "SELECT `event_id`,`event_name` FROM `event` WHERE `eventGroup_id` = ?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1, integer);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Event event = new Event();
+                    event.setEventId(rs.getInt("event_id"));
+                    event.setEventName(rs.getString("event_name"));
+                    eventList.add(event);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,rs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return eventList;
+    }
     /**查看所有瓜圈*/
     public List<EventGroup> viewAllEventGroup() throws SQLException {
         List<EventGroup> eventGroups = new ArrayList<>();

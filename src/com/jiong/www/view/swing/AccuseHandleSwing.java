@@ -54,7 +54,7 @@ public class AccuseHandleSwing {
             rowData[i][2]=accuses.get(i).getAccusedContent();
             rowData[i][3]=accuses.get(i).getAccuseTime();
         }
-        Font font1 = new Font("黑体",Font.PLAIN,15);
+        Font font1 = new Font("黑体",Font.PLAIN,14);
         JTable table = new JTable();
         DefaultTableModel defaultTableModel = new DefaultTableModel(rowData, columnNames){
             @Override

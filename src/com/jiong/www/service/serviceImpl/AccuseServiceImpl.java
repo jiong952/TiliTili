@@ -1,10 +1,15 @@
 package com.jiong.www.service.serviceImpl;
 
+import com.jiong.www.dao.EventGroupDao;
 import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
 import com.jiong.www.dao.Idao.IAccuseDao;
 import com.jiong.www.po.Accuse;
+import com.jiong.www.po.Event;
 import com.jiong.www.service.Iservice.IAccuseService;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -12,6 +17,7 @@ import java.util.List;
  */
 public class AccuseServiceImpl implements IAccuseService {
     IAccuseDao iAccuseDao = new AccuseDaoImpl();
+    EventGroupDao eventGroupDao = new EventGroupDao();
     /**用户可以举报瓜，给管理员处理*/
     @Override
     public int doAccuse(int eventId, int userId, String accusedContent){
@@ -27,7 +33,11 @@ public class AccuseServiceImpl implements IAccuseService {
     @Override
     public List<Accuse> findAll(int userId){
         List<Accuse> accuses;
-        accuses = iAccuseDao.findAll(userId);
+        List<Integer> integers = eventGroupDao.viewAdminGroup(userId);
+        List<Event> eventList = eventGroupDao.viewEventGroup(integers);
+        accuses=iAccuseDao.findAll(eventList);
+        accuses=iAccuseDao.queryName(accuses);
+        accuses.sort(Accuse::compareTo);
         return accuses;
     }
     /**删除举报信息*/
