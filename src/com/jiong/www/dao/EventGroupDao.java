@@ -141,6 +141,34 @@ public class EventGroupDao {
         //把查询的结果集返回到service层
         return eventGroup;
     }
+    /**用瓜圈id查瓜圈名*/
+    public String viewEventGroup(int eventGroupId){
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs=null;
+        String eventGroupName=null;
+        try {
+            conn = JdbcUtils.getConnection();
+            String sql ="SELECT `eventGroup_name` FROM `eventgroup` WHERE `eventGroup_id`=?";
+            //联表查询
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,eventGroupId);
+            rs = ps.executeQuery();
+            while (rs.next()){
+                eventGroupName = rs.getString("eventGroup_name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,rs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        //把查询的结果集返回到service层
+        return eventGroupName;
+    }
     /**查看管理员管理的所有瓜圈*/
     public List<Integer> viewAdminGroup(int userId){
         Connection conn = null;

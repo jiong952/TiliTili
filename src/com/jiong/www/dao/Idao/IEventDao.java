@@ -30,7 +30,7 @@ public interface IEventDao {
      * @param eventId 瓜id
      * @return 瓜圈名
      * */
-    String queryGroupName(int eventId);
+    int queryGroupId(int eventId);
     /**删除瓜
      * @param eventId 删除的瓜id
      * @return 判断是否删除成功

@@ -108,26 +108,22 @@ public class EventDaoImpl implements IEventDao {
     }
     /**查询这个瓜所在的瓜圈名*/
     @Override
-    public String queryGroupName(int eventId)  {
+    public int queryGroupId(int eventId)  {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs =null;
-        String eventGroupName = null;
+        int eventGroupId =0;
         try {
             conn = JdbcUtils.getConnection();
             //进行数据库连接
-            String sql ="SELECT `eventGroup_name`\n" +
-                    "FROM `eventgroup` s\n" +
-                    "INNER JOIN `event` p\n" +
-                    "ON s.`eventGroup_id`=p.`eventGroup_id`\n" +
-                    "WHERE `event_id`  = ?";
+            String sql ="SELECT `eventGroup_id` FROM `event` WHERE `event_id` = ?";
             //联表查询
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             rs = ps.executeQuery();
             //eventGroupName为查询的瓜圈名
             while (rs.next()){
-                eventGroupName=rs.getString("eventGroup_name");
+                eventGroupId = rs.getInt("eventGroup_id");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -138,7 +134,7 @@ public class EventDaoImpl implements IEventDao {
                 e.printStackTrace();
             }
         }
-        return eventGroupName;
+        return eventGroupId;
     }
     /**删除瓜*/
     @Override
@@ -175,19 +171,14 @@ public class EventDaoImpl implements IEventDao {
         ResultSet rs = null;
         try {
             conn = JdbcUtils.getConnection();
-            String sql ="SELECT `login_name`,`event_name`,`event_content`,`comment_num`,`likes_num`,s.`create_time`,`event_id`,`collection_num`\n" +
-                    "FROM `event` s\n" +
-                    "INNER JOIN `user` p\n" +
-                    "ON s.publisher_id= p.user_id\n" +
-                    "WHERE `event_name`=?";
+            String sql = "SELECT `publisher_id`,`event_content`,`comment_num`,\n" +
+                    "`likes_num`,`create_time`,`collection_num`,`event_id` FROM `event` WHERE `event_name` = ?";
             //联表查询
             ps = conn.prepareStatement(sql);
             ps.setString(1,eventName);
             rs = ps.executeQuery();
             while(rs.next()){
-                eventQuery.setPublisherName(rs.getString("login_name"));
-                //发布者的名字
-                eventQuery.setEventName(rs.getString("event_name"));
+                eventQuery.setPublisherId(rs.getInt("publisher_id"));
                 //瓜名
                 eventQuery.setEventContent(rs.getString("event_content"));
                 //瓜内容
@@ -198,6 +189,7 @@ public class EventDaoImpl implements IEventDao {
                 eventQuery.setCreateTime(rs.getDate("create_time"));
                 //瓜id
                 eventQuery.setEventId(rs.getInt("event_id"));
+                eventQuery.setEventName(eventName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
