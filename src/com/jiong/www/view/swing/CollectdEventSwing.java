@@ -1,9 +1,10 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
+import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.service.Iservice.ICollectionService;
+import com.jiong.www.service.service.ICollectionService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,7 @@ public class CollectdEventSwing {
     public CollectdEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventServiceImpl eventServiceImpl = new EventServiceImpl();
+        IEventService iEventService = new EventServiceImpl();
         ICollectionService iCollectionService = new CollectionServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
@@ -55,7 +56,7 @@ public class CollectdEventSwing {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介) 双击是进入
             if(!list.getValueIsAdjusting()){
-                Event event = eventServiceImpl.doView(list.getSelectedValue());
+                Event event = iEventService.doView(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                         +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
@@ -66,8 +67,8 @@ public class CollectdEventSwing {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
-                    Event event = eventServiceImpl.doView(list.getSelectedValue());
-                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), eventServiceImpl.queryGroupName(event.getEventId()));
+                    Event event = iEventService.doView(list.getSelectedValue());
+                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), iEventService.queryGroupName(event.getEventId()));
                 }
             }
         });
@@ -92,7 +93,7 @@ public class CollectdEventSwing {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要取消收藏" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    Event event = eventServiceImpl.doView(list.getSelectedValue());
+                    Event event = iEventService.doView(list.getSelectedValue());
                     iCollectionService.doCancelCollect(userId,event.getEventId());
                     //刷新
                     DefaultListModel<String> listModel1;

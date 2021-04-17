@@ -3,7 +3,7 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.service.Iservice.IAccuseService;
+import com.jiong.www.service.service.IAccuseService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

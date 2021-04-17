@@ -1,6 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
-import com.jiong.www.dao.Idao.IEventDao;
+import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
 import com.jiong.www.util.JdbcUtils;
 

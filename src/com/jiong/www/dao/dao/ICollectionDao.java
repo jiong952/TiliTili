@@ -1,6 +1,4 @@
-package com.jiong.www.dao.Idao;
-
-import com.jiong.www.po.Event;
+package com.jiong.www.dao.dao;
 
 import java.util.List;
 
@@ -30,7 +28,7 @@ public interface ICollectionDao {
      * @param eventId 瓜id
      * */
     void doClear(int eventId);
-    /**查看用户是否点赞
+    /**查看用户是否收藏
      * @param userId 用户id
      * @param eventId 查看的瓜
      * @return 查看判断

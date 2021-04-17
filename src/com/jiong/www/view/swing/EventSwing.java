@@ -3,12 +3,13 @@ package com.jiong.www.view.swing;
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.*;
-import com.jiong.www.service.Iservice.ICollectionService;
-import com.jiong.www.service.Iservice.ICommentService;
-import com.jiong.www.service.Iservice.IEventService;
+import com.jiong.www.service.service.ICollectionService;
+import com.jiong.www.service.service.ICommentService;
+import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
 import com.jiong.www.service.serviceImpl.CommentServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
+import com.jiong.www.service.serviceImpl.LikesServiceImpl;
 import com.jiong.www.util.EventPagingUtils;
 
 import javax.swing.*;
@@ -39,7 +40,7 @@ public class EventSwing {
         UserService userService = new UserService();
         EventGroupService eventGroupService = new EventGroupService();
         IEventService iEventService = new EventServiceImpl();
-        LikesService likesService = new LikesService();
+        LikesServiceImpl likesServiceImpl = new LikesServiceImpl();
         ICollectionService iCollectionService = new CollectionServiceImpl();
         ICommentService iCommentService = new CommentServiceImpl();
 
@@ -109,7 +110,7 @@ public class EventSwing {
         JRadioButton notLike = new JRadioButton("不点赞");
         notLike.setBounds(300,126,70,30);
         //查询是否已经点赞
-        int judge = likesService.likesIfOrNot(userId, eventId);
+        int judge = likesServiceImpl.queryLikes(userId, eventId);
         if(judge==1){
             like.setSelected(true);
         }else {
@@ -117,7 +118,7 @@ public class EventSwing {
         }
         //点赞
         like.addActionListener(e -> {
-            likesService.likes(userId,eventId);
+            likesServiceImpl.doLikes(userId,eventId);
             Event event1 = iEventService.doView(eventName);
             likesNumber.setText(String.valueOf(event1.getLikesNum()));
         });
@@ -126,7 +127,7 @@ public class EventSwing {
             int judge1 = JOptionPane.showConfirmDialog(null, "您确定要取消点赞吗？", "删除提示", JOptionPane.YES_NO_OPTION);
             if(judge1 ==0){
                 //YES
-            likesService.cancelLikes(userId,eventId);
+            likesServiceImpl.doCancelLikes(userId,eventId);
             Event event1 = iEventService.doView(eventName);
             likesNumber.setText(String.valueOf(event1.getLikesNum()));
             }else {

@@ -2,17 +2,13 @@ package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.CommentDaoImpl;
-import com.jiong.www.dao.Idao.ICommentDao;
+import com.jiong.www.dao.dao.ICommentDao;
 import com.jiong.www.po.Comment;
-import com.jiong.www.service.Iservice.ICommentService;
+import com.jiong.www.service.service.ICommentService;
 import com.jiong.www.util.EventPagingUtils;
 
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Mono

@@ -1,8 +1,10 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
+import com.jiong.www.service.service.ILikesService;
+import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.service.LikesService;
+import com.jiong.www.service.serviceImpl.LikesServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +23,8 @@ public class LikesEventSwing {
     public LikesEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventServiceImpl eventServiceImpl = new EventServiceImpl();
-        LikesService likesService = new LikesService();
+        IEventService iEventService = new EventServiceImpl();
+        ILikesService iLikesService = new LikesServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(700,600);
         //设置大小
@@ -54,7 +56,7 @@ public class LikesEventSwing {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介)
             if(!list.getValueIsAdjusting()){
-                Event event = eventServiceImpl.doView(list.getSelectedValue());
+                Event event = iEventService.doView(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                         +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
@@ -65,13 +67,13 @@ public class LikesEventSwing {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //双击进入瓜界面
-                    Event event = eventServiceImpl.doView(list.getSelectedValue());
-                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), eventServiceImpl.queryGroupName(event.getEventId()));
+                    Event event = iEventService.doView(list.getSelectedValue());
+                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), iEventService.queryGroupName(event.getEventId()));
                 }
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        List<Event> events = likesService.viewEventOfLikes(userId);
+        List<Event> events = iLikesService.findAll(userId);
         for (int i = 0; i < events.size(); i++) {
             listModel.add(i,events.get(i).getEventName());
         }
@@ -91,14 +93,11 @@ public class LikesEventSwing {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要取消点赞" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    Event event = eventServiceImpl.doView(list.getSelectedValue());
-                    likesService.cancelLikes(userId,event.getEventId());
+                    Event event = iEventService.doView(list.getSelectedValue());
+                    iLikesService.doCancelLikes(userId,event.getEventId());
                     //刷新
-                    DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                    List<Event> events1 = likesService.viewEventOfLikes(userId);
-                    for (int i = 0; i < events1.size(); i++) {
-                        listModel1.add(i,events1.get(i).getEventName());
-                    }
+                    DefaultListModel<String> listModel1 ;
+                    listModel1 = iLikesService.doRefresh(userId);
                     list.setModel(listModel1);
                 }
             }else {

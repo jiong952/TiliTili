@@ -1,4 +1,4 @@
-package com.jiong.www.dao.Idao;
+package com.jiong.www.dao.dao;
 
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;

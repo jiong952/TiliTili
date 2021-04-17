@@ -1,4 +1,4 @@
-package com.jiong.www.service.Iservice;
+package com.jiong.www.service.service;
 
 import com.jiong.www.po.Event;
 
@@ -19,12 +19,12 @@ public interface ICollectionService {
      * @param eventId 取消收藏瓜id
      * */
     void doCancelCollect(int userId, int eventId);
-    /**查看用户是否点赞
-     * @param commentId 用户id
+    /**查看用户是否收藏
+     * @param userId 用户id
      * @param eventId 查看的瓜
      * @return 查看判断
      * */
-    int queryCollect(int commentId, int eventId);
+    int queryCollect(int userId, int eventId);
     /**查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量
      * @param userId 用户id
      * @return 返回查询结果*/

@@ -2,7 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
-import com.jiong.www.service.Iservice.IEventService;
+import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.GroupPagingUtils;

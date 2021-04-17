@@ -1,7 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
-import com.jiong.www.dao.dao.ICommentDao;
-import com.jiong.www.po.Comment;
+import com.jiong.www.dao.dao.ILikesDao;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -14,24 +13,23 @@ import java.util.List;
 /**
  * @author Mono
  */
-public class CommentDaoImpl implements ICommentDao {
-    /**进行评论*/
+public class LikesDaoImpl implements ILikesDao {
+
+    /**点赞,同时更新用户点赞表*/
     @Override
-    public void doComment(int userId, int eventId, Comment comment)  {
+    public void doLikes(int userId, int eventId) {
         Connection conn = null;
-        PreparedStatement ps = null;
+        PreparedStatement ps=null;
         try {
             conn = JdbcUtils.getConnection();
-            //事务
             conn.setAutoCommit(false);
-            String sql="INSERT INTO `comment` (`event_id`,`user_id`,`comment_content`) VALUES(?,?,?)";
+            String sql="INSERT INTO `like` (`event_id`,`user_id`) VALUES(?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
-            ps.setString(3,comment.getCommentContent());
             ps.executeUpdate();
-            conn.commit();
             //sql语句返回结果判断
+            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -43,22 +41,20 @@ public class CommentDaoImpl implements ICommentDao {
             }
         }
     }
-
-    /**评论数+1*/
+    /**点赞量+1*/
     @Override
-    public void addCommentNum(int eventId) {
+    public void addCollectionNum(int eventId) {
         Connection conn = null;
-        PreparedStatement ps =null;
+        PreparedStatement ps=null;
         try {
             conn = JdbcUtils.getConnection();
-            //事务
             conn.setAutoCommit(false);
-            String sql ="UPDATE `event` SET `comment_num` = `comment_num`+1 WHERE `event_id` =?";
+            String sql ="UPDATE `event` SET `likes_num` = `likes_num`+1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.executeUpdate();
-            conn.commit();
             //sql语句返回结果判断
+            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -70,69 +66,65 @@ public class CommentDaoImpl implements ICommentDao {
             }
         }
     }
-
-    /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
+    /**取消点赞,同时删除用户点赞表中的相关数据*/
     @Override
-    public void doCancel(int commentId, int eventId) {
+    public void doCancelLikes(int userId, int eventId)  {
+        Connection conn = null;
+        PreparedStatement ps=null;
+        try {
+            conn = JdbcUtils.getConnection();
+            conn.setAutoCommit(false);
+            String sql="DELETE FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,eventId);
+            ps.setInt(2,userId);
+            ps.executeUpdate();
+            //sql语句返回结果判断
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,null);
+                //释放连接
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /**点赞量-1*/
+    @Override
+    public void subtractCollectionNum(int eventId) {
+        Connection conn = null;
+        PreparedStatement ps=null;
+        try {
+            conn = JdbcUtils.getConnection();
+            conn.setAutoCommit(false);
+            String sql ="UPDATE `event` SET `likes_num` = `likes_num`-1 WHERE `event_id` =?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,eventId);
+            ps.executeUpdate();
+            //sql语句返回结果判断
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,null);
+                //释放连接
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /**清空瓜的点赞数据*/
+    @Override
+    public void doClear(int eventId) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             conn = JdbcUtils.getConnection();
-            conn.setAutoCommit(false);
-            String sql="DELETE FROM `comment` WHERE `event_id`= ? AND `id` =?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventId);
-            ps.setInt(2,commentId);
-            ps.executeUpdate();
-            //sql语句返回结果判断
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                JdbcUtils.release(conn,ps,null);
-                //释放连接
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**评论数-1*/
-    @Override
-    public void subtractCommentNum(int eventId) {
-        Connection conn = null;
-        PreparedStatement ps =null;
-        try {
-            conn = JdbcUtils.getConnection();
-            //事务
-            conn.setAutoCommit(false);
-            String sql ="UPDATE `event` SET `comment_num` = `comment_num`-1 WHERE `event_id` =?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventId);
-            ps.executeUpdate();
-            conn.commit();
-            //sql语句返回结果判断
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                JdbcUtils.release(conn,ps,null);
-                //释放连接
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**删除瓜的所有评论，管理员*/
-    @Override
-    public void doClear(int eventId){
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = JdbcUtils.getConnection();
-            String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
+            String sql="DELETE FROM `like` WHERE `event_id`= ? ";
             //清空所有评论
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -148,18 +140,23 @@ public class CommentDaoImpl implements ICommentDao {
             //释放连接
         }
     }
-
+    /**查看用户是否点赞*/
     @Override
-    public void clearCommentNum(int eventId) {
+    public int queryLikes(int userId, int eventId) {
+        int judge=0;
         Connection conn = null;
-        PreparedStatement ps =null;
+        PreparedStatement ps= null;
         try {
             conn = JdbcUtils.getConnection();
-            String sql="UPDATE `event` SET `comment_num` = 0 WHERE `event_id` =?";
-            //清空所有评论
+            String sql="SELECT `id` FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
-            ps.executeUpdate();
+            ps.setInt(2,userId);
+            ResultSet rs = ps.executeQuery();
+            if(rs.isBeforeFirst()){
+                judge=1;
+                //表里有数据,是用户有收藏,judge=1
+            }
             //sql语句返回结果判断
             //row是返回值，用于判断 0表示执行失败,1表示执行成功
         } catch (SQLException e) {
@@ -172,30 +169,25 @@ public class CommentDaoImpl implements ICommentDao {
             }
             //释放连接
         }
+        return judge;
     }
-
-    /**查看瓜的评论,也要返回评论人名*/
+    /**查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     @Override
-    public List<Comment> findAll(int eventId){
-        List<Comment> comments = new ArrayList<>();
-        //创建一个容器返回 评论的信息
+    public List<Integer> findAll(int userId)  {
+        List<Integer> list = new ArrayList<>();
+        //创建一个容器返回 收藏瓜的信息
         Connection conn = null;
         PreparedStatement ps =null;
         ResultSet rs = null;
         try {
             conn = JdbcUtils.getConnection();
-            String sql ="SELECT `comment_content`,`user_id`,`create_time`,`id` FROM `comment`WHERE`event_id`=?";
+            String sql ="SELECT `event_id` FROM `like` WHERE `user_id` =?";
             //联表查询
             ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventId);
+            ps.setInt(1,userId);
             rs = ps.executeQuery();
             while(rs.next()){
-                Comment comment = new Comment();
-                comment.setCommentContent(rs.getString("comment_content"));
-                comment.setCommenterId(rs.getInt("user_id"));
-                comment.setCommentTime(rs.getDate("create_time"));
-                comment.setCommentId(rs.getInt("id"));
-                comments.add(comment);
+                list.add(rs.getInt("event_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -206,8 +198,6 @@ public class CommentDaoImpl implements ICommentDao {
                 e.printStackTrace();
             }
         }
-        //把查询的结果集返回到service层
-        return comments;
-
+        return list;
     }
 }

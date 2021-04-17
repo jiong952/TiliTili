@@ -1,8 +1,7 @@
-package com.jiong.www.dao.Idao;
+package com.jiong.www.dao.dao;
 
 import com.jiong.www.po.Comment;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

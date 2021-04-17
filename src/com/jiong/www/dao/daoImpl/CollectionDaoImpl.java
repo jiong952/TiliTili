@@ -1,7 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
-import com.jiong.www.dao.Idao.ICollectionDao;
-import com.jiong.www.po.Event;
+import com.jiong.www.dao.dao.ICollectionDao;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -23,8 +22,8 @@ public class CollectionDaoImpl implements ICollectionDao {
         try {
             conn = JdbcUtils.getConnection();
             conn.setAutoCommit(false);
-            String sql1="INSERT INTO `collection` (`event_id`,`user_id`) VALUES(?,?)";
-            ps = conn.prepareStatement(sql1);
+            String sql="INSERT INTO `collection` (`event_id`,`user_id`) VALUES(?,?)";
+            ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
             ps.executeUpdate();
@@ -41,7 +40,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             }
         }
     }
-    /**点赞量+1*/
+    /**收藏量+1*/
     @Override
     public void addCollectionNum(int eventId) {
         Connection conn = null;
@@ -74,8 +73,8 @@ public class CollectionDaoImpl implements ICollectionDao {
         try {
             conn = JdbcUtils.getConnection();
             conn.setAutoCommit(false);
-            String sql1="DELETE FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
-            ps = conn.prepareStatement(sql1);
+            String sql="DELETE FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
+            ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
             ps.executeUpdate();
@@ -92,7 +91,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             }
         }
     }
-    /**点赞量-1*/
+    /**收藏量-1*/
     @Override
     public void subtractCollectionNum(int eventId) {
         Connection conn = null;
@@ -140,7 +139,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             //释放连接
         }
     }
-    /**查看用户是否点赞*/
+    /**查看用户是否收藏*/
     @Override
     public int queryCollect(int userId, int eventId)  {
         int judge=0;
@@ -148,8 +147,8 @@ public class CollectionDaoImpl implements ICollectionDao {
         PreparedStatement ps= null;
         try {
             conn = JdbcUtils.getConnection();
-            String sql1="SELECT `id` FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
-            ps = conn.prepareStatement(sql1);
+            String sql="SELECT `id` FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
+            ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
             ResultSet rs = ps.executeQuery();

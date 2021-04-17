@@ -1,12 +1,12 @@
 package com.jiong.www.service.serviceImpl;
 
-import com.jiong.www.dao.Idao.ICollectionDao;
-import com.jiong.www.dao.Idao.IEventDao;
+import com.jiong.www.dao.dao.ICollectionDao;
+import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
-import com.jiong.www.service.Iservice.ICollectionService;
+import com.jiong.www.service.service.ICollectionService;
 
 import javax.swing.*;
 import java.util.List;
@@ -31,9 +31,9 @@ public class CollectionServiceImpl implements ICollectionService {
     }
     /**查看用户是否点赞*/
     @Override
-    public int queryCollect(int commentId, int eventId){
+    public int queryCollect(int userId, int eventId){
         int judge;
-        judge= iCollectionDao.queryCollect(commentId,eventId);
+        judge= iCollectionDao.queryCollect(userId,eventId);
         return judge;
     }
     /**查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
