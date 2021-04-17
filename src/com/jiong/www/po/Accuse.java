@@ -70,6 +70,6 @@ public class Accuse implements Comparable<Accuse>{
 
     @Override
     public int compareTo(Accuse accuse) {
-        return Long.compare(this.getAccuseTime().getTime(), accuse.getAccuseTime().getTime());
+        return Long.compare(accuse.getAccuseTime().getTime(),this.getAccuseTime().getTime());
     }
 }

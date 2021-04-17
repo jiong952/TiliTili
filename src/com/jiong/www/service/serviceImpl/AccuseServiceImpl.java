@@ -7,9 +7,9 @@ import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.Iservice.IAccuseService;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -57,7 +57,9 @@ public class AccuseServiceImpl implements IAccuseService {
             rowData[i][0]=accuses.get(i).getAccusedUserName();
             rowData[i][1]=accuses.get(i).getAccusedEventName();
             rowData[i][2]=accuses.get(i).getAccusedContent();
-            rowData[i][3]=accuses.get(i).getAccuseTime();
+            LocalDate localDate=accuses.get(i).getAccuseTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            Date date = java.sql.Date.valueOf(localDate);
+            rowData[i][3]=date;
         }
         return rowData;
     }

@@ -1,6 +1,5 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
@@ -9,7 +8,6 @@ import com.jiong.www.service.Iservice.IAccuseService;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.List;
 
 /**
  * @author Mono
@@ -46,15 +44,8 @@ public class AccuseHandleSwing {
         //创建一个表格来放举报信息
         String[] columnNames = {"举报人","举报的瓜","举报理由","举报时间"};
         //查询所有的举报信息
-        List<Accuse> accuses = iAccuseService.findAll(userId);
-        Object[][] rowData = new Object[accuses.size()][4];
-        for (int i = 0; i < accuses.size(); i++) {
-            rowData[i][0]=accuses.get(i).getAccusedUserName();
-            rowData[i][1]=accuses.get(i).getAccusedEventName();
-            rowData[i][2]=accuses.get(i).getAccusedContent();
-            rowData[i][3]=accuses.get(i).getAccuseTime();
-        }
-        Font font1 = new Font("黑体",Font.PLAIN,14);
+        Object[][] rowData = iAccuseService.doRefresh(userId);
+        Font font1 = new Font("黑体",Font.PLAIN,15);
         JTable table = new JTable();
         DefaultTableModel defaultTableModel = new DefaultTableModel(rowData, columnNames){
             @Override
