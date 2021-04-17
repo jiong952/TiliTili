@@ -146,7 +146,6 @@ public class EventDaoImpl implements IEventDao {
             conn = JdbcUtils.getConnection();
             //进行数据库连接
             String sql ="DELETE FROM `event` WHERE `event_id` =?";
-            //还要删除点赞收藏评论举报表
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             row = ps.executeUpdate();

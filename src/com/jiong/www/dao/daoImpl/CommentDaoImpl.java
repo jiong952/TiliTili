@@ -137,8 +137,6 @@ public class CommentDaoImpl implements ICommentDao {
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.executeUpdate();
-            //sql语句返回结果判断
-            //row是返回值，用于判断 0表示执行失败,1表示执行成功
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {

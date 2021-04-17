@@ -23,9 +23,13 @@ public interface ICollectionDao {
      * */
     void doCancelCollect(int userId, int eventId);
     /**收藏数-1
-     * @param  eventId 点赞瓜
+     * @param  eventId 收藏瓜
      * */
     void subtractCollectionNum(int eventId);
+    /**清空瓜的收藏
+     * @param eventId 瓜id
+     * */
+    void doClear(int eventId);
     /**查看用户是否点赞
      * @param userId 用户id
      * @param eventId 查看的瓜

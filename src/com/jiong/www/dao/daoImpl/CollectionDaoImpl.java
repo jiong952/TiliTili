@@ -117,6 +117,29 @@ public class CollectionDaoImpl implements ICollectionDao {
             }
         }
     }
+    /**清除瓜相应收藏表数据*/
+    @Override
+    public void doClear(int eventId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = JdbcUtils.getConnection();
+            String sql="DELETE FROM `collection` WHERE `event_id`= ? ";
+            //清空所有评论
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,eventId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            //释放连接
+        }
+    }
     /**查看用户是否点赞*/
     @Override
     public int queryCollect(int userId, int eventId)  {

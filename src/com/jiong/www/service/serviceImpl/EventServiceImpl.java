@@ -1,7 +1,11 @@
 package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.EventGroupDao;
+import com.jiong.www.dao.LikesDao;
 import com.jiong.www.dao.UserDao;
+import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
+import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
+import com.jiong.www.dao.daoImpl.CommentDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.dao.Idao.IEventDao;
 import com.jiong.www.po.Event;
@@ -42,11 +46,15 @@ public class EventServiceImpl implements IEventService {
         eventGroupName=eventGroupDao.viewEventGroup(eventGroupId);
         return eventGroupName;
     }
-    /**删除瓜*/
+    /**删除瓜以及瓜的点赞收藏评论举报信息*/
     @Override
     public int doDelete(int eventId){
-
-        return iEventDao.doDelete(eventId);
+        int judge = iEventDao.doDelete(eventId);
+        new CollectionDaoImpl().doClear(eventId);
+        new CommentDaoImpl().doClear(eventId);
+        new AccuseDaoImpl().doClear(eventId);
+        new LikesDao().doClear(eventId);
+        return judge;
     }
     /**查看瓜,返回瓜的所有信息，封装*/
     @Override

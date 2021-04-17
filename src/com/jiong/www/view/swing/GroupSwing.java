@@ -2,6 +2,7 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.Iservice.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.GroupPagingUtils;
@@ -29,7 +30,7 @@ public class GroupSwing extends JFrame {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
         EventGroupService eventGroupService =new EventGroupService();
-        EventServiceImpl eventServiceImpl = new EventServiceImpl();
+        IEventService iEventService = new EventServiceImpl();
         JFrame eventOfGroup = new JFrame("TiliTili瓜王系统");
         eventOfGroup.setSize(1200,800);
         //设置大小
@@ -89,7 +90,7 @@ public class GroupSwing extends JFrame {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介) 双击是进入
             if(!list.getValueIsAdjusting()){
-                Event event = eventServiceImpl.doView(list.getSelectedValue());
+                Event event = iEventService.doView(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                 +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
@@ -100,7 +101,7 @@ public class GroupSwing extends JFrame {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
-                    Event event = eventServiceImpl.doView(list.getSelectedValue());
+                    Event event = iEventService.doView(list.getSelectedValue());
                     eventOfGroup.dispose();
                     new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
                 }
@@ -175,8 +176,8 @@ public class GroupSwing extends JFrame {
             if("".equals(eventName)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = eventServiceImpl.verifyExist(eventName);
-                Event event1 = eventServiceImpl.doView(eventName);
+                int judge = iEventService.verifyExist(eventName);
+                Event event1 = iEventService.doView(eventName);
                 if(judge==1){
                     //瓜存在
                     new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
@@ -198,25 +199,29 @@ public class GroupSwing extends JFrame {
         jPanel.add(back);
 
         //删除按钮
-        JButton delete = new JButton("删除瓜圈");
+        JButton delete = new JButton("删除瓜");
         delete.setBounds(500,650,90,30);
         delete.addActionListener(e -> {
-            int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
-            //判断是不是该管理员管理的瓜圈
-            if(judge0==1){
-                //是
-                int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
-                if(judge==0){
-                    //选择是
-                    judge0 = eventGroupService.deleteEventGroup(eventGroupName, userId);
-                    if(judge0==1){
-                        JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                        new GroupsSwing(userId,eventGroupName);
+            if(list.getSelectedIndex()>0) {
+                int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                //判断是不是该管理员管理的瓜圈
+                if (judge0 == 1) {
+                    //是
+                    int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜吗？", "确认", JOptionPane.YES_NO_OPTION);
+                    if (judge == 0) {
+                        //选择是
+                        judge0 = iEventService.doDelete(iEventService.doView(list.getSelectedValue()).getEventId());
+                        if (judge0 == 1) {
+                            JOptionPane.showMessageDialog(null, "删除瓜成功！");
+                            new GroupsSwing(userId, eventGroupName);
+                        }
                     }
+                } else {
+                    //不是
+                    JOptionPane.showMessageDialog(null, "这不是您管理的瓜圈", "错误", JOptionPane.ERROR_MESSAGE);
                 }
             }else {
-                //不是
-                JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"请单击选择要删除的瓜","错误",JOptionPane.ERROR_MESSAGE);
             }
 
         });

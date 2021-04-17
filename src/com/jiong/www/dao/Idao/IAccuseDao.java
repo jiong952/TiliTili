@@ -20,8 +20,13 @@ public interface IAccuseDao {
      * @return 返回管理员的管理瓜圈的举报信息list
      * */
     List<Accuse> findAll(List<Event> eventList) ;
+    /**清空瓜的举报
+     * @param eventId 瓜id
+     * */
+    void doClear(int eventId);
     /**删除举报
      * @param accuse 传入要删除举报信息的accuse对象
      * */
     void doDelete(Accuse accuse) ;
+
 }

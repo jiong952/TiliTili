@@ -10,6 +10,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Mono
+ */
 public class LikesDao {
 
     /**点赞,同时更新用户点赞表*/
@@ -105,6 +108,28 @@ public class LikesDao {
         JdbcUtils.release(conn,ps,rs);
         //把查询的结果集返回到service层
         return events;
+    }
+    /**清空瓜的点赞*/
+    public void doClear(int eventId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = JdbcUtils.getConnection();
+            String sql="DELETE FROM `like` WHERE `event_id`= ? ";
+            //清空所有评论
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,eventId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,null);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            //释放连接
+        }
     }
 
 

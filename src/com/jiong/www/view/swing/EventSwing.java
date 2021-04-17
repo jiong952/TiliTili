@@ -358,10 +358,36 @@ public class EventSwing {
     });
         clearComment.setVisible(false);
         jPanel.add(clearComment);
+        JButton delete = new JButton("删除瓜");
+        delete.setBounds(1050,637,90,30);
+        delete.addActionListener(e -> {
+            int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+            //判断是不是该管理员管理的瓜圈
+            if (judge0 == 1) {
+                //是
+                int judge12 = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜吗？", "确认", JOptionPane.YES_NO_OPTION);
+                if (judge12 == 0) {
+                    //选择是
+                    judge0 = iEventService.doDelete(eventId);
+                    if (judge0 == 1) {
+                        JOptionPane.showMessageDialog(null, "删除瓜成功！");
+                        new GroupsSwing(userId, eventGroupName);
+                    }
+                }
+            } else {
+                //不是
+                JOptionPane.showMessageDialog(null, "这不是您管理的瓜圈", "错误", JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+        delete.setVisible(false);
+        jPanel.add(delete);
+
         //清空评论只有在管理员时显示
         int roleId = new UserService().verifyRole(userId);
         if(roleId==ADMIN||roleId==SUPER_ADMIN){
             clearComment.setVisible(true);
+            delete.setVisible(true);
         }
 
         //举报按钮
