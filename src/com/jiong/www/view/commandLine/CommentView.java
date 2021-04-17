@@ -2,7 +2,7 @@ package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.Comment;
 import com.jiong.www.service.serviceImpl.CommentServiceImpl;
-import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.EventGroupServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class CommentView {
     Scanner scanner = new Scanner(System.in);
     CommentServiceImpl commentServiceImpl = new CommentServiceImpl();
     EventServiceImpl eventServiceImpl = new EventServiceImpl();
-    EventGroupService eventGroupService = new EventGroupService();
+    EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
     //进行评论，评论数+1，评论表更新
     public void comment(int userId,int eventId){
         System.out.println("请输入评论内容！停止输入请在文末新建一行输入@");
@@ -59,7 +59,7 @@ public class CommentView {
             //eventGroupName为查询的瓜圈名
             eventGroupName = eventServiceImpl.queryGroupName(eventId);
             //验证这个组是不是归管理员管
-            int row = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+            int row = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
             //row==1表示是该管理员管理的,0表示不是管理员管
             if (row == 1) {
                 //进行删除

@@ -1,6 +1,6 @@
 package com.jiong.www.service.serviceImpl;
 
-import com.jiong.www.dao.EventGroupDao;
+import com.jiong.www.dao.daoImpl.EventGroupDaoImpl;
 import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
 import com.jiong.www.dao.dao.IAccuseDao;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class AccuseServiceImpl implements IAccuseService {
     IAccuseDao iAccuseDao = new AccuseDaoImpl();
-    EventGroupDao eventGroupDao = new EventGroupDao();
+    EventGroupDaoImpl eventGroupDaoImpl = new EventGroupDaoImpl();
     /**用户可以举报瓜，给管理员处理*/
     @Override
     public int doAccuse(int eventId, int userId, String accusedContent){
@@ -34,8 +34,8 @@ public class AccuseServiceImpl implements IAccuseService {
     @Override
     public List<Accuse> findAll(int userId){
         List<Accuse> accuses;
-        List<Integer> integers = eventGroupDao.viewAdminGroup(userId);
-        List<Event> eventList = eventGroupDao.viewEventGroup(integers);
+        List<Integer> integers = eventGroupDaoImpl.viewAdminGroup(userId);
+        List<Event> eventList = eventGroupDaoImpl.viewEventGroup(integers);
         accuses=iAccuseDao.findAll(eventList);
         for(Accuse accuse:accuses){
             accuse.setAccusedUserName(new UserDao().queryUserInformation(accuse.getAccusedUserId()).getLoginName());

@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.EventGroupServiceImpl;
 import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.UserService;
@@ -29,7 +29,7 @@ public class GroupSwing extends JFrame {
     public GroupSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
-        EventGroupService eventGroupService =new EventGroupService();
+        EventGroupServiceImpl eventGroupServiceImpl =new EventGroupServiceImpl();
         IEventService iEventService = new EventServiceImpl();
         JFrame eventOfGroup = new JFrame("TiliTili瓜王系统");
         eventOfGroup.setSize(1200,800);
@@ -65,7 +65,7 @@ public class GroupSwing extends JFrame {
         jPanel.add(jLabel1);
 
         //瓜圈简介文本框
-        JTextArea description = new JTextArea(eventGroupService.viewEventGroup(eventGroupName).getEventGroupDescription());
+        JTextArea description = new JTextArea(eventGroupServiceImpl.viewEventGroup(eventGroupName).getEventGroupDescription());
         description.setFont(font2);
         description.setBounds(270,10,900,80);
         description.setEditable(false);
@@ -109,7 +109,7 @@ public class GroupSwing extends JFrame {
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
 
-        List<Event> events = eventGroupService.viewEventOfEventGroup(eventGroupName);
+        List<Event> events = eventGroupServiceImpl.viewEventOfEventGroup(eventGroupName);
 
         //每一页页面的展示瓜数目
         if(events.size()>=PAGE_SIZE){
@@ -203,7 +203,7 @@ public class GroupSwing extends JFrame {
         delete.setBounds(500,650,90,30);
         delete.addActionListener(e -> {
             if(list.getSelectedIndex()>0) {
-                int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                int judge0 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
                 //判断是不是该管理员管理的瓜圈
                 if (judge0 == 1) {
                     //是
@@ -238,7 +238,7 @@ public class GroupSwing extends JFrame {
         refresh.setBounds(820,650,90,30);
         refresh.addActionListener(e -> {
             DefaultListModel<String> listModel1 = new DefaultListModel<>();
-            List<Event> events1 = eventGroupService.viewEventOfEventGroup(eventGroupName);
+            List<Event> events1 = eventGroupServiceImpl.viewEventOfEventGroup(eventGroupName);
             for (int i = 0; i < events1.size(); i++) {
                 listModel1.add(i,events1.get(i).getEventName());
             }

@@ -1,6 +1,6 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.EventGroupServiceImpl;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class QueryGroupSwing {
     public QueryGroupSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventGroupService eventGroupService = new EventGroupService();
+        EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(300,300);
         //设置大小
@@ -48,7 +48,7 @@ public class QueryGroupSwing {
             if("".equals(eventGroupName1)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = eventGroupService.verifyEventGroupName(eventGroupName1);
+                int judge = eventGroupServiceImpl.verifyExist(eventGroupName1);
                 //验证瓜圈名是否存在
                 if(judge==1){
                     jFrame.dispose();

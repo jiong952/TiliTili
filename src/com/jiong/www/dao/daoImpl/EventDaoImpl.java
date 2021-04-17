@@ -202,7 +202,7 @@ public class EventDaoImpl implements IEventDao {
         //把查询的结果集返回到service层
         return eventQuery;
     }
-
+    /**用于查看收藏点赞合集时用瓜id查看信息*/
     @Override
     public List<Event> doView(List<Integer> list) {
         Connection conn = null;

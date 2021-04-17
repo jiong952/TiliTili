@@ -38,7 +38,7 @@ public class EventSwing {
         this.eventGroupName=eventGroupName;
 
         UserService userService = new UserService();
-        EventGroupService eventGroupService = new EventGroupService();
+        EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
         IEventService iEventService = new EventServiceImpl();
         LikesServiceImpl likesServiceImpl = new LikesServiceImpl();
         ICollectionService iCollectionService = new CollectionServiceImpl();
@@ -325,7 +325,7 @@ public class EventSwing {
                 }
             }else if(judge4 ==2){
                 //管理员
-                int judge5 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+                int judge5 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
                 if(judge5 ==1){
                     iCommentService.doCancel(comments.get(table.getSelectedRow()).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功！");
@@ -344,7 +344,7 @@ public class EventSwing {
         JButton clearComment= new JButton("清空评论");
         clearComment.setBounds(850,637,90,30);
         clearComment.addActionListener(e -> {
-            int judge6 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+            int judge6 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
             if(judge6 ==1){
                 //是管理员管理的
                 iCommentService.doClear(eventId);
@@ -362,7 +362,7 @@ public class EventSwing {
         JButton delete = new JButton("删除瓜");
         delete.setBounds(1050,637,90,30);
         delete.addActionListener(e -> {
-            int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, eventGroupName);
+            int judge0 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
             //判断是不是该管理员管理的瓜圈
             if (judge0 == 1) {
                 //是

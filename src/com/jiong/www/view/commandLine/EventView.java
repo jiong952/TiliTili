@@ -1,7 +1,7 @@
 package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.EventGroupServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class EventView {
 
     Scanner scanner = new Scanner(System.in);
     EventServiceImpl eventServiceImpl = new EventServiceImpl();
-    EventGroupService eventGroupService = new EventGroupService();
+    EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
     public void createEvent(int userId,int eventGroupId){
         boolean flag=false;
         while (!flag){
@@ -82,7 +82,7 @@ public class EventView {
             //eventGroupName为查询的瓜圈名
             eventGroupName= eventServiceImpl.queryGroupName(eventId);
             //验证这个组是不是归管理员管
-            int row = eventGroupService.verifyEventGroupOfAdmin(userId,eventGroupName);
+            int row = eventGroupServiceImpl.verifyOfAdmin(userId,eventGroupName);
             //row==1表示是该管理员管理的,0表示不是管理员管
             if(row==1){
                 //进行删除

@@ -22,14 +22,11 @@ public class LikesDaoImpl implements ILikesDao {
         PreparedStatement ps=null;
         try {
             conn = JdbcUtils.getConnection();
-            conn.setAutoCommit(false);
             String sql="INSERT INTO `like` (`event_id`,`user_id`) VALUES(?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
             ps.executeUpdate();
-            //sql语句返回结果判断
-            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -48,13 +45,10 @@ public class LikesDaoImpl implements ILikesDao {
         PreparedStatement ps=null;
         try {
             conn = JdbcUtils.getConnection();
-            conn.setAutoCommit(false);
             String sql ="UPDATE `event` SET `likes_num` = `likes_num`+1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.executeUpdate();
-            //sql语句返回结果判断
-            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -73,13 +67,10 @@ public class LikesDaoImpl implements ILikesDao {
         PreparedStatement ps=null;
         try {
             conn = JdbcUtils.getConnection();
-            conn.setAutoCommit(false);
             String sql="DELETE FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
-            ps.executeUpdate();
-            //sql语句返回结果判断
             conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -99,13 +90,10 @@ public class LikesDaoImpl implements ILikesDao {
         PreparedStatement ps=null;
         try {
             conn = JdbcUtils.getConnection();
-            conn.setAutoCommit(false);
             String sql ="UPDATE `event` SET `likes_num` = `likes_num`-1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.executeUpdate();
-            //sql语句返回结果判断
-            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {

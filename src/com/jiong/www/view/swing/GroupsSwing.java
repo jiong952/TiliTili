@@ -1,7 +1,8 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.EventGroup;
-import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.EventGroupServiceImpl;
+import com.jiong.www.service.IEventGroupService;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.GroupsPagingUtils;
 
@@ -26,7 +27,7 @@ public class GroupsSwing extends JFrame {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
 
-        EventGroupService eventGroupService = new EventGroupService();
+        IEventGroupService iEventGroupService = new EventGroupServiceImpl();
         JFrame eventGroup = new JFrame("TiliTili瓜王系统");
         eventGroup.setSize(1200,800);
         //设置大小
@@ -60,7 +61,7 @@ public class GroupsSwing extends JFrame {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介)
             if(!list.getValueIsAdjusting()){
-                list.setToolTipText("内容简介:"+eventGroupService.viewEventGroup(list.getSelectedValue()).getEventGroupDescription());
+                list.setToolTipText("内容简介:"+ iEventGroupService.viewEventGroup(list.getSelectedValue()).getEventGroupDescription());
             }
         });
         list.addMouseListener(new MouseAdapter() {
@@ -75,7 +76,7 @@ public class GroupsSwing extends JFrame {
             }
         });
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        List<EventGroup> eventGroups = eventGroupService.viewAllEventGroup();
+        List<EventGroup> eventGroups = iEventGroupService.viewAllEventGroup();
 
         //每一页页面的展示瓜圈数目
         if(eventGroups.size()>= PAGE_SIZE){
@@ -142,7 +143,7 @@ public class GroupsSwing extends JFrame {
             if("".equals(eventGroupName1)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            int judge = eventGroupService.verifyEventGroupName(eventGroupName1);
+            int judge = iEventGroupService.verifyExist(eventGroupName1);
             if(judge==1){
             new GroupSwing(userId, eventGroupName1);
             }else {
@@ -157,24 +158,26 @@ public class GroupsSwing extends JFrame {
         delete.setBounds(350,650,90,30);
         delete.addActionListener(e -> {
             if(list.getSelectedIndex()>0){
-                int judge0 = eventGroupService.verifyEventGroupOfAdmin(userId, list.getSelectedValue());
+                int judge0 = iEventGroupService.verifyOfAdmin(userId, list.getSelectedValue());
                 //判断是不是该管理员管理的瓜圈
                 if(judge0==1){
                     //YES
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + list.getSelectedValue() + "瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
                     if(judge==0){
                         //确认是
-                        judge0 = eventGroupService.deleteEventGroup(list.getSelectedValue(), userId);
+                        judge0 = iEventGroupService.doDelete(list.getSelectedValue(), userId);
                         if(judge0==1){
                             JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
                             //刷新
                             DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                            List<EventGroup> eventGroups1 = eventGroupService.viewAllEventGroup();
+                            List<EventGroup> eventGroups1 = iEventGroupService.viewAllEventGroup();
                             for (int i = 0; i < eventGroups1.size(); i++) {
                                 listModel1.add(i,eventGroups1.get(i).getEventGroupName());
                             }
                             //向列表框中加入所有的瓜圈名
                             list.setModel(listModel1);
+                        }else {
+                            JOptionPane.showMessageDialog(null,"删除失败","错误",JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }else {
@@ -203,7 +206,7 @@ public class GroupsSwing extends JFrame {
         refresh.setBounds(720,650,90,30);
         refresh.addActionListener(e -> {
             DefaultListModel<String> listModel1 = new DefaultListModel<>();
-            List<EventGroup> eventGroups1 = eventGroupService.viewAllEventGroup();
+            List<EventGroup> eventGroups1 = iEventGroupService.viewAllEventGroup();
             for (int i = 0; i < eventGroups1.size(); i++) {
                 listModel1.add(i,eventGroups1.get(i).getEventGroupName());
             }

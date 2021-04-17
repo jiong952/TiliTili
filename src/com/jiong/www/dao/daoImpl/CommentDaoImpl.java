@@ -22,15 +22,12 @@ public class CommentDaoImpl implements ICommentDao {
         PreparedStatement ps = null;
         try {
             conn = JdbcUtils.getConnection();
-            //事务
-            conn.setAutoCommit(false);
             String sql="INSERT INTO `comment` (`event_id`,`user_id`,`comment_content`) VALUES(?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
             ps.setString(3,comment.getCommentContent());
             ps.executeUpdate();
-            conn.commit();
             //sql语句返回结果判断
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,13 +48,10 @@ public class CommentDaoImpl implements ICommentDao {
         PreparedStatement ps =null;
         try {
             conn = JdbcUtils.getConnection();
-            //事务
-            conn.setAutoCommit(false);
             String sql ="UPDATE `event` SET `comment_num` = `comment_num`+1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.executeUpdate();
-            conn.commit();
             //sql语句返回结果判断
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,14 +72,11 @@ public class CommentDaoImpl implements ICommentDao {
         PreparedStatement ps = null;
         try {
             conn = JdbcUtils.getConnection();
-            conn.setAutoCommit(false);
             String sql="DELETE FROM `comment` WHERE `event_id`= ? AND `id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,commentId);
             ps.executeUpdate();
-            //sql语句返回结果判断
-            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -105,14 +96,10 @@ public class CommentDaoImpl implements ICommentDao {
         PreparedStatement ps =null;
         try {
             conn = JdbcUtils.getConnection();
-            //事务
-            conn.setAutoCommit(false);
             String sql ="UPDATE `event` SET `comment_num` = `comment_num`-1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.executeUpdate();
-            conn.commit();
-            //sql语句返回结果判断
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {
@@ -148,7 +135,7 @@ public class CommentDaoImpl implements ICommentDao {
             //释放连接
         }
     }
-
+    /**评论数清0*/
     @Override
     public void clearCommentNum(int eventId) {
         Connection conn = null;

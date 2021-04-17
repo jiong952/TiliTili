@@ -1,6 +1,6 @@
 package com.jiong.www.service.serviceImpl;
 
-import com.jiong.www.dao.EventGroupDao;
+import com.jiong.www.dao.daoImpl.EventGroupDaoImpl;
 import com.jiong.www.dao.daoImpl.LikesDaoImpl;
 import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
@@ -17,7 +17,7 @@ import com.jiong.www.service.service.IEventService;
  */
 public class EventServiceImpl implements IEventService {
     IEventDao iEventDao = new EventDaoImpl();
-    EventGroupDao eventGroupDao=new EventGroupDao();
+    EventGroupDaoImpl eventGroupDaoImpl =new EventGroupDaoImpl();
     /**创建瓜*/
     @Override
     public int doCreate(int userId, int eventGroupId, String eventName, String eventContent){
@@ -43,7 +43,7 @@ public class EventServiceImpl implements IEventService {
     public String queryGroupName(int eventId){
         String eventGroupName;
         int eventGroupId = iEventDao.queryGroupId(eventId);
-        eventGroupName=eventGroupDao.viewEventGroup(eventGroupId);
+        eventGroupName= eventGroupDaoImpl.viewEventGroup(eventGroupId);
         return eventGroupName;
     }
     /**删除瓜以及瓜的点赞收藏评论举报信息*/

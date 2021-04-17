@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.EventGroup;
-import com.jiong.www.service.EventGroupService;
+import com.jiong.www.service.EventGroupServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ public class CreateEventSwing {
     public CreateEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventGroupService eventGroupService = new EventGroupService();
+        EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(500,560);
         //设置大小
@@ -74,14 +74,14 @@ public class CreateEventSwing {
         create.addActionListener(e -> {
             if(eventGroupName ==null){
                 String groupName = groupField.getText();
-                EventGroup eventGroup = eventGroupService.viewEventGroup(groupName);
+                EventGroup eventGroup = eventGroupServiceImpl.viewEventGroup(groupName);
                 int judge = new EventServiceImpl().doCreate(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }
             }
             else {
-                EventGroup eventGroup = eventGroupService.viewEventGroup(eventGroupName);
+                EventGroup eventGroup = eventGroupServiceImpl.viewEventGroup(eventGroupName);
                 int judge = new EventServiceImpl().doCreate(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
