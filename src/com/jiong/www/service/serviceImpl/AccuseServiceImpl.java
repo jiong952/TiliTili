@@ -1,6 +1,7 @@
 package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.EventGroupDao;
+import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
 import com.jiong.www.dao.Idao.IAccuseDao;
 import com.jiong.www.po.Accuse;
@@ -36,7 +37,9 @@ public class AccuseServiceImpl implements IAccuseService {
         List<Integer> integers = eventGroupDao.viewAdminGroup(userId);
         List<Event> eventList = eventGroupDao.viewEventGroup(integers);
         accuses=iAccuseDao.findAll(eventList);
-        accuses=iAccuseDao.queryName(accuses);
+        for(Accuse accuse:accuses){
+            accuse.setAccusedUserName(new UserDao().queryUserInformation(accuse.getAccusedUserId()).getLoginName());
+        }
         accuses.sort(Accuse::compareTo);
         return accuses;
     }

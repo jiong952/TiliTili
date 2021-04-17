@@ -9,10 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -105,35 +102,6 @@ public class AccuseDaoImpl implements IAccuseDao {
             }
         }
 
-    }
-    /**用举报信息查举报人名字*/
-    @Override
-    public List<Accuse> queryName(List<Accuse> accuseList) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs;
-        try {
-            conn = JdbcUtils.getConnection();
-            for(Accuse accuse : accuseList){
-                String sql ="SELECT `login_name` FROM `user` WHERE `user_id` = ?";
-                //联表查询
-                ps = conn.prepareStatement(sql);
-                ps.setInt(1,accuse.getAccusedUserId());
-                rs=ps.executeQuery();
-                while (rs.next()){
-                    accuse.setAccusedUserName(rs.getString("login_name"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                JdbcUtils.release(conn,ps,null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return accuseList;
     }
 
 }

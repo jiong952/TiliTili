@@ -12,6 +12,8 @@ public class Event {
     private String eventName;
     /**瓜的发布者名字*/
     private String publisherName;
+    /**发布者的id*/
+    private int publisherId;
     /**瓜的发布时间*/
     private Date createTime;
     /**瓜的点赞数*/
@@ -23,6 +25,13 @@ public class Event {
     /**瓜id*/
     private int eventId;
 
+    public int getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(int publisherId) {
+        this.publisherId = publisherId;
+    }
     public String getEventContent() {
         return eventContent;
     }

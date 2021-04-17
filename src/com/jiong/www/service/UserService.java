@@ -123,12 +123,7 @@ public class UserService {
     public User queryUserInformation(int userId){
         User userQuery = new User();
         //用集合来存数据
-        try {
-            userQuery=userDao.queryUserInformation(userId);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userQuery=userDao.queryUserInformation(userId);
         return userQuery;
     }
     /**用户输入用户名，查看是否存在，存在则查看是否记住密码，是的话，把密码返回*/

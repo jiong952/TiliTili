@@ -172,25 +172,37 @@ public class UserDao {
         return row2;
     }
     /**查询用户的个人信息*/
-    public User queryUserInformation(int userId) throws SQLException {
+    public User queryUserInformation(int userId){
         User userQuery = new User();
-        Connection conn = JdbcUtils.getConnection();
-        String sql ="SELECT `login_name`,`user_e-mail`,`user_nickname`,\n" +
-                "`user_gender`,`user_description`,`user_birthday`,`login_password`,`password_remember`FROM `user` WHERE `user_id`=?";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1,userId);
-        ResultSet rs = ps.executeQuery();
-        while(rs.next()){
-            userQuery.setLoginName(rs.getString("login_name"));
-            userQuery.setUserEmail(rs.getString("user_e-mail"));
-            userQuery.setUserNickname(rs.getString("user_nickname"));
-            userQuery.setUserGender(rs.getInt("user_gender"));
-            userQuery.setUserDescription(rs.getString("user_description"));
-            userQuery.setUserBirthday(rs.getDate("user_birthday"));
-            userQuery.setLoginPassword(rs.getString("login_password"));
-            userQuery.setIsRememberPassword(rs.getInt("password_remember"));
+        Connection conn = null;
+        PreparedStatement ps=null;
+        ResultSet rs = null;
+        try {
+            conn = JdbcUtils.getConnection();
+            String sql ="SELECT `login_name`,`user_e-mail`,`user_nickname`,\n" +
+                    "`user_gender`,`user_description`,`user_birthday`,`login_password`,`password_remember`FROM `user` WHERE `user_id`=?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1,userId);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                userQuery.setLoginName(rs.getString("login_name"));
+                userQuery.setUserEmail(rs.getString("user_e-mail"));
+                userQuery.setUserNickname(rs.getString("user_nickname"));
+                userQuery.setUserGender(rs.getInt("user_gender"));
+                userQuery.setUserDescription(rs.getString("user_description"));
+                userQuery.setUserBirthday(rs.getDate("user_birthday"));
+                userQuery.setLoginPassword(rs.getString("login_password"));
+                userQuery.setIsRememberPassword(rs.getInt("password_remember"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,rs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        JdbcUtils.release(conn,ps,rs);
         //把查询的结果集返回到service层
         return userQuery;
     }

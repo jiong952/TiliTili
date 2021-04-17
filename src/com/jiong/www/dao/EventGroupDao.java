@@ -167,7 +167,7 @@ public class EventGroupDao {
         }
         return list;
     }
-    /**用瓜圈id查该瓜圈里的所有瓜的瓜id*/
+    /**用瓜圈id查该瓜圈里的所有瓜的瓜信息*/
     public List<Event> viewEventGroup(List<Integer> list){
         Connection conn = null;
         PreparedStatement ps=null;

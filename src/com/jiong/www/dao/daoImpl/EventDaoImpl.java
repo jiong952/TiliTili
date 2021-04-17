@@ -8,6 +8,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Mono
  */
@@ -206,6 +209,52 @@ public class EventDaoImpl implements IEventDao {
         }
         //把查询的结果集返回到service层
         return eventQuery;
+    }
+
+    @Override
+    public List<Event> doView(List<Integer> list) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Event> eventList = new ArrayList<>();
+        try {
+            conn = JdbcUtils.getConnection();
+            for (Integer integer : list) {
+                String sql = "SELECT `publisher_id`,`event_name`,`event_content`,`comment_num`,\n" +
+                        "`likes_num`,`create_time`,`collection_num` FROM `event` WHERE `event_id` = ?";
+                //联表查询
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1, integer);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    Event event = new Event();
+                    event.setPublisherId(rs.getInt("publisher_id"));
+                    //发布者的名字
+                    event.setEventName(rs.getString("event_name"));
+                    //瓜名
+                    event.setEventContent(rs.getString("event_content"));
+                    //瓜内容
+                    event.setLikesNum(rs.getInt("likes_num"));
+                    event.setCollectionNum(rs.getInt("collection_num"));
+                    event.setCommentNum(rs.getInt("comment_num"));
+                    //点赞收藏评论数
+                    event.setCreateTime(rs.getDate("create_time"));
+                    //瓜id
+                    event.setEventId(integer);
+                    eventList.add(event);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                JdbcUtils.release(conn,ps,rs);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        //把查询的结果集返回到service层
+        return eventList;
     }
 
 }

@@ -3,6 +3,7 @@ package com.jiong.www.dao.Idao;
 import com.jiong.www.po.Event;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @author Mono
@@ -40,4 +41,9 @@ public interface IEventDao {
      * @return 瓜信息
      * */
     Event doView(String eventName);
+    /**查看所有瓜
+     * @param list 瓜id集合
+     * @return 瓜信息
+     * */
+    List<Event> doView(List<Integer> list);
 }

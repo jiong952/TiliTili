@@ -1,7 +1,10 @@
 package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.Idao.ICollectionDao;
+import com.jiong.www.dao.Idao.IEventDao;
+import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
+import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.Iservice.ICollectionService;
 
@@ -13,16 +16,18 @@ import java.util.List;
  */
 public class CollectionServiceImpl implements ICollectionService {
     ICollectionDao iCollectionDao = new CollectionDaoImpl();
+    IEventDao iEventDao = new EventDaoImpl();
     /**收藏,同时更新收藏表*/
     @Override
     public void doCollect(int userId, int eventId){
         iCollectionDao.doCollect(userId,eventId);
+        iCollectionDao.addCollectionNum(eventId);
     }
     /**取消收藏,同时删除用户收藏表中的相关数据*/
     @Override
     public void doCancelCollect(int userId, int eventId){
         iCollectionDao.doCancelCollect(userId,eventId);
-
+        iCollectionDao.subtractCollectionNum(eventId);
     }
     /**查看用户是否点赞*/
     @Override
@@ -35,7 +40,11 @@ public class CollectionServiceImpl implements ICollectionService {
     @Override
     public List<Event> findAll(int userId){
         List<Event> events;
-        events= iCollectionDao.findAll(userId);
+        List<Integer> integers = iCollectionDao.findAll(userId);
+        events = iEventDao.doView(integers);
+        for(Event event:events){
+            event.setPublisherName(new UserDao().queryUserInformation(event.getPublisherId()).getLoginName());
+        }
         return events;
     }
     /**刷新列表信息*/
