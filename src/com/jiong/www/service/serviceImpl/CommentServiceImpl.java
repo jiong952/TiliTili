@@ -1,5 +1,6 @@
 package com.jiong.www.service.serviceImpl;
 
+import com.jiong.www.dao.UserDao;
 import com.jiong.www.dao.daoImpl.CommentDaoImpl;
 import com.jiong.www.dao.Idao.ICommentDao;
 import com.jiong.www.po.Comment;
@@ -24,24 +25,29 @@ public class CommentServiceImpl implements ICommentService {
         Comment comment = new Comment();
         comment.setCommentContent(commentContent);
         iCommentDao.doComment(userId,eventId,comment);
+        iCommentDao.addCommentNum(eventId);
     }
     /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
     @Override
     public void doCancel(int commentId, int eventId){
         iCommentDao.doCancel(commentId,eventId);
+        iCommentDao.subtractCommentNum(eventId);
     }
     /**删除瓜的所有评论,管理员*/
     @Override
     public void doClear(int eventId){
         iCommentDao.doClear(eventId);
-
+        iCommentDao.clearCommentNum(eventId);
     }
     /**查看瓜的评论,也要返回评论人名*/
     @Override
     public List<Comment> findAll(int eventId){
         List<Comment> comments;
         //创建一个容器返回 评论的信息
-         comments = iCommentDao.findAll(eventId);
+        comments = iCommentDao.findAll(eventId);
+        for(Comment comment:comments){
+            comment.setCommenterName(new UserDao().queryUserInformation(comment.getCommenterId()).getLoginName());
+        }
         return comments;
     }
     /**第一页的数据处理*/
