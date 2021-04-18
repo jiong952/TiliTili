@@ -12,13 +12,26 @@ import java.util.List;
  */
 public class GroupsPagingUtils extends JFrame {
     /**list由外部传入，储存所有的数据*/
-    List<EventGroup> list;
+    List<EventGroup> eventGroups;
     private int currentPage = 1;
     private int lastPage;
+    JButton first;
+    JButton previous;
+    JButton next;
+    JButton last;
     /**页面的展示数目*/
     private final int pageSize ;
     DefaultListModel<String> defaultListModel;
-    JPanel jPanel;
+
+
+    public DefaultListModel<String> getDefaultListModel() {
+        return defaultListModel;
+    }
+
+    public void setDefaultListModel(DefaultListModel<String> defaultListModel) {
+        this.defaultListModel = defaultListModel;
+    }
+
     /**常量，避免魔法值*/
     static final String FIRST_PAGE = "首页";
     static final String LAST_PAGE = "尾页";
@@ -45,48 +58,25 @@ public class GroupsPagingUtils extends JFrame {
     }
 
 
-    public GroupsPagingUtils(List<EventGroup> list, DefaultListModel<String> defaultListModel, JPanel jPanel,int pageSize)  {
-        this.list = list;
+    public GroupsPagingUtils(List<EventGroup> eventGroups, DefaultListModel<String> defaultListModel, int pageSize, JButton first, JButton previous, JButton next, JButton last)  {
+        this.eventGroups = eventGroups;
         this.defaultListModel = defaultListModel;
-        this.jPanel=jPanel;
         this.pageSize=pageSize;
-        //设置末页
-        if(list.size()%pageSize==0){
-            setLastPage(list.size()/getPageSize());
-        }else {
-            setLastPage(list.size()/getPageSize()+1);
-        }
-        JButton first = new JButton("首页");
-        first.setBounds(245,510,60,30);
-        first.setActionCommand("首页");
+        this.first=first;
+        this.previous=previous;
+        this.next=next;
+        this.last=last;
         first.addActionListener(new MyList());
-        jPanel.add(first);
-
-        JButton previous = new JButton("上一页");
-        previous.setBounds(345,510,90,30);
-        previous.setActionCommand("上一页");
         previous.addActionListener(new MyList());
-        jPanel.add(previous);
-
-        JButton next = new JButton("下一页");
-        next.setBounds(475,510,90,30);
-        next.setActionCommand("下一页");
         next.addActionListener(new MyList());
-        jPanel.add(next);
-
-        JButton last = new JButton("尾页");
-        last.setBounds(605,510,60,30);
-        last.setActionCommand("尾页");
         last.addActionListener(new MyList());
-        jPanel.add(last);
-
     }
 
     /**传入list得到子list*/
     public List<EventGroup> getList(int currentPage,int pageSize){
         List<EventGroup> sonList;
         //子list
-        int listLength = list.size();
+        int listLength = eventGroups.size();
         //总长度
         if(currentPage<1){
             currentPage=1;
@@ -99,11 +89,17 @@ public class GroupsPagingUtils extends JFrame {
             toIndex=listLength;
             //防止下标越界
         }
-        sonList = list.subList(fromIndex,toIndex);
+        sonList = eventGroups.subList(fromIndex,toIndex);
         return sonList;
     }
 
     public void showList(int currentPage){
+        //设置末页
+        if(eventGroups.size()%pageSize==0){
+            setLastPage(eventGroups.size()/getPageSize());
+        }else {
+            setLastPage(eventGroups.size()/getPageSize()+1);
+        }
         defaultListModel.clear();
         //清除原有数据
         setCurrentPage(currentPage);

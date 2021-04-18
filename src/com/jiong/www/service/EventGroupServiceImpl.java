@@ -8,6 +8,7 @@ import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
+import javax.swing.*;
 import java.util.List;
 /**
  * @author Mono
@@ -65,7 +66,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     }
     /**查看所有瓜圈*/
     @Override
-    public List<EventGroup> viewAllEventGroup(){
+    public List<EventGroup> findAll(){
         List<EventGroup> eventGroups;
         eventGroups= iEventGroupDao.viewAllEventGroup();
         return eventGroups;
@@ -86,5 +87,33 @@ public class EventGroupServiceImpl implements IEventGroupService {
             event.setPublisherName(new UserDao().queryUserInformation(event.getPublisherId()).getLoginName());
         }
         return events;
+    }
+    /**瓜网的第一页的数据处理*/
+    @Override
+    public void  doDataProcess(int pageSize, DefaultListModel<String> listModel, List<EventGroup> eventGroups) {
+        //每一页页面的展示瓜圈数目
+        if(eventGroups.size()>= pageSize){
+            for (int i = 0; i < pageSize; i++) {
+                listModel.add(i,eventGroups.get(i).getEventGroupName());
+            }
+        }else {
+            for (int i = 0; i < eventGroups.size(); i++) {
+                listModel.add(i,eventGroups.get(i).getEventGroupName());
+            }
+        }
+    }
+    /**删除增加之后刷新数据*/
+    @Override
+    public void   doRefresh(List<EventGroup> eventGroups,DefaultListModel<String> defaultListModel) {
+        //刷新
+        List<EventGroup> eventGroups1 = findAll();
+        defaultListModel.clear();
+        for (int i = 0; i < eventGroups1.size(); i++) {
+            defaultListModel.add(i,eventGroups1.get(i).getEventGroupName());
+        }
+        //向列表框中加入所有的瓜圈名
+        eventGroups.clear();
+        eventGroups.addAll(eventGroups1);
+
     }
 }

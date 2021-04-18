@@ -31,6 +31,7 @@ public class EventSwing {
     static final int  ADMIN = 2;
     static final int  SUPER_ADMIN = 4;
     static final int  VISITOR = 3;
+    static final int PAGE_SIZE = 6;
     public EventSwing(int userId, String eventName, int eventId, String eventGroupName) {
         this.userId = userId;
         this.eventName = eventName;
@@ -239,10 +240,9 @@ public class EventSwing {
         String[] columnNames = {"评论人","评论内容","评论时间"};
         //查询瓜的所有评论
         comments = iCommentService.findAll(event.getEventId());
-        int pageSize = 6;
-        //每一页展示评论数目
-        Object[][] rowData = iCommentService.doDataProcess(pageSize,comments);
         //rowData里面经过数据处理，放第一页的数据
+        Object[][] rowData = iCommentService.doDataProcess(PAGE_SIZE,comments);
+
         //创建一个表格来放评论
         JTable table = new JTable();
         defaultTableModel = new DefaultTableModel(rowData, columnNames){
@@ -252,7 +252,6 @@ public class EventSwing {
                 return false;
             }
         };
-
         table.setModel(defaultTableModel);
         table.setFont(font1);
         table.setRowHeight(32);
@@ -265,7 +264,7 @@ public class EventSwing {
         jPanel.add(jScrollPane1);
 
         //分页处理
-        eventPagingUtils = new EventPagingUtils(comments, defaultTableModel, pageSize, first, previous, next, last);
+        eventPagingUtils = new EventPagingUtils(comments, defaultTableModel, PAGE_SIZE, first, previous, next, last);
 
         //评论标签
         JLabel myComment = new JLabel("我要评论:");
@@ -297,6 +296,8 @@ public class EventSwing {
             myCommentArea.setText("");
             //重新设置数据源重新分页
             comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+            Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
+            defaultTableModel.setDataVector(dataProcess,columnNames);
             //重新设置评论数
             commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
             }
@@ -314,10 +315,13 @@ public class EventSwing {
                 //吃瓜群众
                 if(userId==comments.get(table.getSelectedRow()).getCommenterId()){
                     //由第一页的相应行数推得删除行的实际行数
-                    iCommentService.doCancel(comments.get(((eventPagingUtils.getCurrentPage()-1)*pageSize+table.getSelectedRow())).getCommentId(),eventId);
+                    iCommentService.doCancel(comments.get(((eventPagingUtils.getCurrentPage()-1)*PAGE_SIZE+table.getSelectedRow())).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功");
                     //重新设置数据源重新分页
                     comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+                    //处理第一页数据
+                    Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
+                    defaultTableModel.setDataVector(dataProcess,columnNames);
                     //重新设置评论数
                     commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
                 }else {
@@ -331,6 +335,9 @@ public class EventSwing {
                     JOptionPane.showMessageDialog(null,"删除成功！");
                     //重新设置数据源重新分页
                     comments= iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+                    //处理第一页数据
+                    Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
+                    defaultTableModel.setDataVector(dataProcess,columnNames);
                     //重新设置评论数
                     commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
                 }else {

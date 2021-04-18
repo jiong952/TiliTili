@@ -32,5 +32,12 @@ public interface ICommentService {
      * @return 返回第一页的评论信息
      * */
     Object[][] doDataProcess(int pageSize,List<Comment> comments);
+    /**进行删除，添加评论后表格刷新
+     * @param comments 评论数据
+     * @param defaultTableModel 传入数据源
+     * @param eventId 瓜id
+     * @param columnNames 表头
+     * @param eventPagingUtils 分页
+     * @return 返回处理完的评论信息*/
     List<Comment> doRefresh (List<Comment> comments,DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils);
 }

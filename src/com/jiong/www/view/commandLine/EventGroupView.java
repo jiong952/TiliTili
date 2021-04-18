@@ -114,7 +114,7 @@ public class EventGroupView {
     // 要把瓜的相应评论输出
     public void viewAllEventGroup(){
         List<EventGroup> eventGroups ;
-        eventGroups = eventGroupServiceImpl.viewAllEventGroup();
+        eventGroups = eventGroupServiceImpl.findAll();
         System.out.println("所有瓜圈：");
         for (int i = 0; i < eventGroups.size(); i++) {
             EventGroup eventGroup;

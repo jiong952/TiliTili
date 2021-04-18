@@ -20,9 +20,17 @@ import java.util.List;
 public class GroupsSwing extends JFrame {
     int userId;
     String eventGroupName;
+    List<EventGroup> eventGroups;
+    GroupsPagingUtils groupsPagingUtils;
+    DefaultListModel<String> listModel;
     static final int DOUBLE_CLICK = 2;
     static final int PAGE_SIZE = 9;
+    static final int  ADMIN = 2;
+    static final int  SUPER_ADMIN = 4;
 
+    public static void main(String[] args) {
+        new GroupsSwing(10,null);
+    }
     public GroupsSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -53,6 +61,26 @@ public class GroupsSwing extends JFrame {
 
         Font font1 = new Font("黑体",Font.PLAIN,36);
 
+        JButton first = new JButton("首页");
+        first.setBounds(245,510,60,30);
+        first.setActionCommand("首页");
+        jPanel.add(first);
+
+        JButton previous = new JButton("上一页");
+        previous.setBounds(345,510,90,30);
+        previous.setActionCommand("上一页");
+        jPanel.add(previous);
+
+        JButton next = new JButton("下一页");
+        next.setBounds(475,510,90,30);
+        next.setActionCommand("下一页");
+        jPanel.add(next);
+
+        JButton last = new JButton("尾页");
+        last.setBounds(605,510,60,30);
+        last.setActionCommand("尾页");
+        jPanel.add(last);
+
         JList<String> list = new JList<>();
         list.setFont(font1);
         list.setFixedCellHeight(56);
@@ -75,19 +103,12 @@ public class GroupsSwing extends JFrame {
                 }
             }
         });
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        List<EventGroup> eventGroups = iEventGroupService.viewAllEventGroup();
+        listModel = new DefaultListModel<>();
 
-        //每一页页面的展示瓜圈数目
-        if(eventGroups.size()>= PAGE_SIZE){
-            for (int i = 0; i < PAGE_SIZE; i++) {
-                listModel.add(i,eventGroups.get(i).getEventGroupName());
-            }
-        }else {
-            for (int i = 0; i < eventGroups.size(); i++) {
-                listModel.add(i,eventGroups.get(i).getEventGroupName());
-            }
-        }
+        //查询所有的瓜圈
+        eventGroups = iEventGroupService.findAll();
+        //第一页的数据处理
+        iEventGroupService.doDataProcess(PAGE_SIZE,listModel,eventGroups);
         //向列表框中加入所有的瓜圈名
         list.setModel(listModel);
         jPanel.add(list);
@@ -96,8 +117,10 @@ public class GroupsSwing extends JFrame {
         jScrollPane.setBounds(10,100,1150,400);
         jScrollPane.setViewportView(list);
         jPanel.add(jScrollPane);
+
+
         //分页处理
-        new GroupsPagingUtils(eventGroups,listModel,jPanel, PAGE_SIZE);
+        groupsPagingUtils = new GroupsPagingUtils(eventGroups, listModel, PAGE_SIZE, first, previous, next, last);
 
         //查询瓜圈的标签+文本框
         Font font2 = new Font("黑体",Font.PLAIN,25);
@@ -145,6 +168,7 @@ public class GroupsSwing extends JFrame {
             }else {
             int judge = iEventGroupService.verifyExist(eventGroupName1);
             if(judge==1){
+                //查询成功，跳转到相应瓜的界面
             new GroupSwing(userId, eventGroupName1);
             }else {
                 JOptionPane.showMessageDialog(null,"查无此瓜圈！","错误",JOptionPane.ERROR_MESSAGE);
@@ -168,14 +192,7 @@ public class GroupsSwing extends JFrame {
                         judge0 = iEventGroupService.doDelete(list.getSelectedValue(), userId);
                         if(judge0==1){
                             JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                            //刷新
-                            DefaultListModel<String> listModel1 = new DefaultListModel<>();
-                            List<EventGroup> eventGroups1 = iEventGroupService.viewAllEventGroup();
-                            for (int i = 0; i < eventGroups1.size(); i++) {
-                                listModel1.add(i,eventGroups1.get(i).getEventGroupName());
-                            }
-                            //向列表框中加入所有的瓜圈名
-                            list.setModel(listModel1);
+                            iEventGroupService.doRefresh(eventGroups,listModel);
                         }else {
                             JOptionPane.showMessageDialog(null,"删除失败","错误",JOptionPane.ERROR_MESSAGE);
                         }
@@ -204,17 +221,9 @@ public class GroupsSwing extends JFrame {
         //解决创建瓜圈后无法更新的问题 刷新
         JButton refresh = new JButton("刷新");
         refresh.setBounds(720,650,90,30);
-        refresh.addActionListener(e -> {
-            DefaultListModel<String> listModel1 = new DefaultListModel<>();
-            List<EventGroup> eventGroups1 = iEventGroupService.viewAllEventGroup();
-            for (int i = 0; i < eventGroups1.size(); i++) {
-                listModel1.add(i,eventGroups1.get(i).getEventGroupName());
-            }
-            //向列表框中加入所有的瓜圈名
-            list.setModel(listModel1);
-        });
+        refresh.addActionListener(e -> iEventGroupService.doRefresh(eventGroups,listModel));
         jPanel.add(refresh);
-
+        refresh.setVisible(false);
 
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
         int roleId = new UserService().verifyRole(userId);
@@ -222,15 +231,11 @@ public class GroupsSwing extends JFrame {
         //窗口可见
         eventGroup.setVisible(true);
         //删除瓜圈 创建瓜圈 管理员超级管理员
-        if(roleId==2||roleId==4){
+        if(roleId==ADMIN||roleId==SUPER_ADMIN){
             delete.setVisible(true);
             create.setVisible(true);
+            refresh.setVisible(true);
         }
-        //游客
-        if(roleId==3){
-            refresh.setVisible(false);
-        }
-
 
     }
 

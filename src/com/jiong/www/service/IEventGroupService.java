@@ -3,6 +3,7 @@ package com.jiong.www.service;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public interface IEventGroupService {
      * 查看所有瓜圈
      * @return 所有瓜圈信息
      */
-    List<EventGroup> viewAllEventGroup();
+    List<EventGroup> findAll();
 
     /**
      * 用瓜圈名查该瓜圈信息
@@ -60,4 +61,15 @@ public interface IEventGroupService {
      * @return 所有的瓜圈信息
      */
     List<Event> viewEventOfEventGroup(String eventGroupName);
+    /**瓜网的第一页的数据处理
+     * @param pageSize 每一页的展示数目
+     * @param listModel 传入数据源
+     * @param eventGroups 获得瓜圈的信息
+     */
+    void doDataProcess(int pageSize,DefaultListModel<String> listModel,List<EventGroup> eventGroups);
+    /**刷新数据源
+     * @param eventGroups 瓜圈数据
+     * @param defaultListModel 数据源
+     * */
+    void doRefresh(List<EventGroup> eventGroups,DefaultListModel<String> defaultListModel);
 }

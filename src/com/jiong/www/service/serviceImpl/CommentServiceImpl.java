@@ -66,7 +66,7 @@ public class CommentServiceImpl implements ICommentService {
 
         return rowData;
     }
-
+    /**进行删除，添加评论后表格刷新*/
     @Override
     public  List<Comment> doRefresh(List<Comment> comments, DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils) {
         comments=findAll(eventId);
