@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.User;
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.ImageUtils;
 import com.jiong.www.util.StringUtils;
 
@@ -34,8 +34,8 @@ public class InformationSwing extends JFrame {
     public InformationSwing(int userId, String eventGroupName){
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        UserService userService = new UserService();
-        User user = userService.queryUserInformation(userId);
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
+        User user = userServiceImpl.queryUserInformation(userId);
 
         JFrame userInformation = new JFrame("TiliTili瓜王系统");
         userInformation.setSize(900,700);
@@ -103,7 +103,6 @@ public class InformationSwing extends JFrame {
         jPanel.add(resetIcon);
         //图片处理工具类
         new ImageUtils(icon,jPanel,set,saveIcon,resetIcon,userId);
-
         //用于显示昵称标签+文本框
         JLabel nickNameLabel = new JLabel("昵称:");
         nickNameLabel.setBounds(50,150,60,20);
@@ -322,6 +321,8 @@ public class InformationSwing extends JFrame {
                 if(confirm!=0){
                     //NO
                     judgement=0;
+                }else {
+                    //YES
                     userBirthday2=null;
                 }
             }else {
@@ -338,7 +339,7 @@ public class InformationSwing extends JFrame {
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
                     //所有信息正确
-                    int judge =userService.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2);
+                    int judge = userServiceImpl.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {

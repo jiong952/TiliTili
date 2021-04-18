@@ -2,7 +2,7 @@ package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.dao.ICollectionDao;
 import com.jiong.www.dao.dao.IEventDao;
-import com.jiong.www.dao.UserDao;
+import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
@@ -43,7 +43,7 @@ public class CollectionServiceImpl implements ICollectionService {
         List<Integer> integers = iCollectionDao.findAll(userId);
         events = iEventDao.doView(integers);
         for(Event event:events){
-            event.setPublisherName(new UserDao().queryUserInformation(event.getPublisherId()).getLoginName());
+            event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
         }
         return events;
     }

@@ -1,7 +1,7 @@
 package com.jiong.www.view.commandLine;
 
 import com.jiong.www.po.User;
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -11,18 +11,18 @@ import java.util.Scanner;
 public class UserView {
     Scanner scanner = new Scanner(System.in);
     //注册界面，将用户信息加到用户角色表,普通用户只能注册为吃瓜群众，用户名存在则不继续输入
-    private UserService userService = new UserService();
+    private UserServiceImpl userServiceImpl = new UserServiceImpl();
     public void register(){
         boolean flag=false;
         while (!flag){
             System.out.println("请输入新用户名：");
             String loginName = scanner.next();
-            int judge = userService.verifyUsername(loginName);
+            int judge = userServiceImpl.verifyUsername(loginName);
             if(judge==0){
                 //judge为0不存在,为1存在
                 System.out.println("请输入新密码：");
                 String loginPassword = scanner.next();
-                int row = userService.register(loginName,loginPassword);
+                int row = userServiceImpl.register(loginName,loginPassword);
                 //row用于接收service传来的结果
                 if(row>0){
                     System.out.println("注册成功！");
@@ -47,9 +47,9 @@ public class UserView {
         String loginName = scanner.nextLine();
         System.out.println("请输入密码：");
         String loginPassword = scanner.nextLine();
-        int userId=0;
+        int userId;
         //用户的id
-        userId= userService.login(loginName, loginPassword);
+        userId= userServiceImpl.login(loginName, loginPassword);
         //row用于接收service传来的结果
         if(userId!=0){
             System.out.println("登录成功！");
@@ -61,8 +61,8 @@ public class UserView {
     }
     //验证身份
     public int verifyRole(int userId){
-        int row=0;
-        row=userService.verifyRole(userId);
+        int row;
+        row= userServiceImpl.verifyRole(userId);
         return row;
         //row为1是普通用户,2是管理员,3是游客,4是超管
     }
@@ -112,8 +112,8 @@ public class UserView {
                     }
                     //储存多行字符串的数组
                     StringBuilder stringBuilder = new StringBuilder();
-                    for (int i = 0; i < list.size(); i++) {
-                        stringBuilder.append(list.get(i)+"\n");
+                    for (String s : list) {
+                        stringBuilder.append(s + "\n");
                     }
                     //把list--stringBuilder--string
                     userDescription = stringBuilder.toString();
@@ -123,9 +123,9 @@ public class UserView {
                     break;
                 case 7:
                     System.out.println("请输入旧密码:");
-                    String userOldPassword = null;
+                    String userOldPassword;
                     userOldPassword=scanner.nextLine();
-                    int row1=userService.verifyPassword(userOldPassword,userId);
+                    int row1= userServiceImpl.verifyPassword(userOldPassword,userId);
                     //用于判断密码修改是否正确
                     if(row1>0){
                         boolean flag=false;
@@ -134,7 +134,7 @@ public class UserView {
                             System.out.println("请输入新密码:");
                             userNewPassword = scanner.nextLine();
                             System.out.println("确认密码:");
-                            String userConfirmPassword = null;
+                            String userConfirmPassword;
                             userConfirmPassword = scanner.nextLine();
                             if (userConfirmPassword.equals(userNewPassword)) {
                                 flag=true;
@@ -151,8 +151,8 @@ public class UserView {
                         }
                         //确认密码功能，防止错误输入
                         if(flag){
-                            int row2=0;
-                            row2=userService.changePassword(userNewPassword,userId);
+                            int row2;
+                            row2= userServiceImpl.changePassword(userNewPassword,userId);
                             if(row2>0){
                                 System.out.println("修改密码成功！");
                             }else {
@@ -168,7 +168,7 @@ public class UserView {
                     }
                     break;
                 case 8:
-                    int row = userService.perfectInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday);
+                    int row = userServiceImpl.perfectInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday);
                     if(row>0){
                         System.out.println("保存成功!");
                     }else {
@@ -188,7 +188,7 @@ public class UserView {
     //查询用户的个人信息
     public void queryUserInformation(int userId){
         User userQuery = new User();
-        userQuery=userService.queryUserInformation(userId);
+        userQuery= userServiceImpl.queryUserInformation(userId);
         System.out.println("用户名：" + userQuery.getLoginName());
         System.out.println("邮箱：" + userQuery.getUserEmail());
         System.out.println("昵称：" + userQuery.getUserNickname());

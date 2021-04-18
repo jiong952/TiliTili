@@ -1,14 +1,12 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
-import com.jiong.www.po.EventGroup;
-import com.jiong.www.service.EventGroupServiceImpl;
-import com.jiong.www.service.IEventGroupService;
+import com.jiong.www.service.serviceImpl.EventGroupServiceImpl;
+import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.GroupPagingUtils;
-import com.jiong.www.util.GroupsPagingUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -139,7 +137,7 @@ public class GroupSwing extends JFrame {
         listModel = new DefaultListModel<>();
         events = iEventGroupService.viewEventOfEventGroup(eventGroupName);
         //第一页的数据处理
-        iEventGroupService.DataProcessGroup(PAGE_SIZE,listModel,events);
+        iEventGroupService.dataProcessGroup(PAGE_SIZE,listModel,events);
         //向列表框中加入该瓜圈的所有瓜名
         list.setModel(listModel);
         jPanel.add(list);
@@ -257,11 +255,11 @@ public class GroupSwing extends JFrame {
         //刷新按钮，解决创建瓜之后页面无法立刻更新的问题
         JButton refresh = new JButton("刷新");
         refresh.setBounds(820,650,90,30);
-        refresh.addActionListener(e -> iEventGroupService.RefreshGroup(events,listModel,eventGroupName));
+        refresh.addActionListener(e -> iEventGroupService.refreshGroup(events,listModel,eventGroupName));
         jPanel.add(refresh);
 
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
-        int roleId = new UserService().verifyRole(userId);
+        int roleId = new UserServiceImpl().verifyRole(userId);
 
         //删除瓜圈 创建瓜圈
         if(roleId==ADMIN||roleId==SUPER_ADMIN){

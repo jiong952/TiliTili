@@ -3,7 +3,7 @@ package com.jiong.www.service.serviceImpl;
 import com.jiong.www.dao.dao.ILikesDao;
 import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.dao.daoImpl.LikesDaoImpl;
-import com.jiong.www.dao.UserDao;
+import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.service.ILikesService;
@@ -43,7 +43,7 @@ public class LikesServiceImpl implements ILikesService {
         List<Integer> integers = iLikesDao.findAll(userId);
         events=iEventDao.doView(integers);
         for(Event event:events){
-            event.setPublisherName(new UserDao().queryUserInformation(event.getPublisherId()).getLoginName());
+            event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
         }
         return events;
     }

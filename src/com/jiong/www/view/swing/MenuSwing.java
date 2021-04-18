@@ -1,7 +1,6 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.service.UserService;
-import com.jiong.www.view.swing.*;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 
 import javax.swing.*;
 
@@ -108,7 +107,7 @@ public class MenuSwing {
         menuBar.add(help);
         menuBar.add(handle);
 
-        int roleId = new UserService().verifyRole(userId);
+        int roleId = new UserServiceImpl().verifyRole(userId);
 
         if(roleId==ADMIN||roleId==SUPER_ADMIN){
             //管理员 超管

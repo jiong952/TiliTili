@@ -7,7 +7,8 @@ import java.sql.Date;
  * @author Mono
  */
 public class User {
-
+    /**用户id*/
+    private int userId;
     /** 登录账号（用户名）*/
     private String loginName;
     /** 登录密码*/
@@ -32,6 +33,14 @@ public class User {
     private int isRememberPassword;
 
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public int getIsRememberPassword() {
         return isRememberPassword;
     }
@@ -39,7 +48,6 @@ public class User {
     public void setIsRememberPassword(int isRememberPassword) {
         this.isRememberPassword = isRememberPassword;
     }
-
 
     public String getLoginName() {
         return loginName;

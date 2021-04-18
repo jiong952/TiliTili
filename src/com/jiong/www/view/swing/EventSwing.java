@@ -2,14 +2,10 @@ package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
-import com.jiong.www.service.*;
 import com.jiong.www.service.service.ICollectionService;
 import com.jiong.www.service.service.ICommentService;
 import com.jiong.www.service.service.IEventService;
-import com.jiong.www.service.serviceImpl.CollectionServiceImpl;
-import com.jiong.www.service.serviceImpl.CommentServiceImpl;
-import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.service.serviceImpl.LikesServiceImpl;
+import com.jiong.www.service.serviceImpl.*;
 import com.jiong.www.util.EventPagingUtils;
 
 import javax.swing.*;
@@ -38,7 +34,7 @@ public class EventSwing {
         this.eventId=eventId;
         this.eventGroupName=eventGroupName;
 
-        UserService userService = new UserService();
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
         EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
         IEventService iEventService = new EventServiceImpl();
         LikesServiceImpl likesServiceImpl = new LikesServiceImpl();
@@ -310,7 +306,7 @@ public class EventSwing {
             if(table.getSelectedRow()<0){
                 JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            int judge4 = userService.verifyRole(userId);
+            int judge4 = userServiceImpl.verifyRole(userId);
             if(judge4 ==1){
                 //吃瓜群众
                 if(userId==comments.get(table.getSelectedRow()).getCommenterId()){
@@ -392,7 +388,7 @@ public class EventSwing {
         jPanel.add(delete);
 
         //清空评论只有在管理员时显示
-        int roleId = new UserService().verifyRole(userId);
+        int roleId = new UserServiceImpl().verifyRole(userId);
         if(roleId==ADMIN||roleId==SUPER_ADMIN){
             clearComment.setVisible(true);
             delete.setVisible(true);

@@ -1,4 +1,4 @@
-package com.jiong.www.service;
+package com.jiong.www.service.service;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
@@ -77,10 +77,11 @@ public interface IEventGroupService {
      * @param listModel 传入数据源
      * @param events 获得瓜的信息
      */
-    void DataProcessGroup(int pageSize,DefaultListModel<String> listModel,List<Event> events);
+    void dataProcessGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events);
     /**刷新数据源
      * @param events 瓜数据
      * @param defaultListModel 数据源
+     * @param eventGroupName 瓜圈名
      * */
-    void RefreshGroup(List<Event> events,DefaultListModel<String> defaultListModel,String eventGroupName);
+    void refreshGroup(List<Event> events, DefaultListModel<String> defaultListModel, String eventGroupName);
 }

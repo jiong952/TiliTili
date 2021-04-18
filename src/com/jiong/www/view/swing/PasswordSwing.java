@@ -1,6 +1,6 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -17,7 +17,7 @@ public class PasswordSwing extends JFrame {
     public PasswordSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
-        UserService userService = new UserService();
+        UserServiceImpl userServiceImpl = new UserServiceImpl();
 
         JFrame password = new JFrame();
         password.setSize(500,500);
@@ -58,7 +58,7 @@ public class PasswordSwing extends JFrame {
         oldPasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                int judge = userService.verifyPassword(new String(oldPasswordField.getPassword()), userId);
+                int judge = userServiceImpl.verifyPassword(new String(oldPasswordField.getPassword()), userId);
                 //密码错误，错误提示标签出现
                 errorPassword.setVisible(judge == 0);
 
@@ -66,7 +66,7 @@ public class PasswordSwing extends JFrame {
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                int judge = userService.verifyPassword(oldPassword.getText(), userId);
+                int judge = userServiceImpl.verifyPassword(oldPassword.getText(), userId);
                 //密码错误，错误提示标签出现
                 errorPassword.setVisible(judge == 0);
             }
@@ -229,7 +229,7 @@ public class PasswordSwing extends JFrame {
             if("".equals(new String(oldPasswordField.getPassword())) || "".equals(new String(newPasswordField.getPassword())) ||"".equals(new String(confirmPasswordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
                 //让用户填写所有
-            }else if(userService.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
+            }else if(userServiceImpl.verifyPassword(new String(oldPasswordField.getPassword()), userId)==0){
                 JOptionPane.showMessageDialog(null,"密码错误！","错误",JOptionPane.ERROR_MESSAGE);
             }
             else if(!new String(newPasswordField.getPassword()).equals(new String(confirmPasswordField.getPassword()))){
@@ -237,7 +237,8 @@ public class PasswordSwing extends JFrame {
             }
             else {
                 String userNewPassword=new String(newPasswordField.getPassword());
-                int judge = userService.changePassword(userNewPassword, userId);
+                //修改完要加密
+                int judge = userServiceImpl.changePassword(userNewPassword, userId);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"修改成功！");
                     password.dispose();

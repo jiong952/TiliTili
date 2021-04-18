@@ -1,6 +1,6 @@
 package com.jiong.www.view.swing;
 
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.Md5Utils;
 import com.jiong.www.util.StringUtils;
 
@@ -29,7 +29,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
     JButton registerButton;
     JButton reset;
     JButton cancel;
-    UserService userService = new UserService();
+    UserServiceImpl userServiceImpl = new UserServiceImpl();
     public RegisterSwing(){
         register = new JFrame("TiliTili瓜王系统");
         register.setSize(500,500);
@@ -126,7 +126,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             if("".equals(usernameField.getText()) || "".equals(password) ||"".equals(confirmPassword)){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
                 //让用户填写所有
-            }else if(userService.verifyUsername(usernameField.getText())==1){
+            }else if(userServiceImpl.verifyUsername(usernameField.getText())==1){
                 JOptionPane.showMessageDialog(null,"用户名已存在！","错误",JOptionPane.ERROR_MESSAGE);
             }else if(!password.equals(confirmPassword)){
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
@@ -136,7 +136,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
                 String newName = usernameField.getText();
                 String securePassword = new Md5Utils().toMd5(confirmPassword);
                 //密码加密
-                int judge = userService.register(newName, securePassword);
+                int judge = userServiceImpl.register(newName, securePassword);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");
                     register.dispose();
@@ -166,7 +166,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         //用户名文本框增删监听器
         if(e.getDocument()==usernameField.getDocument()){
             String userName = usernameField.getText();
-            int judge = userService.verifyUsername(userName);
+            int judge = userServiceImpl.verifyUsername(userName);
             //提示用户用户名存在
             jLabel1.setVisible(judge == 1&&!"".equals(usernameField.getText()));
         }
@@ -230,7 +230,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         //用户名文本框增删监听器
         if(e.getDocument()==usernameField.getDocument()){
             String userName = usernameField.getText();
-            int judge = userService.verifyUsername(userName);
+            int judge = userServiceImpl.verifyUsername(userName);
             //提示用户用户名存在
             jLabel1.setVisible(judge == 1&&!"".equals(usernameField.getText()));
         }

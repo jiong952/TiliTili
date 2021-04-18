@@ -1,9 +1,9 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.EventGroup;
-import com.jiong.www.service.EventGroupServiceImpl;
-import com.jiong.www.service.IEventGroupService;
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.EventGroupServiceImpl;
+import com.jiong.www.service.service.IEventGroupService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.GroupsPagingUtils;
 
 import javax.swing.*;
@@ -223,7 +223,7 @@ public class GroupsSwing extends JFrame {
         refresh.setVisible(false);
 
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
-        int roleId = new UserService().verifyRole(userId);
+        int roleId = new UserServiceImpl().verifyRole(userId);
 
         //窗口可见
         eventGroup.setVisible(true);

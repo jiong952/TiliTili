@@ -71,7 +71,7 @@ public class LikesDaoImpl implements ILikesDao {
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
             ps.setInt(2,userId);
-            conn.commit();
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }finally {

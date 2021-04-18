@@ -2,7 +2,7 @@ package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.daoImpl.EventGroupDaoImpl;
 import com.jiong.www.dao.daoImpl.LikesDaoImpl;
-import com.jiong.www.dao.UserDao;
+import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.dao.daoImpl.AccuseDaoImpl;
 import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.dao.daoImpl.CommentDaoImpl;
@@ -60,7 +60,7 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Event doView(String eventName){
         Event event = iEventDao.doView(eventName);
-        event.setPublisherName(new UserDao().queryUserInformation(event.getPublisherId()).getLoginName());
+        event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
         return event;
     }
 

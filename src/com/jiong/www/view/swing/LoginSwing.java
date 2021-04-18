@@ -1,7 +1,7 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.User;
-import com.jiong.www.service.UserService;
+import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.Md5Utils;
 
 import javax.swing.*;
@@ -27,7 +27,7 @@ public class LoginSwing extends JFrame implements ActionListener {
 
     int userId=0;
     String eventGroupName=null;
-    UserService userService = new UserService();
+    UserServiceImpl userServiceImpl = new UserServiceImpl();
     int judge = 0;
 
     public LoginSwing()  {
@@ -81,7 +81,7 @@ public class LoginSwing extends JFrame implements ActionListener {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String loginName = usernameField.getText();
-                User user = userService.isRememberPassword(loginName);
+                User user = userServiceImpl.isRememberPassword(loginName);
                 if(user.getLoginPassword()==null){
                     //用户不存在
                     jcheckbox.setSelected(false);
@@ -105,7 +105,7 @@ public class LoginSwing extends JFrame implements ActionListener {
             @Override
             public void removeUpdate(DocumentEvent e) {
                 String loginName = usernameField.getText();
-                User user = userService.isRememberPassword(loginName);
+                User user = userServiceImpl.isRememberPassword(loginName);
                 if(user.getLoginPassword()==null){
                     //用户不存在
                     jcheckbox.setSelected(false);
@@ -148,16 +148,16 @@ public class LoginSwing extends JFrame implements ActionListener {
                 }else {
                     securePassword = password;
                 }
-                int judge = userService.verifyUsername(userName);
+                int judge = userServiceImpl.verifyUsername(userName);
                 if(judge==1){
                     //用户名存在
-                    userId = userService.login(userName, securePassword);
+                    userId = userServiceImpl.login(userName, securePassword);
                     if(userId==0){
                         JOptionPane.showMessageDialog(null,"登录失败!","错误",JOptionPane.ERROR_MESSAGE);
                     }else {
                         JOptionPane.showMessageDialog(null,"登录成功！");
-                        int roleId = new UserService().verifyRole(userId);
-                        User user = new UserService().queryUserInformation(userId);
+                        int roleId = new UserServiceImpl().verifyRole(userId);
+                        User user = new UserServiceImpl().queryUserInformation(userId);
                         switch (roleId){
                             case 1:
                                 JOptionPane.showMessageDialog(null,"您好！用户"+user.getLoginName());
@@ -173,10 +173,10 @@ public class LoginSwing extends JFrame implements ActionListener {
                         }
                         //先在这里记录是否记住密码
                         if(jcheckbox.isSelected()){
-                            new UserService().isRememberPassword(1,userId);
+                            new UserServiceImpl().isRememberPassword(1,userId);
                             //更新表中的记住密码项
                         }else {
-                            new UserService().isRememberPassword(0,userId);
+                            new UserServiceImpl().isRememberPassword(0,userId);
                         }
                         //进入下一个页面
                         login.dispose();

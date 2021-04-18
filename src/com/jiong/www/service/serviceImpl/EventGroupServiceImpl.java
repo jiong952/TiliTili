@@ -1,12 +1,12 @@
-package com.jiong.www.service;
+package com.jiong.www.service.serviceImpl;
 
 import com.jiong.www.dao.daoImpl.EventGroupDaoImpl;
 import com.jiong.www.dao.dao.IEventGroupDao;
-import com.jiong.www.dao.UserDao;
+import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
+import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.service.IEventService;
-import com.jiong.www.service.serviceImpl.EventServiceImpl;
 
 import javax.swing.*;
 import java.util.List;
@@ -84,7 +84,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
         List<Event> events ;
         events = iEventGroupDao.viewEventOfEventGroup(iEventGroupDao.viewEventGroup(eventGroupName).getEventGroupId());
         for(Event event:events){
-            event.setPublisherName(new UserDao().queryUserInformation(event.getPublisherId()).getLoginName());
+            event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
         }
         return events;
     }
@@ -121,7 +121,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
      * 瓜圈的第一页的数据处理
      */
     @Override
-    public void DataProcessGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events) {
+    public void dataProcessGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events) {
         //每一页页面的展示瓜数目
         if(events.size()>=pageSize){
             for (int i = 0; i < pageSize; i++) {
@@ -138,7 +138,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
      * 刷新数据源
      */
     @Override
-    public void RefreshGroup(List<Event> events, DefaultListModel<String> defaultListModel,String eventGroupName) {
+    public void refreshGroup(List<Event> events, DefaultListModel<String> defaultListModel, String eventGroupName) {
         //刷新
         List<Event> events1 = viewEventOfEventGroup(eventGroupName);
         defaultListModel.clear();
