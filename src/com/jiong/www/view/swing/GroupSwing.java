@@ -1,11 +1,14 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.po.Event;
+import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.EventGroupServiceImpl;
+import com.jiong.www.service.IEventGroupService;
 import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.UserService;
 import com.jiong.www.util.GroupPagingUtils;
+import com.jiong.www.util.GroupsPagingUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,16 +24,24 @@ import java.util.List;
 public class GroupSwing extends JFrame {
     int userId;
     String eventGroupName;
+    List<Event> events;
+    GroupPagingUtils groupPagingUtils;
+    DefaultListModel<String> listModel;
     static final int DOUBLE_CLICK = 2;
     static final int PAGE_SIZE = 9;
     static final int  ADMIN = 2;
     static final int  SUPER_ADMIN = 4;
     static final int  VISITOR = 3;
+
+    public static void main(String[] args) {
+        new GroupSwing(10,"唱歌");
+    }
     public GroupSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName=eventGroupName;
-        EventGroupServiceImpl eventGroupServiceImpl =new EventGroupServiceImpl();
+        IEventGroupService iEventGroupService = new EventGroupServiceImpl();
         IEventService iEventService = new EventServiceImpl();
+
         JFrame eventOfGroup = new JFrame("TiliTili瓜王系统");
         eventOfGroup.setSize(1200,800);
         //设置大小
@@ -65,7 +76,7 @@ public class GroupSwing extends JFrame {
         jPanel.add(jLabel1);
 
         //瓜圈简介文本框
-        JTextArea description = new JTextArea(eventGroupServiceImpl.viewEventGroup(eventGroupName).getEventGroupDescription());
+        JTextArea description = new JTextArea(iEventGroupService.viewEventGroup(eventGroupName).getEventGroupDescription());
         description.setFont(font2);
         description.setBounds(270,10,900,80);
         description.setEditable(false);
@@ -80,7 +91,25 @@ public class GroupSwing extends JFrame {
         new MenuSwing(userId,eventOfGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,36);
+        JButton first = new JButton("首页");
+        first.setBounds(245,510,60,30);
+        first.setActionCommand("首页");
+        jPanel.add(first);
 
+        JButton previous = new JButton("上一页");
+        previous.setBounds(345,510,90,30);
+        previous.setActionCommand("上一页");
+        jPanel.add(previous);
+
+        JButton next = new JButton("下一页");
+        next.setBounds(475,510,90,30);
+        next.setActionCommand("下一页");
+        jPanel.add(next);
+
+        JButton last = new JButton("尾页");
+        last.setBounds(605,510,60,30);
+        last.setActionCommand("尾页");
+        jPanel.add(last);
         //创建一个列表框来放瓜
         JList<String> list = new JList<>();
         list.setFont(font1);
@@ -107,20 +136,10 @@ public class GroupSwing extends JFrame {
                 }
             }
         });
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-
-        List<Event> events = eventGroupServiceImpl.viewEventOfEventGroup(eventGroupName);
-
-        //每一页页面的展示瓜数目
-        if(events.size()>=PAGE_SIZE){
-            for (int i = 0; i < PAGE_SIZE; i++) {
-                listModel.add(i,events.get(i).getEventName());
-            }
-        }else {
-            for (int i = 0; i < events.size(); i++) {
-                listModel.add(i,events.get(i).getEventName());
-            }
-        }
+        listModel = new DefaultListModel<>();
+        events = iEventGroupService.viewEventOfEventGroup(eventGroupName);
+        //第一页的数据处理
+        iEventGroupService.DataProcessGroup(PAGE_SIZE,listModel,events);
         //向列表框中加入该瓜圈的所有瓜名
         list.setModel(listModel);
         jPanel.add(list);
@@ -129,8 +148,10 @@ public class GroupSwing extends JFrame {
         jScrollPane.setBounds(10,100,1150,400);
         jScrollPane.setViewportView(list);
         jPanel.add(jScrollPane);
+
+
         //分页处理
-        new GroupPagingUtils(events,listModel,jPanel,PAGE_SIZE);
+        groupPagingUtils=new GroupPagingUtils(events,listModel,PAGE_SIZE, first, previous, next, last);
 
         //查询瓜的标签+文本框
         Font font3 = new Font("黑体",Font.PLAIN,25);
@@ -203,10 +224,10 @@ public class GroupSwing extends JFrame {
         delete.setBounds(500,650,90,30);
         delete.addActionListener(e -> {
             if(list.getSelectedIndex()>0) {
-                int judge0 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
+                int judge0 = iEventGroupService.verifyOfAdmin(userId, eventGroupName);
                 //判断是不是该管理员管理的瓜圈
                 if (judge0 == 1) {
-                    //是
+                    //YES
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜吗？", "确认", JOptionPane.YES_NO_OPTION);
                     if (judge == 0) {
                         //选择是
@@ -236,15 +257,7 @@ public class GroupSwing extends JFrame {
         //刷新按钮，解决创建瓜之后页面无法立刻更新的问题
         JButton refresh = new JButton("刷新");
         refresh.setBounds(820,650,90,30);
-        refresh.addActionListener(e -> {
-            DefaultListModel<String> listModel1 = new DefaultListModel<>();
-            List<Event> events1 = eventGroupServiceImpl.viewEventOfEventGroup(eventGroupName);
-            for (int i = 0; i < events1.size(); i++) {
-                listModel1.add(i,events1.get(i).getEventName());
-            }
-            //向列表框中加入该瓜圈的所有瓜名
-            list.setModel(listModel1);
-        });
+        refresh.addActionListener(e -> iEventGroupService.RefreshGroup(events,listModel,eventGroupName));
         jPanel.add(refresh);
 
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面

@@ -169,7 +169,7 @@ public class GroupsSwing extends JFrame {
             int judge = iEventGroupService.verifyExist(eventGroupName1);
             if(judge==1){
                 //查询成功，跳转到相应瓜的界面
-            new GroupSwing(userId, eventGroupName1);
+                new GroupSwing(userId, eventGroupName1);
             }else {
                 JOptionPane.showMessageDialog(null,"查无此瓜圈！","错误",JOptionPane.ERROR_MESSAGE);
             }
@@ -192,7 +192,7 @@ public class GroupsSwing extends JFrame {
                         judge0 = iEventGroupService.doDelete(list.getSelectedValue(), userId);
                         if(judge0==1){
                             JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
-                            iEventGroupService.doRefresh(eventGroups,listModel);
+                            new GroupsSwing(userId,null);
                         }else {
                             JOptionPane.showMessageDialog(null,"删除失败","错误",JOptionPane.ERROR_MESSAGE);
                         }
@@ -211,10 +211,7 @@ public class GroupsSwing extends JFrame {
         //创建瓜圈按钮
         JButton create = new JButton("创建瓜圈");
         create.setBounds(550,650,90,30);
-        create.addActionListener(e -> {
-            //创建瓜圈
-            new CreateGroupSwing(userId,eventGroupName);
-        });
+        create.addActionListener(e -> new CreateGroupSwing(userId,eventGroupName));
         create.setVisible(false);
         jPanel.add(create);
 

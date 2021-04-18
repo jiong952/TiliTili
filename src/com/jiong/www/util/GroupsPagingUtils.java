@@ -23,7 +23,6 @@ public class GroupsPagingUtils extends JFrame {
     private final int pageSize ;
     DefaultListModel<String> defaultListModel;
 
-
     public DefaultListModel<String> getDefaultListModel() {
         return defaultListModel;
     }

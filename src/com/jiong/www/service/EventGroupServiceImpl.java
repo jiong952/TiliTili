@@ -116,4 +116,37 @@ public class EventGroupServiceImpl implements IEventGroupService {
         eventGroups.addAll(eventGroups1);
 
     }
+
+    /**
+     * 瓜圈的第一页的数据处理
+     */
+    @Override
+    public void DataProcessGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events) {
+        //每一页页面的展示瓜数目
+        if(events.size()>=pageSize){
+            for (int i = 0; i < pageSize; i++) {
+                listModel.add(i,events.get(i).getEventName());
+            }
+        }else {
+            for (int i = 0; i < events.size(); i++) {
+                listModel.add(i,events.get(i).getEventName());
+            }
+        }
+    }
+
+    /**
+     * 刷新数据源
+     */
+    @Override
+    public void RefreshGroup(List<Event> events, DefaultListModel<String> defaultListModel,String eventGroupName) {
+        //刷新
+        List<Event> events1 = viewEventOfEventGroup(eventGroupName);
+        defaultListModel.clear();
+        for (int i = 0; i < events1.size(); i++) {
+            defaultListModel.add(i,events1.get(i).getEventName());
+        }
+        //向列表框中加入所有的瓜圈名
+        events.clear();
+        events.addAll(events1);
+    }
 }

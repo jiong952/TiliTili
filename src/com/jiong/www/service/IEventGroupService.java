@@ -72,4 +72,15 @@ public interface IEventGroupService {
      * @param defaultListModel 数据源
      * */
     void doRefresh(List<EventGroup> eventGroups,DefaultListModel<String> defaultListModel);
+    /**瓜圈的第一页的数据处理
+     * @param pageSize 每一页的展示数目
+     * @param listModel 传入数据源
+     * @param events 获得瓜的信息
+     */
+    void DataProcessGroup(int pageSize,DefaultListModel<String> listModel,List<Event> events);
+    /**刷新数据源
+     * @param events 瓜数据
+     * @param defaultListModel 数据源
+     * */
+    void RefreshGroup(List<Event> events,DefaultListModel<String> defaultListModel,String eventGroupName);
 }
