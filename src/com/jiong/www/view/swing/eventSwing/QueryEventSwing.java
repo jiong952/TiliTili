@@ -1,7 +1,9 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.eventSwing;
 
 import com.jiong.www.po.Event;
+import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
+import com.jiong.www.view.swing.eventSwing.EventSwing;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +18,7 @@ public class QueryEventSwing extends JFrame{
     public QueryEventSwing(int userId, String eventGroupName)  {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventServiceImpl eventServiceImpl = new EventServiceImpl();
+        IEventService iEventService = new EventServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(300,300);
         //设置大小
@@ -50,9 +52,9 @@ public class QueryEventSwing extends JFrame{
             if("".equals(eventName)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = eventServiceImpl.verifyExist(eventName);
+                int judge = iEventService.verifyExist(eventName);
                 //验证瓜名是否存在
-                Event event1 = eventServiceImpl.doView(eventName);
+                Event event1 = iEventService.doView(eventName);
                 if(judge==1){
                     //存在
                     jFrame.dispose();

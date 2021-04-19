@@ -1,4 +1,4 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.eventGroupSwing;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.serviceImpl.EventGroupServiceImpl;
@@ -7,6 +7,9 @@ import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.GroupPagingUtils;
+import com.jiong.www.view.swing.MenuSwing;
+import com.jiong.www.view.swing.eventSwing.CreateEventSwing;
+import com.jiong.www.view.swing.eventSwing.EventSwing;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -88,26 +91,25 @@ public class GroupSwing extends JFrame {
         //加入菜单栏
         new MenuSwing(userId,eventOfGroup,eventGroupName);
 
+        //分页按钮
         Font font1 = new Font("黑体",Font.PLAIN,36);
         JButton first = new JButton("首页");
         first.setBounds(245,510,60,30);
         first.setActionCommand("首页");
         jPanel.add(first);
-
         JButton previous = new JButton("上一页");
         previous.setBounds(345,510,90,30);
         previous.setActionCommand("上一页");
         jPanel.add(previous);
-
         JButton next = new JButton("下一页");
         next.setBounds(475,510,90,30);
         next.setActionCommand("下一页");
         jPanel.add(next);
-
         JButton last = new JButton("尾页");
         last.setBounds(605,510,60,30);
         last.setActionCommand("尾页");
         jPanel.add(last);
+
         //创建一个列表框来放瓜
         JList<String> list = new JList<>();
         list.setFont(font1);
@@ -160,10 +162,9 @@ public class GroupSwing extends JFrame {
         jPanel.add(query);
 
         //输入瓜圈名字的提示
-        JLabel tip = new JLabel("请输入要查询瓜的名字");
-        tip.setForeground(Color.red);
+        JLabel tip = new JLabel("注意：请输入要查询瓜的名字");
         tip.setVisible(false);
-        tip.setBounds(120,670,150,30);
+        tip.setBounds(120,670,200,30);
         jPanel.add(tip);
 
         //查询瓜的文本框

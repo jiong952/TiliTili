@@ -1,12 +1,14 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.eventSwing;
 
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
-import com.jiong.www.service.service.ICollectionService;
-import com.jiong.www.service.service.ICommentService;
-import com.jiong.www.service.service.IEventService;
+import com.jiong.www.service.service.*;
 import com.jiong.www.service.serviceImpl.*;
 import com.jiong.www.util.EventPagingUtils;
+import com.jiong.www.view.swing.eventGroupSwing.GroupSwing;
+import com.jiong.www.view.swing.eventGroupSwing.GroupsSwing;
+import com.jiong.www.view.swing.MenuSwing;
+import com.jiong.www.view.swing.accuseSwing.AccuseSwing;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -34,10 +36,10 @@ public class EventSwing {
         this.eventId=eventId;
         this.eventGroupName=eventGroupName;
 
-        UserServiceImpl userServiceImpl = new UserServiceImpl();
-        EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
+        IUserService iUserService = new UserServiceImpl();
+        IEventGroupService iEventGroupService = new EventGroupServiceImpl();
         IEventService iEventService = new EventServiceImpl();
-        LikesServiceImpl likesServiceImpl = new LikesServiceImpl();
+        ILikesService iLikesService = new LikesServiceImpl();
         ICollectionService iCollectionService = new CollectionServiceImpl();
         ICommentService iCommentService = new CommentServiceImpl();
 
@@ -107,7 +109,7 @@ public class EventSwing {
         JRadioButton notLike = new JRadioButton("不点赞");
         notLike.setBounds(300,126,70,30);
         //查询是否已经点赞
-        int judge = likesServiceImpl.queryLikes(userId, eventId);
+        int judge = iLikesService.queryLikes(userId, eventId);
         if(judge==1){
             like.setSelected(true);
         }else {
@@ -115,8 +117,9 @@ public class EventSwing {
         }
         //点赞
         like.addActionListener(e -> {
-            likesServiceImpl.doLikes(userId,eventId);
+            iLikesService.doLikes(userId,eventId);
             Event event1 = iEventService.doView(eventName);
+            //实时更新点赞数
             likesNumber.setText(String.valueOf(event1.getLikesNum()));
         });
         //取消点赞
@@ -124,8 +127,9 @@ public class EventSwing {
             int judge1 = JOptionPane.showConfirmDialog(null, "您确定要取消点赞吗？", "删除提示", JOptionPane.YES_NO_OPTION);
             if(judge1 ==0){
                 //YES
-            likesServiceImpl.doCancelLikes(userId,eventId);
+            iLikesService.doCancelLikes(userId,eventId);
             Event event1 = iEventService.doView(eventName);
+            //实时更新点赞数
             likesNumber.setText(String.valueOf(event1.getLikesNum()));
             }else {
                 like.setSelected(true);
@@ -163,6 +167,7 @@ public class EventSwing {
         collected.addActionListener(e -> {
             iCollectionService.doCollect(userId,eventId);
             Event event1 = iEventService.doView(eventName);
+            //实时更新收藏数
             collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
         });
         //取消收藏
@@ -171,6 +176,7 @@ public class EventSwing {
             if(judge3 ==0){
                 iCollectionService.doCancelCollect(userId,eventId);
                 Event event1 = iEventService.doView(eventName);
+                //实时更新收藏数
                 collectionNumber.setText(String.valueOf(event1.getCollectionNum()));
             }else {
                 collected.setSelected(true);
@@ -213,26 +219,25 @@ public class EventSwing {
         commentLabel.setForeground(Color.PINK);
         jPanel.add(commentLabel);
 
+        //分页按钮
         JButton first = new JButton("首页");
         first.setBounds(245,575,60,30);
         first.setActionCommand("首页");
         jPanel.add(first);
-
         JButton previous = new JButton("上一页");
         previous.setBounds(345,575,90,30);
         previous.setActionCommand("上一页");
         jPanel.add(previous);
-
         JButton next = new JButton("下一页");
         next.setBounds(475,575,90,30);
         next.setActionCommand("下一页");
         jPanel.add(next);
-
         JButton last = new JButton("尾页");
         last.setBounds(605,575,60,30);
         last.setActionCommand("尾页");
         jPanel.add(last);
 
+        //表头
         String[] columnNames = {"评论人","评论内容","评论时间"};
         //查询瓜的所有评论
         comments = iCommentService.findAll(event.getEventId());
@@ -286,16 +291,17 @@ public class EventSwing {
             if("".equals(myCommentArea.getText())){
                 JOptionPane.showMessageDialog(null,"评论内容不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            iCommentService.doComment(userId,eventId,myCommentArea.getText());
-            JOptionPane.showMessageDialog(null,"评论成功！");
-            //置空
-            myCommentArea.setText("");
-            //重新设置数据源重新分页
-            comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
-            Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
-            defaultTableModel.setDataVector(dataProcess,columnNames);
-            //重新设置评论数
-            commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
+                iCommentService.doComment(userId,eventId,myCommentArea.getText());
+                JOptionPane.showMessageDialog(null,"评论成功！");
+                //置空
+                myCommentArea.setText("");
+                //重新设置数据源重新分页
+                comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+                //第一页数据
+                Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
+                defaultTableModel.setDataVector(dataProcess,columnNames);
+                //重新设置评论数
+                commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
             }
         });
 
@@ -306,7 +312,7 @@ public class EventSwing {
             if(table.getSelectedRow()<0){
                 JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            int judge4 = userServiceImpl.verifyRole(userId);
+            int judge4 = iUserService.verifyRole(userId);
             if(judge4 ==1){
                 //吃瓜群众
                 if(userId==comments.get(table.getSelectedRow()).getCommenterId()){
@@ -325,7 +331,7 @@ public class EventSwing {
                 }
             }else if(judge4 ==2){
                 //管理员
-                int judge5 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
+                int judge5 = iEventGroupService.verifyOfAdmin(userId, eventGroupName);
                 if(judge5 ==1){
                     iCommentService.doCancel(comments.get(table.getSelectedRow()).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功！");
@@ -347,7 +353,7 @@ public class EventSwing {
         JButton clearComment= new JButton("清空评论");
         clearComment.setBounds(850,637,90,30);
         clearComment.addActionListener(e -> {
-            int judge6 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
+            int judge6 = iEventGroupService.verifyOfAdmin(userId, eventGroupName);
             if(judge6 ==1){
                 //是管理员管理的
                 iCommentService.doClear(eventId);
@@ -365,7 +371,7 @@ public class EventSwing {
         JButton delete = new JButton("删除瓜");
         delete.setBounds(1050,637,90,30);
         delete.addActionListener(e -> {
-            int judge0 = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
+            int judge0 = iEventGroupService.verifyOfAdmin(userId, eventGroupName);
             //判断是不是该管理员管理的瓜圈
             if (judge0 == 1) {
                 //是
@@ -411,6 +417,7 @@ public class EventSwing {
         jPanel.add(back);
 
         if(roleId==VISITOR){
+            //游客只能看
             myComment.setVisible(false);
             myCommentArea.setVisible(false);
             sendComment.setVisible(false);

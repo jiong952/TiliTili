@@ -1,6 +1,17 @@
 package com.jiong.www.view.swing;
 
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
+import com.jiong.www.view.swing.accuseSwing.AccuseHandleSwing;
+import com.jiong.www.view.swing.collectionSwing.CollectdEventSwing;
+import com.jiong.www.view.swing.eventGroupSwing.CreateGroupSwing;
+import com.jiong.www.view.swing.eventGroupSwing.QueryGroupSwing;
+import com.jiong.www.view.swing.eventSwing.CreateEventSwing;
+import com.jiong.www.view.swing.eventSwing.QueryEventSwing;
+import com.jiong.www.view.swing.likesSwing.LikesEventSwing;
+import com.jiong.www.view.swing.userSwing.InformationSwing;
+import com.jiong.www.view.swing.userSwing.LoginSwing;
+import com.jiong.www.view.swing.userSwing.PasswordSwing;
+import com.jiong.www.view.swing.userSwing.RegisterSwing;
 
 import javax.swing.*;
 

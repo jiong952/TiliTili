@@ -1,9 +1,11 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.userSwing;
 
 import com.jiong.www.po.User;
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
+import com.jiong.www.util.DateUtils;
 import com.jiong.www.util.ImageUtils;
 import com.jiong.www.util.StringUtils;
+import com.jiong.www.view.swing.eventGroupSwing.GroupsSwing;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -21,11 +23,12 @@ public class InformationSwing extends JFrame {
 
     int userId;
     String eventGroupName;
+    String userBirthday1;
     static final int YEAR_MAX =2021;
     static final int YEAR_MIN =1950;
     static final int MONTH_MAX =12;
     static final int MONTH_MIN =0;
-    static final int DAY_MAX =31;
+    static final int DAY_MAX =32;
     static final int DAY_MIN =1;
     static final String DATE_DEFAULT ="---请选择---";
     static final int MALE=1;
@@ -101,7 +104,7 @@ public class InformationSwing extends JFrame {
         JButton resetIcon = new JButton("还原");
         resetIcon.setBounds(780,310,60,30);
         jPanel.add(resetIcon);
-        //图片处理工具类
+        //图片加载
         new ImageUtils(icon,jPanel,set,saveIcon,resetIcon,userId);
         //用于显示昵称标签+文本框
         JLabel nickNameLabel = new JLabel("昵称:");
@@ -158,7 +161,7 @@ public class InformationSwing extends JFrame {
                     String email = emailTextField.getText();
                     //邮箱格式工具类
                     boolean judge = new StringUtils().isEmail(email);
-                    //合法
+                    //邮箱格式是否合法
                     emailTips.setVisible(!judge);
                 }
             }
@@ -168,7 +171,7 @@ public class InformationSwing extends JFrame {
                 if(!"".equals(emailTextField.getText())){
                     String email = emailTextField.getText();
                     boolean judge = new StringUtils().isEmail(email);
-                    //合法
+                    //邮箱格式是否合法
                     emailTips.setVisible(!judge);
                 }
             }
@@ -300,7 +303,7 @@ public class InformationSwing extends JFrame {
             //生日
             //用户生日信息完全
             if(!DATE_DEFAULT.equals(birthYear.getSelectedItem())&&!DATE_DEFAULT.equals(birthMonth.getSelectedItem())&&!DATE_DEFAULT.equals(birthDay.getSelectedItem())){
-                String userBirthday1 = birthYear.getSelectedItem() +
+                userBirthday1 = birthYear.getSelectedItem() +
                         //年
                         "-" +
                         birthMonth.getSelectedItem() +
@@ -332,7 +335,10 @@ public class InformationSwing extends JFrame {
                     judgement=0;
                 }
             }
-
+            if(!new DateUtils().isDate(userBirthday1)){
+                JOptionPane.showMessageDialog(null,"请填写合法的生日信息","错误",JOptionPane.ERROR_MESSAGE);
+                judgement=0;
+            }
             if(judgement==1){
                 if(emailTips.isVisible()){
                     //错误提示还在,说明邮箱格式不正确
@@ -350,7 +356,7 @@ public class InformationSwing extends JFrame {
         });
         jPanel.add(save);
 
-        //重置按钮：恢复未保存前的原状
+        //重置按钮：恢复保存前的原状
         JButton reset = new JButton("重置");
         reset.setBounds(275,500,80,20);
         reset.addActionListener(e -> {

@@ -1,4 +1,4 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.accuseSwing;
 
 import com.jiong.www.po.Event;
 import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
@@ -45,6 +45,7 @@ public class AccuseHandleSwing {
         String[] columnNames = {"举报人","举报的瓜","举报理由","举报时间"};
         //查询所有的举报信息
         Object[][] rowData = iAccuseService.doRefresh(userId);
+
         Font font1 = new Font("黑体",Font.PLAIN,15);
         JTable table = new JTable();
         DefaultTableModel defaultTableModel = new DefaultTableModel(rowData, columnNames){

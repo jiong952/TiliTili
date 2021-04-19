@@ -1,8 +1,11 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.eventSwing;
 
 import com.jiong.www.po.EventGroup;
+import com.jiong.www.service.service.IEventGroupService;
+import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventGroupServiceImpl;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
+import com.jiong.www.view.swing.eventGroupSwing.GroupsSwing;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +18,8 @@ public class CreateEventSwing {
     public CreateEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
-        EventGroupServiceImpl eventGroupServiceImpl = new EventGroupServiceImpl();
+        IEventGroupService iEventGroupService = new EventGroupServiceImpl();
+        IEventService iEventService = new EventServiceImpl();
         JFrame jFrame = new JFrame("TiliTili瓜王系统");
         jFrame.setSize(500,560);
         //设置大小
@@ -41,48 +45,63 @@ public class CreateEventSwing {
         groupField.setBounds(180,50,100,20);
         groupField.setVisible(false);
         jPanel.add(groupField);
+
         //不是从瓜圈页面跳转的而是通过菜单栏跳转的
         if(eventGroupName ==null){
             groupNameLabel.setVisible(true);
             groupField.setVisible(true);
         }
+
         //瓜名标签+文本框
         JLabel eventNameLabel = new JLabel("新瓜名:");
         eventNameLabel.setBounds(100,80,70,30);
         eventNameLabel.setFont(font);
         jPanel.add(eventNameLabel);
-        JTextField jTextField = new JTextField(25);
-        jTextField.setBounds(180,85,100,20);
-        jPanel.add(jTextField);
+        JTextField eventNameField = new JTextField(25);
+        eventNameField.setBounds(180,85,100,20);
+        jPanel.add(eventNameField);
         //新瓜内容标签+文本框+滚动面板
         JLabel eventContentLabel = new JLabel("新瓜内容:");
         eventContentLabel.setBounds(100,120,80,30);
         eventContentLabel.setFont(font);
         jPanel.add(eventContentLabel);
-        JTextArea jTextArea = new JTextArea();
-        jTextArea.setBounds(100,150,300,150);
-        jPanel.add(jTextArea);
+        JTextArea eventContentArea = new JTextArea();
+        eventContentArea.setBounds(100,150,300,150);
+        jPanel.add(eventContentArea);
         JScrollPane jScrollPane = new JScrollPane();
         jScrollPane.setBounds(100,150,300,150);
-        jScrollPane.setViewportView(jTextArea);
+        jScrollPane.setViewportView(eventContentArea);
         jPanel.add(jScrollPane);
-
 
 
         JButton create = new JButton("创建");
         create.setBounds(50,350,60,20);
         create.addActionListener(e -> {
             if(eventGroupName ==null){
+                //从菜单栏跳转，需要填写瓜圈名
                 String groupName = groupField.getText();
-                EventGroup eventGroup = eventGroupServiceImpl.viewEventGroup(groupName);
-                int judge = new EventServiceImpl().doCreate(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
-                if(judge==1){
-                    JOptionPane.showMessageDialog(null,"创建成功！");
+                int judge0 = iEventGroupService.verifyExist(groupName);
+                if(judge0==1){
+                    //存在该瓜圈
+                    int judge2 = iEventService.verifyExist(eventNameField.getText());
+                    if(judge2==1){
+                        //这个瓜已经存在
+                        JOptionPane.showMessageDialog(null,"这个瓜已存在!","错误",JOptionPane.ERROR_MESSAGE);
+                    }else {
+                        EventGroup eventGroup = iEventGroupService.viewEventGroup(groupName);
+                        int judge = iEventService.doCreate(userId, eventGroup.getEventGroupId(), eventNameField.getText(), eventContentArea.getText());
+                        if(judge==1){
+                            JOptionPane.showMessageDialog(null,"创建成功！");
+                        }
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null,"瓜圈不存在!","错误",JOptionPane.ERROR_MESSAGE);
                 }
+
             }
             else {
-                EventGroup eventGroup = eventGroupServiceImpl.viewEventGroup(eventGroupName);
-                int judge = new EventServiceImpl().doCreate(userId, eventGroup.getEventGroupId(), jTextField.getText(), jTextArea.getText());
+                EventGroup eventGroup = iEventGroupService.viewEventGroup(eventGroupName);
+                int judge = iEventService.doCreate(userId, eventGroup.getEventGroupId(), eventNameField.getText(), eventContentArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }
@@ -93,8 +112,8 @@ public class CreateEventSwing {
         JButton reset = new JButton("重置");
         reset.setBounds(150,350,60,20);
         reset.addActionListener(e -> {
-            jTextField.setText("");
-            jTextArea.setText("");
+            eventNameField.setText("");
+            eventContentArea.setText("");
         });
         jPanel.add(reset);
         JButton back = new JButton("返回");

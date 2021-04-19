@@ -49,7 +49,7 @@ public class UserView {
         String loginPassword = scanner.nextLine();
         int userId;
         //用户的id
-        userId= userServiceImpl.login(loginName, loginPassword);
+        userId= userServiceImpl.login(loginName, loginPassword,0);
         //row用于接收service传来的结果
         if(userId!=0){
             System.out.println("登录成功！");

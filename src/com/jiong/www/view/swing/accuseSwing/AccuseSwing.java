@@ -1,4 +1,4 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.accuseSwing;
 
 import com.jiong.www.service.serviceImpl.AccuseServiceImpl;
 import com.jiong.www.service.service.IAccuseService;

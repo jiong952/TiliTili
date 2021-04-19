@@ -46,9 +46,10 @@ public interface IUserService {
      * 登录
      * @param loginName 用户名
      * @param loginPassword 登录密码
+     * @param isRememberPassword 上一次是否记住密码,判断是否要进行加密
      * @return 判断成功
      */
-    int login(String loginName, String loginPassword);
+    int login(String loginName, String loginPassword,int isRememberPassword);
 
     /**
      * 验证用户的身份，吃瓜群众1管理员2游客3超管4

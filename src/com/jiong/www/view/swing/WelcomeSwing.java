@@ -1,5 +1,9 @@
 package com.jiong.www.view.swing;
 
+import com.jiong.www.view.swing.eventGroupSwing.GroupsSwing;
+import com.jiong.www.view.swing.userSwing.LoginSwing;
+import com.jiong.www.view.swing.userSwing.RegisterSwing;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

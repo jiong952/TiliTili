@@ -10,6 +10,7 @@ import com.jiong.www.util.Md5Utils;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Date;
+import java.time.DateTimeException;
 
 /**
  * @author Mono
@@ -41,7 +42,7 @@ public class UserServiceImpl implements IUserService {
     }
     /**完善用户信息*/
     @Override
-    public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday){
+    public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday) {
         int row ;
         // 用于接收dao层的返回值
         //封装对象
@@ -67,11 +68,14 @@ public class UserServiceImpl implements IUserService {
     }
     /**登录*/
     @Override
-    public int login(String loginName, String loginPassword){
+    public int login(String loginName, String loginPassword,int isRememberPassword){
         // 用于接收dao层的返回值
         int userId=0;
         //用用户名查密码和userId
         User userQuery = iUserDao.login(loginName);
+        if(isRememberPassword==0){
+            loginPassword=new Md5Utils().toMd5(loginPassword);
+        }
         //密码正确
         if(loginPassword.equals(userQuery.getLoginPassword())){
             userId=userQuery.getUserId();
@@ -105,6 +109,7 @@ public class UserServiceImpl implements IUserService {
     public int changePassword(String newPassword, int userId){
         int row;
         User user = new User();
+        //新密码加密
         newPassword=md5Utils.toMd5(newPassword);
         user.setLoginPassword(newPassword);
         user.setUserId(userId);

@@ -1,10 +1,11 @@
-package com.jiong.www.view.swing;
+package com.jiong.www.view.swing.eventGroupSwing;
 
 import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.serviceImpl.EventGroupServiceImpl;
 import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.GroupsPagingUtils;
+import com.jiong.www.view.swing.MenuSwing;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -57,25 +58,24 @@ public class GroupsSwing extends JFrame {
         jLabel.setBounds(400,10,450,100);
         jPanel.add(jLabel);
 
+        //菜单栏
         new MenuSwing(userId,eventGroup,eventGroupName);
 
         Font font1 = new Font("黑体",Font.PLAIN,36);
 
+        //分页按钮
         JButton first = new JButton("首页");
         first.setBounds(245,510,60,30);
         first.setActionCommand("首页");
         jPanel.add(first);
-
         JButton previous = new JButton("上一页");
         previous.setBounds(345,510,90,30);
         previous.setActionCommand("上一页");
         jPanel.add(previous);
-
         JButton next = new JButton("下一页");
         next.setBounds(475,510,90,30);
         next.setActionCommand("下一页");
         jPanel.add(next);
-
         JButton last = new JButton("尾页");
         last.setBounds(605,510,60,30);
         last.setActionCommand("尾页");
@@ -103,6 +103,7 @@ public class GroupsSwing extends JFrame {
                 }
             }
         });
+
         listModel = new DefaultListModel<>();
 
         //查询所有的瓜圈
@@ -131,10 +132,9 @@ public class GroupsSwing extends JFrame {
         jPanel.add(query);
 
         //输入瓜圈名字的提示标签
-        JLabel tip = new JLabel("请输入要查询瓜圈的名字");
-        tip.setForeground(Color.red);
+        JLabel tip = new JLabel("注意：请输入要查询瓜圈的名字");
         tip.setVisible(false);
-        tip.setBounds(120,670,150,30);
+        tip.setBounds(120,670,200,30);
         jPanel.add(tip);
 
         //查询瓜圈的名字文本框
