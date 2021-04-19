@@ -3,6 +3,7 @@ package com.jiong.www.dao.daoImpl;
 import com.jiong.www.dao.dao.IEventGroupDao;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
+import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         Connection conn = null;
         PreparedStatement ps =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1,eventGroup.getEventGroupName());
@@ -34,7 +35,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -49,7 +50,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -59,7 +60,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -74,7 +75,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="SELECT `eventGroup_id` FROM `eventgroup` WHERE `eventGroup_name`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,eventGroupName);
@@ -87,7 +88,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -104,7 +105,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="SELECT `id` FROM `administrator` WHERE `administrator_id` = ? AND `administrator_groupid` = ?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -118,7 +119,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+               DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -132,7 +133,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             //删除瓜圈
             String sql ="DELETE FROM `eventgroup` WHERE `eventGroup_name`=?";
             ps = conn.prepareStatement(sql);
@@ -145,7 +146,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -160,7 +161,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             //删除瓜圈与管理员的关系
             String sql ="DELETE FROM `administrator`WHERE `administrator_id`=? AND `administrator_groupid`=?";
             ps = conn.prepareStatement(sql);
@@ -172,7 +173,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -186,7 +187,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `eventGroup_description`,`eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name` = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,eventGroupName);
@@ -199,7 +200,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -215,7 +216,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         ResultSet rs=null;
         String eventGroupName=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `eventGroup_name` FROM `eventgroup` WHERE `eventGroup_id`=?";
             //联表查询
             ps = conn.prepareStatement(sql);
@@ -228,7 +229,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -244,7 +245,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         ResultSet rs = null;
         List<Integer> list = new ArrayList<>();
         try {
-            conn=JdbcUtils.getConnection();
+            conn=DbcpUtils.getConnection();
             String sql = "SELECT `administrator_groupid` FROM `administrator` WHERE `administrator_id` = ?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -256,7 +257,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -271,7 +272,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         ResultSet rs = null;
         List<Event> eventList = new ArrayList<>();
         try {
-            conn=JdbcUtils.getConnection();
+            conn=DbcpUtils.getConnection();
             for (Integer integer : list) {
                 String sql = "SELECT `event_id`,`event_name` FROM `event` WHERE `eventGroup_id` = ?";
                 ps = conn.prepareStatement(sql);
@@ -288,7 +289,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -303,7 +304,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         PreparedStatement ps=null;
         ResultSet rs = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `eventGroup_name`,`eventGroup_description` FROM `eventgroup`";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
@@ -317,7 +318,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -333,7 +334,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `event_id`,`event_name`,`comment_num`,`likes_num`,`collection_num`,`create_time` \n" +
                     "FROM `event` WHERE `eventGroup_id` = ?";
             //联表查询
@@ -354,7 +355,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

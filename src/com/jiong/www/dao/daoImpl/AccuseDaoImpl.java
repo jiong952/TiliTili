@@ -3,6 +3,7 @@ package com.jiong.www.dao.daoImpl;
 import com.jiong.www.dao.dao.IAccuseDao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
+import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -24,7 +25,7 @@ public class AccuseDaoImpl implements IAccuseDao {
         Connection conn = null;
         PreparedStatement ps =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="INSERT INTO `accusation` (`accused_event_id`,`accuse_user_id`,`accused_content`) VALUES(?,?,?)";
             //联表查询
             ps = conn.prepareStatement(sql);
@@ -37,7 +38,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -51,7 +52,7 @@ public class AccuseDaoImpl implements IAccuseDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             for(Event event : eventList){
                 String sql="SELECT `accused_content`,`create_time` ,`accuse_user_id`\n" +
                         "FROM `accusation` WHERE `accused_event_id`= ?";
@@ -71,7 +72,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -85,7 +86,7 @@ public class AccuseDaoImpl implements IAccuseDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="DELETE FROM `accusation` WHERE `accused_event_id`= ? ";
             //清空所有评论
             ps = conn.prepareStatement(sql);
@@ -95,7 +96,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -109,7 +110,7 @@ public class AccuseDaoImpl implements IAccuseDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="DELETE FROM `accusation` WHERE `accused_event_id`= ? AND`accused_content`=? ";
             //联表查询
             ps = conn.prepareStatement(sql);
@@ -120,7 +121,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

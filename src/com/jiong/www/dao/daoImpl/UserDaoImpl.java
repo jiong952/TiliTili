@@ -2,6 +2,7 @@ package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.IUserDao;
 import com.jiong.www.po.User;
+import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
 
 import java.io.InputStream;
@@ -18,7 +19,7 @@ public class UserDaoImpl implements IUserDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1,user.getLoginName());
@@ -31,7 +32,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -46,7 +47,7 @@ public class UserDaoImpl implements IUserDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES(?,1)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -56,7 +57,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -70,7 +71,7 @@ public class UserDaoImpl implements IUserDao {
         ResultSet rs=null;
         int userId=0;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `user_id` FROM `user` WHERE `login_name`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,userName);
@@ -83,7 +84,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -100,7 +101,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="SELECT `user_id` FROM `user` WHERE `login_name`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,loginName);
@@ -113,7 +114,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -128,7 +129,7 @@ public class UserDaoImpl implements IUserDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             //查询并储存该用户的信息的原先值
             String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=? WHERE `user_id`=?";
             ps = conn.prepareStatement(sql);
@@ -144,7 +145,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -158,7 +159,7 @@ public class UserDaoImpl implements IUserDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `user` SET `password_remember`=? WHERE `user_id`=?";
             ps = conn.prepareStatement(sql);
             //如果用户没有修改该栏信息，则保留上次的值,修改则覆盖
@@ -169,7 +170,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -184,7 +185,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `user_id`,`login_password`FROM `user` WHERE `login_name`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,loginName);
@@ -200,7 +201,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -216,7 +217,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `role_id` FROM `user_role`WHERE`user_id`=?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -228,7 +229,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -243,7 +244,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `login_password` FROM `user` WHERE `user_id`=?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -256,7 +257,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -270,7 +271,7 @@ public class UserDaoImpl implements IUserDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `user` SET `login_password`=? WHERE `user_id`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,user.getLoginPassword());
@@ -280,7 +281,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -296,7 +297,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         ResultSet rs = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `login_name`,`user_e-mail`,`user_nickname`,\n" +
                     "`user_gender`,`user_description`,`user_birthday`,`login_password`,`password_remember`FROM `user` WHERE `user_id`=?";
             ps = conn.prepareStatement(sql);
@@ -316,7 +317,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -332,7 +333,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         ResultSet rs=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `password_remember`,`login_password` FROM `user` WHERE `login_name`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,loginName);
@@ -345,7 +346,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -359,7 +360,7 @@ public class UserDaoImpl implements IUserDao {
         PreparedStatement ps=null;
         int row=0;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
             ps = conn.prepareStatement(sql);
             ps.setBinaryStream(1,inputStream);
@@ -369,7 +370,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -384,7 +385,7 @@ public class UserDaoImpl implements IUserDao {
         ResultSet rs=null;
         InputStream binaryStream=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql1 = "SELECT `icon` FROM `user` WHERE `user_id`=?";
             ps = conn.prepareStatement(sql1);
             ps.setInt(1,userId);
@@ -396,7 +397,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -410,7 +411,7 @@ public class UserDaoImpl implements IUserDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
             ps = conn.prepareStatement(sql);
             ps.setBinaryStream(1,null);
@@ -420,7 +421,7 @@ public class UserDaoImpl implements IUserDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -2,6 +2,7 @@ package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.ICommentDao;
 import com.jiong.www.po.Comment;
+import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -21,7 +22,7 @@ public class CommentDaoImpl implements ICommentDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="INSERT INTO `comment` (`event_id`,`user_id`,`comment_content`) VALUES(?,?,?)";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -33,7 +34,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -47,7 +48,7 @@ public class CommentDaoImpl implements ICommentDao {
         Connection conn = null;
         PreparedStatement ps =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `event` SET `comment_num` = `comment_num`+1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -57,7 +58,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -71,7 +72,7 @@ public class CommentDaoImpl implements ICommentDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="DELETE FROM `comment` WHERE `event_id`= ? AND `id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -81,7 +82,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -95,7 +96,7 @@ public class CommentDaoImpl implements ICommentDao {
         Connection conn = null;
         PreparedStatement ps =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `event` SET `comment_num` = `comment_num`-1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -104,7 +105,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -118,7 +119,7 @@ public class CommentDaoImpl implements ICommentDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
             //清空所有评论
             ps = conn.prepareStatement(sql);
@@ -128,7 +129,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -141,7 +142,7 @@ public class CommentDaoImpl implements ICommentDao {
         Connection conn = null;
         PreparedStatement ps =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="UPDATE `event` SET `comment_num` = 0 WHERE `event_id` =?";
             //清空所有评论
             ps = conn.prepareStatement(sql);
@@ -153,7 +154,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -170,7 +171,7 @@ public class CommentDaoImpl implements ICommentDao {
         PreparedStatement ps =null;
         ResultSet rs = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `comment_content`,`user_id`,`create_time`,`id` FROM `comment`WHERE`event_id`=?";
             //联表查询
             ps = conn.prepareStatement(sql);
@@ -188,7 +189,7 @@ public class CommentDaoImpl implements ICommentDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

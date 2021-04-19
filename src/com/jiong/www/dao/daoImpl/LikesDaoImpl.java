@@ -1,6 +1,7 @@
 package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.ILikesDao;
+import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -66,7 +67,7 @@ public class LikesDaoImpl implements ILikesDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="DELETE FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -76,7 +77,7 @@ public class LikesDaoImpl implements ILikesDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -89,7 +90,7 @@ public class LikesDaoImpl implements ILikesDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="UPDATE `event` SET `likes_num` = `likes_num`-1 WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -98,7 +99,7 @@ public class LikesDaoImpl implements ILikesDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
                 //释放连接
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -111,7 +112,7 @@ public class LikesDaoImpl implements ILikesDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="DELETE FROM `like` WHERE `event_id`= ? ";
             //清空所有评论
             ps = conn.prepareStatement(sql);
@@ -121,7 +122,7 @@ public class LikesDaoImpl implements ILikesDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -135,7 +136,7 @@ public class LikesDaoImpl implements ILikesDao {
         Connection conn = null;
         PreparedStatement ps= null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="SELECT `id` FROM `like`  WHERE `event_id`= ? AND `user_id` =?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,eventId);
@@ -151,7 +152,7 @@ public class LikesDaoImpl implements ILikesDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -168,7 +169,7 @@ public class LikesDaoImpl implements ILikesDao {
         PreparedStatement ps =null;
         ResultSet rs = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="SELECT `event_id` FROM `like` WHERE `user_id` =?";
             //联表查询
             ps = conn.prepareStatement(sql);
@@ -181,7 +182,7 @@ public class LikesDaoImpl implements ILikesDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

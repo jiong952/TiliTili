@@ -2,6 +2,7 @@ package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
+import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
 
 import java.sql.Connection;
@@ -22,7 +23,7 @@ public class EventDaoImpl implements IEventDao {
         Connection conn = null;
         PreparedStatement ps=null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
             // event_name加了唯一约束，在数据库设计上可以防止重名
             ps = conn.prepareStatement(sql);
@@ -37,7 +38,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -54,7 +55,7 @@ public class EventDaoImpl implements IEventDao {
         PreparedStatement ps = null;
         ResultSet rs =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="SELECT `event_id` FROM `event`WHERE `event_name`=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1,eventName);
@@ -67,7 +68,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -84,7 +85,7 @@ public class EventDaoImpl implements IEventDao {
         PreparedStatement ps = null;
         ResultSet rs =null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql="SELECT `event_name` FROM `event` WHERE `publisher_id` = ? AND `event_id`  = ?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1,userId);
@@ -98,7 +99,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -114,7 +115,7 @@ public class EventDaoImpl implements IEventDao {
         ResultSet rs =null;
         int eventGroupId =0;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             //进行数据库连接
             String sql ="SELECT `eventGroup_id` FROM `event` WHERE `event_id` = ?";
             //联表查询
@@ -129,7 +130,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -143,7 +144,7 @@ public class EventDaoImpl implements IEventDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             //进行数据库连接
             String sql ="DELETE FROM `event` WHERE `event_id` =?";
             ps = conn.prepareStatement(sql);
@@ -154,7 +155,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,null);
+                DbcpUtils.release(conn,ps,null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -169,7 +170,7 @@ public class EventDaoImpl implements IEventDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             String sql = "SELECT `publisher_id`,`event_content`,`comment_num`,\n" +
                     "`likes_num`,`create_time`,`collection_num`,`event_id` FROM `event` WHERE `event_name` = ?";
             //联表查询
@@ -194,7 +195,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -210,7 +211,7 @@ public class EventDaoImpl implements IEventDao {
         ResultSet rs = null;
         List<Event> eventList = new ArrayList<>();
         try {
-            conn = JdbcUtils.getConnection();
+            conn = DbcpUtils.getConnection();
             for (Integer integer : list) {
                 String sql = "SELECT `publisher_id`,`event_name`,`event_content`,`comment_num`,\n" +
                         "`likes_num`,`create_time`,`collection_num` FROM `event` WHERE `event_id` = ?";
@@ -240,7 +241,7 @@ public class EventDaoImpl implements IEventDao {
             e.printStackTrace();
         }finally {
             try {
-                JdbcUtils.release(conn,ps,rs);
+                DbcpUtils.release(conn,ps,rs);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
