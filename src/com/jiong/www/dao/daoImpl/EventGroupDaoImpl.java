@@ -155,9 +155,9 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         for (Integer integer : list) {
             String sql = "SELECT `event_id` AS eventId,`event_name` AS eventName FROM `event` WHERE `eventGroup_id` = ?";
             try {
-                Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), integer);
+                List<Event> query = queryRunner.query(sql, new BeanListHandler<>(Event.class), integer);
                 if(query!=null){
-                    eventList.add(query);
+                    eventList.addAll(query);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

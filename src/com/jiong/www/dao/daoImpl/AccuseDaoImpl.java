@@ -4,6 +4,7 @@ import com.jiong.www.dao.dao.IAccuseDao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import org.apache.commons.dbutils.handlers.BeanHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 
 import static com.jiong.www.util.DbcpUtils.*;
 
@@ -39,9 +40,9 @@ public class AccuseDaoImpl implements IAccuseDao {
             String sql="SELECT `accused_content` AS accusedContent,`create_time` AS accuseTime,`accuse_user_id` AS accusedUserId," +
                     "`accused_event_id` AS eventId FROM `accusation`  WHERE `accused_event_id`= ?";
             try {
-                Accuse query = queryRunner.query(sql, new BeanHandler<>(Accuse.class), event.getEventId());
+                List<Accuse> query = queryRunner.query(sql, new BeanListHandler<>(Accuse.class), event.getEventId());
                 if(query!=null){
-                    accuses.add(query);
+                    accuses.addAll(query);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
