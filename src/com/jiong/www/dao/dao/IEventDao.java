@@ -2,6 +2,7 @@ package com.jiong.www.dao.dao;
 
 import com.jiong.www.po.Event;
 
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -32,9 +33,10 @@ public interface IEventDao {
     int queryGroupId(int eventId);
     /**删除瓜
      * @param eventId 删除的瓜id
+     * @param conn 连接
      * @return 判断是否删除成功
      * */
-    int doDelete(int eventId);
+    int doDelete(Connection conn,int eventId);
     /**查看所有瓜
      * @param eventName 瓜名
      * @return 瓜信息

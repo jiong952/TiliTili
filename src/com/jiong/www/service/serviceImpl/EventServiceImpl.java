@@ -11,6 +11,11 @@ import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.service.IEventService;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import static com.jiong.www.util.DbcpUtils.getConnection;
+
 
 /**
  * @author Mono
@@ -49,11 +54,26 @@ public class EventServiceImpl implements IEventService {
     /**删除瓜以及瓜的点赞收藏评论举报信息*/
     @Override
     public int doDelete(int eventId){
-        int judge = iEventDao.doDelete(eventId);
-        new CollectionDaoImpl().doClear(eventId);
-        new CommentDaoImpl().doClear(eventId);
-        new AccuseDaoImpl().doClear(eventId);
-        new LikesDaoImpl().doClear(eventId);
+        Connection conn = null;
+        int judge=0;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            judge= iEventDao.doDelete(conn,eventId);
+            new CollectionDaoImpl().doClear(conn,eventId);
+            new CommentDaoImpl().doClear(conn,eventId);
+            new AccuseDaoImpl().doClear(conn,eventId);
+            new LikesDaoImpl().doClear(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
         return judge;
     }
     /**查看瓜,返回瓜的所有信息，封装*/

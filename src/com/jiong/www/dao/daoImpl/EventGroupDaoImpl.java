@@ -3,16 +3,15 @@ package com.jiong.www.dao.daoImpl;
 import com.jiong.www.dao.dao.IEventGroupDao;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
-import com.jiong.www.util.DbcpUtils;
+
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import static com.jiong.www.util.DbcpUtils.*;
+
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +22,12 @@ import java.util.List;
 public class EventGroupDaoImpl implements IEventGroupDao {
     /**创建瓜圈,添加瓜圈信息到瓜圈表*/
     @Override
-    public int doCreate(EventGroup eventGroup) {
+    public int doCreate(Connection conn, EventGroup eventGroup) {
         int row = 0;
         Object[] params ={eventGroup.getEventGroupName(),eventGroup.getEventGroupDescription()};
         String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
         try {
-            row=queryRunner.execute(sql, params);
+            row=queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,11 +37,11 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**把瓜圈和管理员联系起来*/
     @Override
-    public void groupOfAdmin(int userId, EventGroup eventGroup){
+    public void groupOfAdmin(Connection conn,int userId, EventGroup eventGroup){
         Object[] params={userId,eventGroup.getEventGroupName()};
         String sql ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
         try {
-            queryRunner.execute(sql, params);
+            queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -83,11 +82,11 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**删除瓜圈*/
     @Override
-    public int doDelete(String deleteEventGroupName)  {
+    public int doDelete(Connection conn,String deleteEventGroupName)  {
         int row = 0;
         String sql ="DELETE FROM `eventgroup` WHERE `eventGroup_name`=?";
         try {
-            row=queryRunner.execute(sql,deleteEventGroupName);
+            row=queryRunner.execute(conn,sql,deleteEventGroupName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -96,12 +95,12 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**删除在管理员表与瓜圈的数据*/
     @Override
-    public void doDeleteOfAdmin(int eventGroupId, int userId){
+    public void doDeleteOfAdmin(Connection conn,int eventGroupId, int userId){
         Object[] params={eventGroupId,userId};
         //删除瓜圈与管理员的关系
         String sql ="DELETE FROM `administrator`WHERE `administrator_id`=? AND `administrator_groupid`=?";
         try {
-            queryRunner.execute(sql, params);
+            queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -143,7 +142,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         List<Integer> list = new ArrayList<>();
         String sql = "SELECT `administrator_groupid` FROM `administrator` WHERE `administrator_id` = ?";
         try {
-            list=queryRunner.query(sql,new ColumnListHandler<Integer>(),userId);
+            list=queryRunner.query(sql, new ColumnListHandler<>(),userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -183,36 +182,12 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     @Override
     public List<Event> viewEventOfEventGroup(int eventGroupId)  {
         List<Event> events = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement ps=null;
-        ResultSet rs=null;
+        String sql ="SELECT `event_id` AS eventId,`event_name` AS eventName,`comment_num` AS commentNum,`likes_num` AS likesNum," +
+                "`collection_num` AS collectionNum,`publisher_id` AS publisherId,`create_time` AS createTime FROM `event` WHERE `eventGroup_id` = ?";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql ="SELECT `event_id`,`event_name`,`comment_num`,`likes_num`,`collection_num`,`publisher_id`,`create_time` \n" +
-                    "FROM `event` WHERE `eventGroup_id` = ?";
-            //联表查询
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventGroupId);
-            rs = ps.executeQuery();
-            while(rs.next()){
-                Event event = new Event();
-                event.setEventId(rs.getInt("event_id"));
-                event.setEventName(rs.getString("event_name"));
-                event.setCommentNum(rs.getInt("comment_num"));
-                event.setLikesNum(rs.getInt("likes_num"));
-                event.setCollectionNum(rs.getInt("collection_num"));
-                event.setCreateTime(rs.getDate("create_time"));
-                event.setPublisherId(rs.getInt("publisher_id"));
-                events.add(event);
-            }
+            events=queryRunner.query(sql,new BeanListHandler<>(Event.class),eventGroupId);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,rs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         //把查询的结果集返回到service层
         return events;

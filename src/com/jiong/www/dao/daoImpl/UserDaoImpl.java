@@ -18,12 +18,12 @@ import static com.jiong.www.util.DbcpUtils.*;
 public class UserDaoImpl implements IUserDao {
     /**注册，添加用户信息到用户表*/
     @Override
-    public int doRegister(User user)  {
+    public int doRegister(Connection conn,User user)  {
         int row=0;
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
         Object[] params= {user.getLoginName(), user.getLoginPassword(),user.getLoginName()};
         try {
-            row = queryRunner.execute(sql, params);
+            row = queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,10 +34,10 @@ public class UserDaoImpl implements IUserDao {
     }
     /**把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1*/
     @Override
-    public void doInsertRole(int userId)  {
+    public void doInsertRole(Connection conn,int userId)  {
         String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES(?,1)";
         try {
-            queryRunner.execute(sql,userId);
+            queryRunner.execute(conn,sql,userId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -187,12 +187,12 @@ public class UserDaoImpl implements IUserDao {
     }
     /**保存用户设置的头像文件到数据库*/
     @Override
-    public int saveIcon(InputStream inputStream, int userId){
+    public int saveIcon(Connection conn,InputStream inputStream, int userId){
         int row=0;
         Object[] params = {inputStream,userId};
         String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
         try {
-            row=queryRunner.execute(sql,params);
+            row=queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -200,11 +200,11 @@ public class UserDaoImpl implements IUserDao {
     }
     /**保存用户设置的头像文件本地文件夹*/
     @Override
-    public InputStream queryIcon(int userId){
+    public InputStream queryIcon(Connection conn,int userId){
         InputStream binaryStream=null;
         String sql = "SELECT `icon` AS  icon FROM `user` WHERE `user_id`=?";
         try {
-            User query = queryRunner.query(sql, new BeanHandler<>(User.class), userId);
+            User query = queryRunner.query(conn,sql, new BeanHandler<>(User.class), userId);
             binaryStream=new ByteArrayInputStream(query.getIcon());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -213,12 +213,12 @@ public class UserDaoImpl implements IUserDao {
     }
     /**删除用户保存的头像文件*/
     @Override
-    public int deleteIcon(int userId) {
+    public int deleteIcon(Connection conn,int userId) {
         int row = 0;
         String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
         Object[] params={null,userId};
         try {
-            row=queryRunner.execute(sql,params);
+            row=queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -8,7 +8,11 @@ import com.jiong.www.service.service.ICommentService;
 import com.jiong.www.util.EventPagingUtils;
 
 import javax.swing.table.DefaultTableModel;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
+
+import static com.jiong.www.util.DbcpUtils.getConnection;
 
 /**
  * @author Mono
@@ -20,20 +24,62 @@ public class CommentServiceImpl implements ICommentService {
     public void doComment(int userId, int eventId, String commentContent){
         Comment comment = new Comment();
         comment.setCommentContent(commentContent);
-        iCommentDao.doComment(userId,eventId,comment);
-        iCommentDao.addCommentNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iCommentDao.doComment(conn,userId,eventId,comment);
+            iCommentDao.addCommentNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
     @Override
     public void doCancel(int commentId, int eventId){
-        iCommentDao.doCancel(commentId,eventId);
-        iCommentDao.subtractCommentNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iCommentDao.doCancel(conn,commentId,eventId);
+            iCommentDao.subtractCommentNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**删除瓜的所有评论,管理员*/
     @Override
     public void doClear(int eventId){
-        iCommentDao.doClear(eventId);
-        iCommentDao.clearCommentNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iCommentDao.doClear(conn,eventId);
+            iCommentDao.clearCommentNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**查看瓜的评论,也要返回评论人名*/
     @Override

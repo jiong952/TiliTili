@@ -8,6 +8,7 @@ import org.apache.commons.dbutils.handlers.ColumnListHandler;
 
 import static com.jiong.www.util.DbcpUtils.*;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,53 +19,53 @@ import java.util.List;
 public class CollectionDaoImpl implements ICollectionDao {
     /**收藏,同时更新收藏表*/
     @Override
-    public void doCollect(int userId, int eventId)  {
+    public void doCollect(Connection conn,int userId, int eventId)  {
         Object[] params={eventId,userId};
         String sql="INSERT INTO `collection` (`event_id`,`user_id`) VALUES(?,?)";
         try {
-            queryRunner.execute(sql, params);
+            queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     /**收藏量+1*/
     @Override
-    public void addCollectionNum(int eventId) {
+    public void addCollectionNum(Connection conn,int eventId) {
         String sql = "UPDATE `event` SET `collection_num` = `collection_num`+1 WHERE `event_id` =?";
         try {
-            queryRunner.execute(sql, eventId);
+            queryRunner.execute(conn,sql, eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     /**取消收藏,同时删除用户收藏表中的相关数据*/
     @Override
-    public void doCancelCollect(int userId, int eventId) {
+    public void doCancelCollect(Connection conn,int userId, int eventId) {
         Object[] params={eventId,userId};
         String sql="DELETE FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
         try {
-            queryRunner.execute(sql,params);
+            queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     /**收藏量-1*/
     @Override
-    public void subtractCollectionNum(int eventId) {
+    public void subtractCollectionNum(Connection conn,int eventId) {
         String sql ="UPDATE `event` SET `collection_num` = `collection_num`-1 WHERE `event_id` =?";
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     /**清除瓜相应收藏表数据*/
     @Override
-    public void doClear(int eventId) {
+    public void doClear(Connection conn,int eventId) {
         String sql="DELETE FROM `collection` WHERE `event_id`= ? ";
         //清空所有评论
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

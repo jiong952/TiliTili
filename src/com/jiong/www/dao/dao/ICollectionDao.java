@@ -1,5 +1,6 @@
 package com.jiong.www.dao.dao;
 
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -9,25 +10,30 @@ public interface ICollectionDao {
     /**收藏,同时更新收藏表
      * @param userId 收藏人id
      * @param eventId 收藏瓜id
+     * @param conn 连接
      * */
-    void doCollect(int userId, int eventId);
+    void doCollect(Connection conn,int userId, int eventId);
     /**收藏数+1
      * @param  eventId 点赞瓜
+     * @param conn 连接
      * */
-    void addCollectionNum(int eventId);
+    void addCollectionNum(Connection conn,int eventId);
     /**取消收藏,同时删除用户收藏表中的相关数据
      * @param userId 取消收藏人id
      * @param eventId 取消收藏瓜id
+     * @param conn 连接
      * */
-    void doCancelCollect(int userId, int eventId);
+    void doCancelCollect(Connection conn,int userId, int eventId);
     /**收藏数-1
      * @param  eventId 收藏瓜
+     * @param conn 连接
      * */
-    void subtractCollectionNum(int eventId);
+    void subtractCollectionNum(Connection conn,int eventId);
     /**清空瓜的收藏
      * @param eventId 瓜id
+     * @param conn 连接
      * */
-    void doClear(int eventId);
+    void doClear(Connection conn,int eventId);
     /**查看用户是否收藏
      * @param userId 用户id
      * @param eventId 查看的瓜

@@ -3,6 +3,7 @@ package com.jiong.www.dao.dao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 
+import java.sql.Connection;
 import java.util.List;
 
 
@@ -22,8 +23,9 @@ public interface IAccuseDao {
     List<Accuse> findAll(List<Event> eventList) ;
     /**清空瓜的举报
      * @param eventId 瓜id
+     * @param conn 连接
      * */
-    void doClear(int eventId);
+    void doClear(Connection conn, int eventId);
     /**删除举报
      * @param accuse 传入要删除举报信息的accuse对象
      * */

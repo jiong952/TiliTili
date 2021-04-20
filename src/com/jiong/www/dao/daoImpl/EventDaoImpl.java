@@ -6,6 +6,8 @@ import com.jiong.www.po.Event;
 
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import static com.jiong.www.util.DbcpUtils.*;
+
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,11 +82,11 @@ public class EventDaoImpl implements IEventDao {
     }
     /**删除瓜*/
     @Override
-    public int doDelete(int eventId){
+    public int doDelete(Connection conn,int eventId){
         int row=0;
         String sql ="DELETE FROM `event` WHERE `event_id` =?";
         try {
-            row=queryRunner.execute(sql,eventId);
+            row=queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

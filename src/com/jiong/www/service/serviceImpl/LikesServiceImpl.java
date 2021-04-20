@@ -9,7 +9,11 @@ import com.jiong.www.po.Event;
 import com.jiong.www.service.service.ILikesService;
 
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
+
+import static com.jiong.www.util.DbcpUtils.getConnection;
 
 /**
  * @author Mono
@@ -20,14 +24,42 @@ public class LikesServiceImpl implements ILikesService {
     /**点赞,同时更新用户点赞表*/
     @Override
     public void doLikes(int userId, int eventId){
-        iLikesDao.doLikes(userId,eventId);
-        iLikesDao.addCollectionNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iLikesDao.doLikes(conn,userId,eventId);
+            iLikesDao.addCollectionNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**取消点赞,同时删除用户点赞表中的相关数据*/
     @Override
     public void doCancelLikes(int userId, int eventId){
-        iLikesDao.doCancelLikes(userId,eventId);
-        iLikesDao.subtractCollectionNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iLikesDao.doCancelLikes(conn,userId,eventId);
+            iLikesDao.subtractCollectionNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**查看用户是否点赞*/
     @Override

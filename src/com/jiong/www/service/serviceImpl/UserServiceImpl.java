@@ -9,8 +9,12 @@ import com.jiong.www.util.Md5Utils;
 
 import java.io.File;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.Date;
-import java.time.DateTimeException;
+import java.sql.SQLException;
+
+
+import static com.jiong.www.util.DbcpUtils.getConnection;
 
 /**
  * @author Mono
@@ -21,15 +25,29 @@ public class UserServiceImpl implements IUserService {
     /**放在类中，才能验证是不是同一个人*/
     @Override
     public int register(String loginName, String loginPassword) {
-        int row;
+        int row=0;
         //封装user对象
         User user = new User();
         user.setLoginName(loginName);
         user.setLoginPassword(loginPassword);
-        //注册，添加信息到用户表
-        row = iUserDao.doRegister(user);
-        //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
-        iUserDao.doInsertRole(iUserDao.doQueryId(user.getLoginName()));
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            //注册，添加信息到用户表
+            row = iUserDao.doRegister(conn,user);
+            //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
+            iUserDao.doInsertRole(conn,iUserDao.doQueryId(user.getLoginName()));
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
         return row;
     }
     /**用于注册时验证该用户名是否存在*/
@@ -134,13 +152,28 @@ public class UserServiceImpl implements IUserService {
     /**保存用户设置的头像文件到数据库，把该二进制文件存到特定文件夹*/
     @Override
     public int saveIcon(InputStream inputStream, int userId){
-        int judge;
-        //头像存进数据库
-        judge= iUserDao.saveIcon(inputStream,userId);
-        //读出
-        InputStream binaryStream = iUserDao.queryIcon(userId);
-        //存进本地
-        new ImageUtils().readBlob(binaryStream,"C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+        int judge=0;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            //头像存进数据库
+            judge= iUserDao.saveIcon(conn,inputStream,userId);
+            //读出
+            InputStream binaryStream = iUserDao.queryIcon(conn,userId);
+            //存进本地
+            new ImageUtils().readBlob(binaryStream,"C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
         return judge;
     }
     /**删除用户保存的头像文件*/
@@ -148,13 +181,28 @@ public class UserServiceImpl implements IUserService {
     public boolean deleteIcon(int userId){
         int judge;
         boolean flag=false;
-        judge = iUserDao.deleteIcon(userId);
-        if(judge==1){
-            File file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
-            if(file.exists()){
-                 flag = file.delete();
-                 //本地文件夹照片文件也删除
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            //删除用户头像在数据库文件
+            judge = iUserDao.deleteIcon(conn,userId);
+            if(judge==1){
+                File file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+                if(file.exists()){
+                    flag = file.delete();
+                    //本地文件夹照片文件也删除
+                }
             }
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
         }
         return flag;
     }

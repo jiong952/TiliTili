@@ -8,6 +8,7 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import static com.jiong.www.util.DbcpUtils.*;
 
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +52,11 @@ public class AccuseDaoImpl implements IAccuseDao {
     }
 
     @Override
-    public void doClear(int eventId) {
+    public void doClear(Connection conn, int eventId) {
         String sql="DELETE FROM `accusation` WHERE `accused_event_id`= ? ";
         //清空所有举报
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

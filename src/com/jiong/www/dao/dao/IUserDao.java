@@ -3,6 +3,7 @@ package com.jiong.www.dao.dao;
 import com.jiong.www.po.User;
 
 import java.io.InputStream;
+import java.sql.Connection;
 
 /**
  * @author Mono
@@ -11,13 +12,15 @@ public interface IUserDao {
     /**
      * 注册，添加用户信息到用户表
      * @param user 注册的用户信息
+     * @param conn 连接
      * @return 判断成功
      */
-    int doRegister(User user);
+    int doRegister(Connection conn, User user);
     /**把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
      * @param userId 用户id
+     * @param conn 连接
      * */
-    void doInsertRole(int userId);
+    void doInsertRole(Connection conn,int userId);
 
     /**
      * 用用户名查用户id
@@ -92,21 +95,24 @@ public interface IUserDao {
      * 保存用户设置的头像文件到数据库
      * @param inputStream 头像的二进制文件
      * @param userId 用户id
+     * @param conn 连接
      * @return 判断成功
      */
-    int saveIcon(InputStream inputStream, int userId);
+    int saveIcon(Connection conn,InputStream inputStream, int userId);
 
     /**
      * 保存用户设置的头像文件本地文件夹
      * @param userId 用户id
+     * @param conn 连接
      * @return 头像文件
      */
-    InputStream queryIcon(int userId);
+    InputStream queryIcon(Connection conn,int userId);
 
     /**
      * 删除用户保存的头像文件
      * @param userId 用户id
+     * @param conn 连接
      * @return 判断成功
      */
-    int deleteIcon(int userId);
+    int deleteIcon(Connection conn,int userId);
 }

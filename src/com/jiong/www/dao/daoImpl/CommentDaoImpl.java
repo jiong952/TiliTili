@@ -21,11 +21,11 @@ import java.util.List;
 public class CommentDaoImpl implements ICommentDao {
     /**进行评论*/
     @Override
-    public void doComment(int userId, int eventId, Comment comment)  {
+    public void doComment(Connection conn,int userId, int eventId, Comment comment)  {
         Object[] params ={eventId,userId,comment.getCommentContent()};
         String sql="INSERT INTO `comment` (`event_id`,`user_id`,`comment_content`) VALUES(?,?,?)";
         try {
-            queryRunner.execute(sql,params);
+            queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -33,10 +33,10 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**评论数+1*/
     @Override
-    public void addCommentNum(int eventId) {
+    public void addCommentNum(Connection conn,int eventId) {
         String sql ="UPDATE `event` SET `comment_num` = `comment_num`+1 WHERE `event_id` =?";
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -44,11 +44,11 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
     @Override
-    public void doCancel(int commentId, int eventId) {
+    public void doCancel(Connection conn,int commentId, int eventId) {
         Object[] params ={eventId,commentId};
         String sql="DELETE FROM `comment` WHERE `event_id`= ? AND `id` =?";
         try {
-            queryRunner.execute(sql, params);
+            queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -56,10 +56,10 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**评论数-1*/
     @Override
-    public void subtractCommentNum(int eventId) {
+    public void subtractCommentNum(Connection conn,int eventId) {
         String sql ="UPDATE `event` SET `comment_num` = `comment_num`-1 WHERE `event_id` =?";
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,22 +67,22 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**删除瓜的所有评论，管理员*/
     @Override
-    public void doClear(int eventId){
+    public void doClear(Connection conn,int eventId){
         String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
         //清空所有评论
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     /**评论数清0*/
     @Override
-    public void clearCommentNum(int eventId) {
+    public void clearCommentNum(Connection conn,int eventId) {
         String sql="UPDATE `event` SET `comment_num` = 0 WHERE `event_id` =?";
         //评论数清0
         try {
-            queryRunner.execute(sql,eventId);
+            queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
         }

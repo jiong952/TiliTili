@@ -98,12 +98,16 @@ public class ImageUtils extends JFrame {
         //为save增加事件
         save.addActionListener(e -> {
             try {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                int judge = new UserServiceImpl().saveIcon(fileInputStream, userId);
-                if(judge==1){
-                    JOptionPane.showMessageDialog(null,"保存成功");
+                if(file!=null){
+                    FileInputStream fileInputStream = new FileInputStream(file);
+                    int judge = new UserServiceImpl().saveIcon(fileInputStream, userId);
+                    if(judge==1){
+                        JOptionPane.showMessageDialog(null,"保存成功");
+                    }else {
+                        JOptionPane.showMessageDialog(null,"保存失败","错误",JOptionPane.ERROR_MESSAGE);
+                    }
                 }else {
-                    JOptionPane.showMessageDialog(null,"保存失败","错误",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null,"请先选择新头像","错误",JOptionPane.ERROR_MESSAGE);
                 }
             } catch (FileNotFoundException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();

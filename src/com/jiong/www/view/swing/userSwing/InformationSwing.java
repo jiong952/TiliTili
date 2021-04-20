@@ -101,8 +101,8 @@ public class InformationSwing extends JFrame {
         saveIcon.setBounds(680,310,60,30);
         jPanel.add(saveIcon);
         //还原默认头像按钮
-        JButton resetIcon = new JButton("还原");
-        resetIcon.setBounds(780,310,60,30);
+        JButton resetIcon = new JButton("还原默认");
+        resetIcon.setBounds(780,310,100,30);
         jPanel.add(resetIcon);
         //图片加载
         new ImageUtils(icon,jPanel,set,saveIcon,resetIcon,userId);
@@ -163,6 +163,8 @@ public class InformationSwing extends JFrame {
                     boolean judge = new StringUtils().isEmail(email);
                     //邮箱格式是否合法
                     emailTips.setVisible(!judge);
+                }else {
+                    emailTips.setVisible(false);
                 }
             }
 
@@ -173,6 +175,8 @@ public class InformationSwing extends JFrame {
                     boolean judge = new StringUtils().isEmail(email);
                     //邮箱格式是否合法
                     emailTips.setVisible(!judge);
+                }else {
+                    emailTips.setVisible(false);
                 }
             }
 
@@ -326,26 +330,23 @@ public class InformationSwing extends JFrame {
                     judgement=0;
                 }else {
                     //YES
+                    userBirthday1=null;
                     userBirthday2=null;
                 }
-            }else {
-                //用户信息填不完整
-                if(DATE_DEFAULT.equals(birthYear.getSelectedItem())||DATE_DEFAULT.equals(birthMonth.getSelectedItem())||DATE_DEFAULT.equals(birthDay.getSelectedItem())){
+            }//用户信息填不完整
+             else if(DATE_DEFAULT.equals(birthYear.getSelectedItem())||DATE_DEFAULT.equals(birthMonth.getSelectedItem())||DATE_DEFAULT.equals(birthDay.getSelectedItem())){
                     JOptionPane.showMessageDialog(null,"请填写完整的生日信息","错误",JOptionPane.ERROR_MESSAGE);
                     judgement=0;
                 }
-            }
-            if(!new DateUtils().isDate(userBirthday1)){
-                JOptionPane.showMessageDialog(null,"请填写合法的生日信息","错误",JOptionPane.ERROR_MESSAGE);
-                judgement=0;
-            }
             if(judgement==1){
                 if(emailTips.isVisible()){
                     //错误提示还在,说明邮箱格式不正确
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
+                }else if (!new DateUtils().isDate(userBirthday1)&&userBirthday1!=null){
+                    JOptionPane.showMessageDialog(null,"请填写合法的生日格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
                     //所有信息正确
-                    int judge = userServiceImpl.perfectInformation(userEmail, userNickname, userGender1, userDescription, 2, userBirthday2);
+                    int judge = userServiceImpl.perfectInformation(userEmail, userNickname, userGender1, userDescription, userId, userBirthday2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {

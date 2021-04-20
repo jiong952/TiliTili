@@ -4,12 +4,12 @@ package com.jiong.www.po;
 /**
  * @author Mono
  */
-public class Collection {
-    /**收藏id*/
+public class Likes {
+    /**点赞id*/
     private int id;
-    /**收藏人id*/
+    /**点赞人id*/
     private int userId;
-    /**收藏瓜id*/
+    /**点赞瓜id*/
     private int eventId;
 
 

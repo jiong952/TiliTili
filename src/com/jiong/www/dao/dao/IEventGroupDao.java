@@ -3,6 +3,7 @@ package com.jiong.www.dao.dao;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
 
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -12,16 +13,18 @@ public interface IEventGroupDao {
     /**
      * 创建瓜圈,添加瓜圈信息到瓜圈表
      * @param eventGroup 瓜圈信息
+     * @param conn 连接
      * @return 判断成功
      */
-    int doCreate(EventGroup eventGroup);
+    int doCreate(Connection conn,EventGroup eventGroup);
 
     /**
      * 把瓜圈和管理员联系起来
      * @param userId 管理员id
      * @param eventGroup 瓜圈信息
+     * @param conn 连接
      */
-    void groupOfAdmin(int userId, EventGroup eventGroup);
+    void groupOfAdmin(Connection conn,int userId, EventGroup eventGroup);
 
     /**
      * 验证瓜圈名是否存在,避免发生重复
@@ -41,16 +44,18 @@ public interface IEventGroupDao {
     /**
      * 删除瓜圈
      * @param deleteEventGroupName 删除瓜圈名
+     * @param conn 连接
      * @return 判断成功
      */
-    int doDelete(String deleteEventGroupName);
+    int doDelete(Connection conn,String deleteEventGroupName);
 
     /**
      * 删除在管理员表与瓜圈的数据
      * @param eventGroupId 瓜圈id
      * @param userId 管理员id
+     * @param conn 连接
      */
-    void doDeleteOfAdmin(int eventGroupId, int userId);
+    void doDeleteOfAdmin(Connection conn,int eventGroupId, int userId);
 
     /**
      * 用瓜圈名查该瓜圈信息

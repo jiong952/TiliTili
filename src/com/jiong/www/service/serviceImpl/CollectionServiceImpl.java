@@ -7,8 +7,10 @@ import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.service.ICollectionService;
-
+import static com.jiong.www.util.DbcpUtils.*;
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -20,14 +22,42 @@ public class CollectionServiceImpl implements ICollectionService {
     /**收藏,同时更新收藏表*/
     @Override
     public void doCollect(int userId, int eventId){
-        iCollectionDao.doCollect(userId,eventId);
-        iCollectionDao.addCollectionNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iCollectionDao.doCollect(conn,userId,eventId);
+            iCollectionDao.addCollectionNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**取消收藏,同时删除用户收藏表中的相关数据*/
     @Override
     public void doCancelCollect(int userId, int eventId){
-        iCollectionDao.doCancelCollect(userId,eventId);
-        iCollectionDao.subtractCollectionNum(eventId);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            iCollectionDao.doCancelCollect(conn,userId,eventId);
+            iCollectionDao.subtractCollectionNum(conn,eventId);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
     }
     /**查看用户是否点赞*/
     @Override
@@ -43,7 +73,9 @@ public class CollectionServiceImpl implements ICollectionService {
         List<Integer> integers = iCollectionDao.findAll(userId);
         events = iEventDao.doView(integers);
         for(Event event:events){
-            event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
+            if(event!=null){
+                event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
+            }
         }
         return events;
     }

@@ -9,7 +9,12 @@ import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.service.IEventService;
 
 import javax.swing.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
+
+import static com.jiong.www.util.DbcpUtils.getConnection;
+
 /**
  * @author Mono
  */
@@ -20,14 +25,28 @@ public class EventGroupServiceImpl implements IEventGroupService {
     /**创建瓜圈*/
     @Override
     public int doCreate(int userId, String eventGroupName, String eventGroupDescription){
-        int row;
+        int row = 0;
         // 用于接收dao层的返回值
         //封装eventGroup对象
         EventGroup eventGroup = new EventGroup();
         eventGroup.setEventGroupName(eventGroupName);
         eventGroup.setEventGroupDescription(eventGroupDescription);
-        row= iEventGroupDao.doCreate(eventGroup);
-        iEventGroupDao.groupOfAdmin(userId,eventGroup);
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            row= iEventGroupDao.doCreate(conn,eventGroup);
+            iEventGroupDao.groupOfAdmin(conn,userId,eventGroup);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
+        }
         return row;
     }
     /**验证瓜圈名是否存在*/
@@ -45,23 +64,38 @@ public class EventGroupServiceImpl implements IEventGroupService {
     public int verifyOfAdmin(int userId, String eventGroupName){
         int row;
         //默认0不是管理员管理的瓜圈
-            EventGroup eventGroup = iEventGroupDao.viewEventGroup(eventGroupName);
-            row= iEventGroupDao.verifyOfAdmin(userId,eventGroup.getEventGroupId());
+        EventGroup eventGroup;
+        eventGroup = iEventGroupDao.viewEventGroup(eventGroupName);
+        row= iEventGroupDao.verifyOfAdmin(userId,eventGroup.getEventGroupId());
         return row;
     }
     /**删除瓜圈，同时在管理员所管理的数据删除关系，删除瓜圈里的瓜*/
     @Override
     public int doDelete(String deleteEventGroupName, int userId){
-        int row;
-        //删除瓜圈里的瓜
-        List<Event> events = iEventGroupDao.viewEventOfEventGroup(iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId());
-        for(Event event:events){
-            iEventService.doDelete(event.getEventId());
+        int row = 0;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+            //删除瓜圈里的瓜
+            List<Event> events = iEventGroupDao.viewEventOfEventGroup(iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId());
+            for(Event event:events){
+                iEventService.doDelete(event.getEventId());
+            }
+            //清除管理员表瓜圈的数据
+            iEventGroupDao.doDeleteOfAdmin(conn,iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId(),userId);
+            //删除瓜圈
+            row= iEventGroupDao.doDelete(conn,deleteEventGroupName);
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                assert conn != null;
+                conn.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            e.printStackTrace();
         }
-        //清除管理员表瓜圈的数据
-        iEventGroupDao.doDeleteOfAdmin(iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId(),userId);
-        //删除瓜圈
-        row= iEventGroupDao.doDelete(deleteEventGroupName);
         return row;
     }
     /**查看所有瓜圈*/
