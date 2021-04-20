@@ -2,15 +2,12 @@ package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.ICollectionDao;
 import com.jiong.www.po.Collection;
-import com.jiong.www.util.DbcpUtils;
+
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 
 import static com.jiong.www.util.DbcpUtils.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

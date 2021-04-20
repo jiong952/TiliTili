@@ -24,6 +24,16 @@ public class Event {
     private int collectionNum;
     /**瓜id*/
     private int eventId;
+    /**瓜所属的瓜圈id*/
+    private int eventGroupId;
+
+    public int getEventGroupId() {
+        return eventGroupId;
+    }
+
+    public void setEventGroupId(int eventGroupId) {
+        this.eventGroupId = eventGroupId;
+    }
 
     public int getPublisherId() {
         return publisherId;

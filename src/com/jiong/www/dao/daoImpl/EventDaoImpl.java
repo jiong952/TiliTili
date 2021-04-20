@@ -2,14 +2,10 @@ package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
-import com.jiong.www.util.DbcpUtils;
-import com.jiong.www.util.JdbcUtils;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 
+
+import org.apache.commons.dbutils.handlers.BeanHandler;
 import static com.jiong.www.util.DbcpUtils.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,58 +18,29 @@ public class EventDaoImpl implements IEventDao {
     @Override
     public int doCreate(int userId, int eventGroupId, Event event) {
         int row = 0;
-        Connection conn = null;
-        PreparedStatement ps=null;
+        Object[] params={eventGroupId,userId,event.getEventName(),event.getEventContent()};
+        String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
-            // event_name加了唯一约束，在数据库设计上可以防止重名
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventGroupId);
-            ps.setInt(2,userId);
-            ps.setString(3,event.getEventName());
-            ps.setString(4,event.getEventContent());
-            row= ps.executeUpdate();
-            //sql语句返回结果判断
-            //row是返回值，用于判断
+            row=queryRunner.execute(sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        //释放连接
+        //sql语句返回结果判断
+        //row是返回值，用于判断
         return row;
-        //向上抛出到view层
     }
     /**验证瓜名是否存在*/
     @Override
     public int verifyExist(String eventName)  {
         int row=0;
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs =null;
+        String sql="SELECT `event_id` AS eventId FROM `event`WHERE `event_name`=?";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql="SELECT `event_id` FROM `event`WHERE `event_name`=?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1,eventName);
-            rs = ps.executeQuery();
-            if(rs.isBeforeFirst()){
+            Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), eventName);
+            if(query!=null){
                 row=1;
-                //row=0则表里无数据
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,rs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return row;
         //抛出到view层判断,1则无数据，0则有数据
@@ -83,28 +50,15 @@ public class EventDaoImpl implements IEventDao {
     public int doVerify(int userId, int eventId)  {
         int row=0;
         //默认不是用户的瓜
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs =null;
+        Object[] params={userId,eventId};
+        String sql="SELECT `event_name` AS eventName FROM `event` WHERE `publisher_id` = ? AND `event_id`  = ?";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql="SELECT `event_name` FROM `event` WHERE `publisher_id` = ? AND `event_id`  = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,userId);
-            ps.setInt(2,eventId);
-            rs = ps.executeQuery();
-            if(rs.isBeforeFirst()){
+            Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), params);
+            if(query!=null){
                 row=1;
-                //表里有数据,是用户的瓜则row=1
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,rs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return row;
         //抛出到view层判断
@@ -112,30 +66,15 @@ public class EventDaoImpl implements IEventDao {
     /**查询这个瓜所在的瓜圈名*/
     @Override
     public int queryGroupId(int eventId)  {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs =null;
         int eventGroupId =0;
+        String sql ="SELECT `eventGroup_id` AS eventGroupId FROM `event` WHERE `event_id` = ?";
         try {
-            conn = DbcpUtils.getConnection();
-            //进行数据库连接
-            String sql ="SELECT `eventGroup_id` FROM `event` WHERE `event_id` = ?";
-            //联表查询
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventId);
-            rs = ps.executeQuery();
-            //eventGroupName为查询的瓜圈名
-            while (rs.next()){
-                eventGroupId = rs.getInt("eventGroup_id");
+            Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), eventId);
+            if(query!=null){
+                eventGroupId=query.getEventGroupId();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,rs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return eventGroupId;
     }
@@ -143,24 +82,11 @@ public class EventDaoImpl implements IEventDao {
     @Override
     public int doDelete(int eventId){
         int row=0;
-        Connection conn = null;
-        PreparedStatement ps = null;
+        String sql ="DELETE FROM `event` WHERE `event_id` =?";
         try {
-            conn = DbcpUtils.getConnection();
-            //进行数据库连接
-            String sql ="DELETE FROM `event` WHERE `event_id` =?";
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventId);
-            row = ps.executeUpdate();
-            //row为1删除成功,0删除失败
+            row=queryRunner.execute(sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return row;
     }
@@ -168,87 +94,33 @@ public class EventDaoImpl implements IEventDao {
     @Override
     public Event doView(String eventName) {
         Event eventQuery = new Event();
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        String sql = "SELECT `publisher_id` AS publisherId,`event_content` AS eventContent,`comment_num` AS commentNum,\n" +
+                    "`likes_num` AS likesNum,`create_time` AS createTime,`collection_num` AS collectionNum," +
+                    "`event_id` AS eventId FROM `event` WHERE `event_name` = ?";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql = "SELECT `publisher_id`,`event_content`,`comment_num`,\n" +
-                    "`likes_num`,`create_time`,`collection_num`,`event_id` FROM `event` WHERE `event_name` = ?";
-            //联表查询
-            ps = conn.prepareStatement(sql);
-            ps.setString(1,eventName);
-            rs = ps.executeQuery();
-            while(rs.next()){
-                eventQuery.setPublisherId(rs.getInt("publisher_id"));
-                //瓜名
-                eventQuery.setEventContent(rs.getString("event_content"));
-                //瓜内容
-                eventQuery.setLikesNum(rs.getInt("likes_num"));
-                eventQuery.setCollectionNum(rs.getInt("collection_num"));
-                eventQuery.setCommentNum(rs.getInt("comment_num"));
-                //点赞收藏评论数
-                eventQuery.setCreateTime(rs.getDate("create_time"));
-                //瓜id
-                eventQuery.setEventId(rs.getInt("event_id"));
-                eventQuery.setEventName(eventName);
+            Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), eventName);
+            if(query!=null){
+                eventQuery=query;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,rs);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        //把查询的结果集返回到service层
         return eventQuery;
     }
     /**用于查看收藏点赞合集时用瓜id查看信息*/
     @Override
     public List<Event> doView(List<Integer> list) {
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Event> eventList = new ArrayList<>();
-        try {
-            conn = DbcpUtils.getConnection();
-            for (Integer integer : list) {
-                String sql = "SELECT `publisher_id`,`event_name`,`event_content`,`comment_num`,\n" +
-                        "`likes_num`,`create_time`,`collection_num` FROM `event` WHERE `event_id` = ?";
-                //联表查询
-                ps = conn.prepareStatement(sql);
-                ps.setInt(1, integer);
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    Event event = new Event();
-                    event.setPublisherId(rs.getInt("publisher_id"));
-                    //发布者的名字
-                    event.setEventName(rs.getString("event_name"));
-                    //瓜名
-                    event.setEventContent(rs.getString("event_content"));
-                    //瓜内容
-                    event.setLikesNum(rs.getInt("likes_num"));
-                    event.setCollectionNum(rs.getInt("collection_num"));
-                    event.setCommentNum(rs.getInt("comment_num"));
-                    //点赞收藏评论数
-                    event.setCreateTime(rs.getDate("create_time"));
-                    //瓜id
-                    event.setEventId(integer);
-                    eventList.add(event);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
+        for (Integer integer : list) {
+            String sql = "SELECT `publisher_id` AS publisherId,`event_name` AS eventName,`event_content` AS eventContent,`comment_num` AS commentNum,\n" +
+                    "`likes_num` AS likesNum,`create_time` AS createTime,`collection_num` AS collectionNum FROM `event` WHERE `event_id` = ?";
             try {
-                DbcpUtils.release(conn,ps,rs);
+                Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), integer);
+                eventList.add(query);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        //把查询的结果集返回到service层
         return eventList;
     }
     /**查看瓜名*/
