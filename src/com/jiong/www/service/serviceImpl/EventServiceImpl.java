@@ -63,5 +63,4 @@ public class EventServiceImpl implements IEventService {
         event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
         return event;
     }
-
 }

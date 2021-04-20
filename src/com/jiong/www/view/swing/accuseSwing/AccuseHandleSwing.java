@@ -14,7 +14,12 @@ import java.awt.*;
  */
 public class AccuseHandleSwing {
     int userId;
-    IAccuseService iAccuseService = new AccuseServiceImpl();
+    IAccuseService iAccuseService;
+
+    {
+        iAccuseService = new AccuseServiceImpl();
+    }
+
     public static void main(String[] args) {
         new AccuseHandleSwing(8);
     }

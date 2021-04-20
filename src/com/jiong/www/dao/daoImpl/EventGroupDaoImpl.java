@@ -335,7 +335,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         ResultSet rs=null;
         try {
             conn = DbcpUtils.getConnection();
-            String sql ="SELECT `event_id`,`event_name`,`comment_num`,`likes_num`,`collection_num`,`create_time` \n" +
+            String sql ="SELECT `event_id`,`event_name`,`comment_num`,`likes_num`,`collection_num`,`publisher_id`,`create_time` \n" +
                     "FROM `event` WHERE `eventGroup_id` = ?";
             //联表查询
             ps = conn.prepareStatement(sql);
@@ -349,6 +349,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
                 event.setLikesNum(rs.getInt("likes_num"));
                 event.setCollectionNum(rs.getInt("collection_num"));
                 event.setCreateTime(rs.getDate("create_time"));
+                event.setPublisherId(rs.getInt("publisher_id"));
                 events.add(event);
             }
         } catch (SQLException e) {

@@ -45,4 +45,9 @@ public interface IEventDao {
      * @return 瓜信息
      * */
     List<Event> doView(List<Integer> list);
+    /**查看瓜名
+     * @param eventId 瓜id
+     * @return 瓜名
+     * */
+    String queryName(int eventId);
 }

@@ -1,6 +1,7 @@
 package com.jiong.www.po;
 
 
+import java.io.InputStream;
 import java.sql.Date;
 
 /**
@@ -15,8 +16,9 @@ public class User {
     private String loginPassword;
     /** 用户邮箱*/
     private String userEmail;
-    /** 用户头像的地址*/
-    private String icon;
+
+    /** 用户头像*/
+    private byte[]  icon;
     /** 用户昵称*/
     private String userNickname;
     /** 用户性别 0为女，1为男,默认数据库为2，即用户没有选择 */
@@ -31,6 +33,18 @@ public class User {
     /**是否记住密码
      默认0不记住，1则记住*/
     private int isRememberPassword;
+
+    public User() {
+    }
+
+    public byte[] getIcon() {
+        return icon;
+    }
+
+    public void setIcon(byte[] icon) {
+        this.icon = icon;
+    }
+
 
 
     public int getUserId() {
@@ -71,14 +85,6 @@ public class User {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     public String getUserNickname() {

@@ -4,7 +4,9 @@ import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
 import com.jiong.www.util.DbcpUtils;
 import com.jiong.www.util.JdbcUtils;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 
+import static com.jiong.www.util.DbcpUtils.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -248,6 +250,19 @@ public class EventDaoImpl implements IEventDao {
         }
         //把查询的结果集返回到service层
         return eventList;
+    }
+    /**查看瓜名*/
+    @Override
+    public String queryName(int eventId) {
+        String eventName=null;
+        String sql="SELECT `event_name` AS eventName FROM `event` WHERE `event_id`=?";
+        try {
+            Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), eventId);
+            eventName=query.getEventName();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return eventName;
     }
 
 }

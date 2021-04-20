@@ -3,12 +3,11 @@ package com.jiong.www.dao.daoImpl;
 import com.jiong.www.dao.dao.IAccuseDao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
-import com.jiong.www.util.DbcpUtils;
-import com.jiong.www.util.JdbcUtils;
+import org.apache.commons.dbutils.handlers.BeanHandler;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import static com.jiong.www.util.DbcpUtils.*;
+
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,26 +21,12 @@ public class AccuseDaoImpl implements IAccuseDao {
     @Override
     public int doAccuse(Accuse accuse)  {
         int row = 0;
-        Connection conn = null;
-        PreparedStatement ps =null;
+        Object[] params={accuse.getEventId(),accuse.getAccusedUserId(),accuse.getAccusedContent()};
+        String sql ="INSERT INTO `accusation` (`accused_event_id`,`accuse_user_id`,`accused_content`) VALUES(?,?,?)";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql ="INSERT INTO `accusation` (`accused_event_id`,`accuse_user_id`,`accused_content`) VALUES(?,?,?)";
-            //联表查询
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,accuse.getEventId());
-            ps.setInt(2,accuse.getAccusedUserId());
-            ps.setString(3,accuse.getAccusedContent());
-            row = ps.executeUpdate();
-
+            row=queryRunner.execute(sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return row;
     }
@@ -49,30 +34,14 @@ public class AccuseDaoImpl implements IAccuseDao {
     @Override
     public List<Accuse> findAll(List<Event> eventList){
         List<Accuse> accuses = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement ps = null;
-        try {
-            conn = DbcpUtils.getConnection();
-            for(Event event : eventList){
-                String sql="SELECT `accused_content`,`create_time` ,`accuse_user_id`\n" +
-                        "FROM `accusation` WHERE `accused_event_id`= ?";
-                ps = conn.prepareStatement(sql);
-                ps.setInt(1,event.getEventId());
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()){
-                    Accuse accuse = new Accuse();
-                    accuse.setAccusedContent(rs.getString("accused_content"));
-                    accuse.setAccuseTime(rs.getTimestamp("create_time"));
-                    accuse.setAccusedEventName(event.getEventName());
-                    accuse.setAccusedUserId(rs.getInt("accuse_user_id"));
-                    accuses.add(accuse);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
+        for(Event event:eventList){
+            String sql="SELECT `accused_content` AS accusedContent,`create_time` AS accuseTime,`accuse_user_id` AS accusedUserId," +
+                    "`accused_event_id` AS eventId FROM `accusation`  WHERE `accused_event_id`= ?";
             try {
-                DbcpUtils.release(conn,ps,null);
+                Accuse query = queryRunner.query(sql, new BeanHandler<>(Accuse.class), event.getEventId());
+                if(query!=null){
+                    accuses.add(query);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -83,50 +52,25 @@ public class AccuseDaoImpl implements IAccuseDao {
 
     @Override
     public void doClear(int eventId) {
-        Connection conn = null;
-        PreparedStatement ps = null;
+        String sql="DELETE FROM `accusation` WHERE `accused_event_id`= ? ";
+        //清空所有举报
         try {
-            conn = DbcpUtils.getConnection();
-            String sql="DELETE FROM `accusation` WHERE `accused_event_id`= ? ";
-            //清空所有评论
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,eventId);
-            ps.executeUpdate();
+            queryRunner.execute(sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            //释放连接
         }
     }
 
     /**删除举报*/
     @Override
     public void doDelete(Accuse accuse)  {
-        Connection conn = null;
-        PreparedStatement ps = null;
+        Object[] params={accuse.getEventId(),accuse.getAccusedContent()};
+        String sql ="DELETE FROM `accusation` WHERE `accused_event_id`= ? AND`accused_content`=? ";
         try {
-            conn = DbcpUtils.getConnection();
-            String sql ="DELETE FROM `accusation` WHERE `accused_event_id`= ? AND`accused_content`=? ";
-            //联表查询
-            ps = conn.prepareStatement(sql);
-            ps.setInt(1,accuse.getEventId());
-            ps.setString(2,accuse.getAccusedContent());
-            ps.executeUpdate();
+            queryRunner.execute(sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
-            try {
-                DbcpUtils.release(conn,ps,null);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-
     }
 
 

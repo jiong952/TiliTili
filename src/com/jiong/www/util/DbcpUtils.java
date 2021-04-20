@@ -2,7 +2,9 @@ package com.jiong.www.util;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbcp2.BasicDataSourceFactory;
+import org.apache.commons.dbutils.QueryRunner;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -29,7 +31,7 @@ public class DbcpUtils {
     public static Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
-
+    public static QueryRunner queryRunner = new QueryRunner(dataSource);
     /**释放连接*/
     public static void release(Connection conn, PreparedStatement ps, ResultSet rs) throws SQLException {
         if(rs!=null){

@@ -20,6 +20,7 @@ public class CollectdEventSwing {
     int userId;
     String eventGroupName;
     static final int DOUBLE_CLICK = 2;
+    DefaultListModel<String> listModel;
     public CollectdEventSwing(int userId, String eventGroupName) {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
@@ -57,9 +58,12 @@ public class CollectdEventSwing {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介) 双击是进入
             if(!list.getValueIsAdjusting()){
-                Event event = iEventService.doView(list.getSelectedValue());
-                list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
-                        +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
+                Event event;
+                if(list.getSelectedIndex()>0){
+                    event= iEventService.doView(list.getSelectedValue());
+                    list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
+                            +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
+                }
             }
         });
         list.addMouseListener(new MouseAdapter() {
@@ -73,7 +77,7 @@ public class CollectdEventSwing {
                 }
             }
         });
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel = new DefaultListModel<>();
         List<Event> events = iCollectionService.findAll(userId);
         for (int i = 0; i < events.size(); i++) {
             listModel.add(i,events.get(i).getEventName());
