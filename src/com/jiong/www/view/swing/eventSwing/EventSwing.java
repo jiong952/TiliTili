@@ -5,6 +5,7 @@ import com.jiong.www.po.Event;
 import com.jiong.www.service.service.*;
 import com.jiong.www.service.serviceImpl.*;
 import com.jiong.www.util.EventPagingUtils;
+import com.jiong.www.view.swing.commentSwing.ViewCommentSwing;
 import com.jiong.www.view.swing.eventGroupSwing.GroupSwing;
 import com.jiong.www.view.swing.eventGroupSwing.GroupsSwing;
 import com.jiong.www.view.swing.MenuSwing;
@@ -13,6 +14,8 @@ import com.jiong.www.view.swing.accuseSwing.AccuseSwing;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -237,6 +240,8 @@ public class EventSwing {
         last.setActionCommand("尾页");
         jPanel.add(last);
 
+
+
         //表头
         String[] columnNames = {"评论人","评论内容","评论时间"};
         //查询瓜的所有评论
@@ -304,6 +309,18 @@ public class EventSwing {
                 commentNumber.setText(String.valueOf(iEventService.doView(eventName).getCommentNum()));
             }
         });
+
+
+        JButton view = new JButton("查看详情");
+        view.setBounds(700,575,100,30);
+        view.addActionListener(e -> {
+            if(table.getSelectedRow()<0){
+                JOptionPane.showMessageDialog(null,"请先单击选择要查看的评论!","错误",JOptionPane.ERROR_MESSAGE);
+            }else {
+                new ViewCommentSwing(comments.get(((eventPagingUtils.getCurrentPage()-1)*PAGE_SIZE+table.getSelectedRow())).getCommentId());
+            }
+        });
+        jPanel.add(view);
 
         //删除评论+清空评论
         JButton deleteComment= new JButton("删除评论");

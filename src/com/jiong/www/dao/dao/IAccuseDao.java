@@ -30,5 +30,9 @@ public interface IAccuseDao {
      * @param accuse 传入要删除举报信息的accuse对象
      * */
     void doDelete(Accuse accuse) ;
-
+    /**查看用户是否已经举报
+     * @param accuse 举报信息
+     * @return 判断存在
+     * */
+    int verifyExist(Accuse accuse);
 }

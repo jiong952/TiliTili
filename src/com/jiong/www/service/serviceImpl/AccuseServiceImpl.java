@@ -69,4 +69,21 @@ public class AccuseServiceImpl implements IAccuseService {
         }
         return rowData;
     }
+
+    /**
+     * 查看用户是否举报过该瓜
+     *
+     * @param eventId 瓜id
+     * @param userId  用户id
+     * @return 判断是否存在
+     */
+    @Override
+    public int verifyExist(int eventId, int userId) {
+        int judge;
+        Accuse accuse = new Accuse();
+        accuse.setEventId(eventId);
+        accuse.setAccusedUserId(userId);
+        judge=iAccuseDao.verifyExist(accuse);
+        return judge;
+    }
 }

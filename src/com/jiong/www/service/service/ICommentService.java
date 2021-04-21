@@ -40,4 +40,10 @@ public interface ICommentService {
      * @param eventPagingUtils 分页
      * @return 返回处理完的评论信息*/
     List<Comment> doRefresh (List<Comment> comments,DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils);
+    /**查看一条评论的信息
+     * @param commentId 评论id
+     * @return 评论信息
+     * */
+    Comment doView(int commentId);
+
 }

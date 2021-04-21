@@ -44,4 +44,9 @@ public interface ICommentDao {
      * @param  eventId 瓜id
      * @return 所有评论信息*/
     List<Comment> findAll(int eventId);
+    /**查看某一评论的信息
+     * @param commentId 评论id
+     * @return 评论信息
+     * */
+    Comment doView(int commentId);
 }

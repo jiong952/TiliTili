@@ -129,5 +129,19 @@ public class CommentServiceImpl implements ICommentService {
         return comments;
     }
 
+    /**
+     * 查看一条评论的信息
+     *
+     * @param commentId 评论id
+     * @return 评论信息
+     */
+    @Override
+    public Comment doView(int commentId) {
+        Comment comment;
+        comment=iCommentDao.doView(commentId);
+        comment.setCommenterName(new UserDaoImpl().queryUserInformation(comment.getCommenterId()).getLoginName());
+        return comment;
+    }
+
 
 }

@@ -31,4 +31,10 @@ public interface IAccuseService {
      * @return 返回列表信息
      * */
     Object[][] doRefresh(int userId);
+    /**查看用户是否举报过该瓜
+     * @param eventId 瓜id
+     * @param userId 用户id
+     * @return 判断是否存在
+     * */
+    int verifyExist(int eventId, int userId);
 }

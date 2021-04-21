@@ -88,7 +88,7 @@ public class CommentDaoImpl implements ICommentDao {
         }
     }
 
-    /**查看瓜的评论,也要返回评论人名*/
+    /**查看瓜的评论*/
     @Override
     public List<Comment> findAll(int eventId){
         List<Comment> comments = new ArrayList<>();
@@ -103,5 +103,23 @@ public class CommentDaoImpl implements ICommentDao {
         }
         return comments;
 
+    }
+
+    /**
+     * 查看某一评论的信息
+     *
+     * @param commentId 评论id
+     * @return 评论信息
+     */
+    @Override
+    public Comment doView(int commentId) {
+        Comment query=new Comment();
+        String sql ="SELECT `comment_content` AS commentContent,`user_id` AS commenterId,`create_time` AS commentTime FROM `comment`WHERE`id`=?";
+        try {
+            query = queryRunner.query(sql, new BeanHandler<>(Comment.class), commentId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return query;
     }
 }

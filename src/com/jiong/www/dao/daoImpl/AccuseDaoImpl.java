@@ -5,6 +5,7 @@ import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import static com.jiong.www.util.DbcpUtils.*;
 
@@ -51,7 +52,7 @@ public class AccuseDaoImpl implements IAccuseDao {
         //把查询的结果集返回到service层
         return accuses;
     }
-
+    /**清空所有举报*/
     @Override
     public void doClear(Connection conn, int eventId) {
         String sql="DELETE FROM `accusation` WHERE `accused_event_id`= ? ";
@@ -62,7 +63,6 @@ public class AccuseDaoImpl implements IAccuseDao {
             e.printStackTrace();
         }
     }
-
     /**删除举报*/
     @Override
     public void doDelete(Accuse accuse)  {
@@ -73,6 +73,23 @@ public class AccuseDaoImpl implements IAccuseDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    /**查看用户是否已经举报*/
+    @Override
+    public int verifyExist(Accuse accuse) {
+        int judge=0;
+        Object[] params={accuse.getEventId(),accuse.getAccusedUserId()};
+        String sql="SELECT `id` FROM `accusation` WHERE `accused_event_id`= ? AND `accuse_user_id` = ?";
+        try {
+            Object query = queryRunner.query(sql, new ScalarHandler<>(), params);
+            if(query!=null){
+                judge=1;
+                //已经举报过
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return judge;
     }
 
 
