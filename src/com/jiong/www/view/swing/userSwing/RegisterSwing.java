@@ -122,10 +122,11 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
 
         if(isSuperAdmin==1){
             //区分界面
+            username.setBounds(125,150,100,20);
             username.setText("管理员名");
             jLabel1.setText("管理员名已存在!");
             registerButton.setText("添加管理员");
-            registerButton.setBounds(100,350,120,20);
+            registerButton.setBounds(80,350,100,20);
         }
         register.setVisible(true);
     }

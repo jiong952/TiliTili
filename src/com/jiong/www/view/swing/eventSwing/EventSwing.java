@@ -23,10 +23,12 @@ public class EventSwing {
     int userId;
     String eventName;
     int eventId;
+    int roleId;
     String eventGroupName;
     List<Comment> comments;
     DefaultTableModel defaultTableModel;
     CommentPagingUtils commentPagingUtils;
+    static final int  USER = 1;
     static final int  ADMIN = 2;
     static final int  SUPER_ADMIN = 4;
     static final int  VISITOR = 3;
@@ -37,7 +39,6 @@ public class EventSwing {
         this.eventId=eventId;
         this.eventGroupName=eventGroupName;
 
-        IUserService iUserService = new UserServiceImpl();
         IEventGroupService iEventGroupService = new EventGroupServiceImpl();
         IEventService iEventService = new EventServiceImpl();
         ILikesService iLikesService = new LikesServiceImpl();
@@ -327,8 +328,7 @@ public class EventSwing {
             if(table.getSelectedRow()<0){
                 JOptionPane.showMessageDialog(null,"请先单击选择要删除的评论!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-            int judge4 = iUserService.queryRole(userId);
-            if(judge4 ==1){
+            if(roleId ==USER){
                 //吃瓜群众
                 if(userId==comments.get(table.getSelectedRow()).getCommenterId()){
                     //由第一页的相应行数推得删除行的实际行数
@@ -344,10 +344,10 @@ public class EventSwing {
                 }else {
                     JOptionPane.showMessageDialog(null,"您没有权限","错误",JOptionPane.ERROR_MESSAGE);
                 }
-            }else if(judge4 ==2){
+            }else if(roleId ==ADMIN||roleId==SUPER_ADMIN){
                 //管理员
                 int judge5 = iEventGroupService.isAdmin(userId, eventGroupName);
-                if(judge5 ==1){
+                if(judge5 ==1||roleId==SUPER_ADMIN){
                     iCommentService.cancelComment(comments.get(table.getSelectedRow()).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功！");
                     //重新设置数据源重新分页
@@ -369,14 +369,17 @@ public class EventSwing {
         clearComment.setBounds(850,637,90,30);
         clearComment.addActionListener(e -> {
             int judge6 = iEventGroupService.isAdmin(userId, eventGroupName);
-            if(judge6 ==1){
-                //是管理员管理的
-                iCommentService.clearAll(eventId);
-                JOptionPane.showMessageDialog(null,"删除成功！");
-                //重新设置数据源
-                defaultTableModel.setDataVector(null,columnNames);
-                //重新设置评论数
-                commentNumber.setText(String.valueOf(iEventService.find(eventName).getCommentNum()));
+            if(judge6 ==1||roleId==SUPER_ADMIN){
+                int confirm = JOptionPane.showConfirmDialog(null, "您确定要清空评论吗？", "确认", JOptionPane.YES_NO_OPTION);
+                if(confirm==JOptionPane.YES_OPTION){
+                    //是管理员管理的
+                    iCommentService.clearAll(eventId);
+                    JOptionPane.showMessageDialog(null,"删除成功！");
+                    //重新设置数据源
+                    defaultTableModel.setDataVector(null,columnNames);
+                    //重新设置评论数
+                    commentNumber.setText(String.valueOf(iEventService.find(eventName).getCommentNum()));
+                }
             }else {
                 JOptionPane.showMessageDialog(null,"这不是您管理的瓜圈","错误",JOptionPane.ERROR_MESSAGE);
             }
@@ -388,7 +391,7 @@ public class EventSwing {
         delete.addActionListener(e -> {
             int judge0 = iEventGroupService.isAdmin(userId, eventGroupName);
             //判断是不是该管理员管理的瓜圈
-            if (judge0 == 1) {
+            if (judge0 == 1||roleId==SUPER_ADMIN) {
                 //是
                 int judge12 = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if (judge12 == 0) {
@@ -409,7 +412,7 @@ public class EventSwing {
         jPanel.add(delete);
 
         //清空评论只有在管理员时显示
-        int roleId = new UserServiceImpl().queryRole(userId);
+        roleId = new UserServiceImpl().queryRole(userId);
         if(roleId==ADMIN||roleId==SUPER_ADMIN){
             clearComment.setVisible(true);
             delete.setVisible(true);

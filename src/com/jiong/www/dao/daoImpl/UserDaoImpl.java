@@ -27,7 +27,7 @@ public class UserDaoImpl implements IUserDao {
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
         Object[] params= {user.getLoginName(), user.getLoginPassword(),user.getLoginName()};
         try {
-            row = queryRunner.execute(conn,sql, params);
+            row=queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DaoException("注册异常",e);
@@ -52,11 +52,13 @@ public class UserDaoImpl implements IUserDao {
     /**用用户名查用户id*/
     @Override
     public int queryId(String userName)  {
-        int userId;
+        int userId=0;
         String sql ="SELECT `user_id` AS userId FROM `user` WHERE `login_name`=?";
         try {
             User user = queryRunner.query(sql, new BeanHandler<>(User.class), userName);
-            userId=user.getUserId();
+            if(user!=null){
+                userId=user.getUserId();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DaoException("用用户名查用户id异常",e);

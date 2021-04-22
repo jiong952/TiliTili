@@ -14,6 +14,8 @@ import com.jiong.www.view.swing.userSwing.PasswordSwing;
 import com.jiong.www.view.swing.userSwing.RegisterSwing;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * @author Mono
@@ -107,11 +109,24 @@ public class MenuSwing {
         accuseHandle.addActionListener(e -> new AccuseHandleSwing(userId));
         handle.add(accuseHandle);
 
+        //管理员账号管理
+        JMenu admin = new JMenu("管理员");
+        admin.setVisible(false);
+        JMenuItem create = new JMenuItem("添加管理员");
+        create.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RegisterSwing(1);
+            }
+        });
+        admin.add(create);
+
         menuBar.add(status);
         menuBar.add(information);
         menuBar.add(event);
         menuBar.add(viewCollection);
         menuBar.add(handle);
+        menuBar.add(admin);
 
         int roleId = new UserServiceImpl().queryRole(userId);
 
@@ -124,6 +139,9 @@ public class MenuSwing {
             information.setVisible(false);
             event.setVisible(false);
             viewCollection.setVisible(false);
+        }
+        if(roleId==SUPER_ADMIN){
+            admin.setVisible(true);
         }
         jFrame.setJMenuBar(menuBar);
     }

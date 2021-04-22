@@ -30,25 +30,13 @@ public class UserServiceImpl implements IUserService {
         User user = new User();
         user.setLoginName(loginName);
         user.setLoginPassword(loginPassword);
-        Connection conn = null;
-        try {
-            conn = getConnection();
-            conn.setAutoCommit(false);
-            //注册，添加信息到用户表
-            row = iUserDao.register(conn,user);
-            //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
-            iUserDao.insertToRole(conn,iUserDao.queryId(user.getLoginName()),roleId);
-            conn.commit();
-        } catch (SQLException e) {
-            try {
-                conn.rollback();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                throw new ServiceException("数据回滚异常",e);
-            }
-            e.printStackTrace();
-            throw new ServiceException("注册异常",e);
-        }
+        Connection conn ;
+        conn = getConnection();
+        //注册，添加信息到用户表
+        row = iUserDao.register(conn,user);
+        int userId = iUserDao.queryId(user.getLoginName());
+        //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
+        iUserDao.insertToRole(conn, userId,roleId);
         return row;
     }
     /**用于注册时验证该用户名是否存在*/
