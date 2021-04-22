@@ -1,15 +1,6 @@
 package com.jiong.www.test;
 
-import com.jiong.www.util.ImageUtils;
-import com.jiong.www.util.JdbcUtils;
 
-import javax.swing.filechooser.FileSystemView;
-import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 
 public class Main {
     public static void main(String[] args) {

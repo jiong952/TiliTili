@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.*;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 public class MyDataSource implements DataSource {
     private final LinkedList<Connection> pool = new LinkedList<>();
 
-    public MyDataSource(String driver,String url,String name,String pwd,int poolSize){
+    public MyDataSource(String driver, String url, String name, String pwd, int poolSize){
 
         try{
 

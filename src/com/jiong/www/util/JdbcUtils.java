@@ -1,26 +1,50 @@
 package com.jiong.www.util;
 
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.*;
+import java.util.Properties;
 
 /**
  * @author Mono
  */
 public class JdbcUtils {
+    private static String driverClassName;
+    private static String url;
+    private static String username;
+    private static String password;
 
     //加载驱动,放在static里，静态加载
     static {
+        ClassLoader classLoader = JdbcUtils.class.getClassLoader();
+        URL resource = classLoader.getResource("ds.properties");
+        assert resource != null;
+        String path = resource.getPath();
+        Properties properties = new Properties();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            properties.load(new FileReader(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("属性文件加载异常");
+        }
+        driverClassName = properties.getProperty("driverClassName");
+        url = properties.getProperty("url");
+        username = properties.getProperty("username");
+        password = properties.getProperty("password");
+        try {
+            Class.forName(driverClassName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     /**使用用户信息和url进行数据库连接*/
-    static String url ="jdbc:mysql://localhost:3306/tilitili?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC";
+
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url,"root","123456");
+        return DriverManager.getConnection(url,username,password);
     }
 
     /**释放连接*/

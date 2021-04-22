@@ -3,24 +3,33 @@ package com.jiong.www.util;
 import org.apache.commons.dbutils.QueryRunner;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * @author Mono
  */
 public class MyDsUtils {
-    private static DataSource dataSource;
-
-    private static ThreadLocal<Connection> thread = new ThreadLocal<>();
-
+    private static final DataSource dataSource;
     static{
-
-        dataSource = new MyDataSource("com.mysql.cj.jdbc.Driver",
-
-                        "jdbc:mysql://localhost:3306/tilitili?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC",
-
-                        "root","123456",3);
+        InputStream in = MyDsUtils.class.getClassLoader().getResourceAsStream("ds.properties");
+        Properties properties = new Properties();
+        try {
+            properties.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("属性文件加载异常");
+        }
+        String driverClassName = properties.getProperty("driverClassName");
+        String url = properties.getProperty("url");
+        String username = properties.getProperty("username");
+        String password = properties.getProperty("password");
+        String poolSizeString = properties.getProperty("poolSize");
+        int poolSize=Integer.parseInt(poolSizeString);
+        dataSource = new MyDataSource(driverClassName, url, username,password,poolSize);
 
     }
 
@@ -48,13 +57,7 @@ public class MyDsUtils {
 
     }
 
-
-
-    /**
-
-     * 获取一个DataSource
-
-     */
+    /**获取一个DataSource*/
 
     public static DataSource getDataSource(){
 
