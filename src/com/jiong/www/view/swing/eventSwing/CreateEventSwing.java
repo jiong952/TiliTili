@@ -80,16 +80,16 @@ public class CreateEventSwing {
             if(eventGroupName ==null){
                 //从菜单栏跳转，需要填写瓜圈名
                 String groupName = groupField.getText();
-                int judge0 = iEventGroupService.verifyExist(groupName);
+                int judge0 = iEventGroupService.isExist(groupName);
                 if(judge0==1){
                     //存在该瓜圈
-                    int judge2 = iEventService.verifyExist(eventNameField.getText());
+                    int judge2 = iEventService.isExist(eventNameField.getText());
                     if(judge2==1){
                         //这个瓜已经存在
                         JOptionPane.showMessageDialog(null,"这个瓜已存在!","错误",JOptionPane.ERROR_MESSAGE);
                     }else {
-                        EventGroup eventGroup = iEventGroupService.viewEventGroup(groupName);
-                        int judge = iEventService.doCreate(userId, eventGroup.getEventGroupId(), eventNameField.getText(), eventContentArea.getText());
+                        EventGroup eventGroup = iEventGroupService.find(groupName);
+                        int judge = iEventService.create(userId, eventGroup.getEventGroupId(), eventNameField.getText(), eventContentArea.getText());
                         if(judge==1){
                             JOptionPane.showMessageDialog(null,"创建成功！");
                         }
@@ -100,8 +100,8 @@ public class CreateEventSwing {
 
             }
             else {
-                EventGroup eventGroup = iEventGroupService.viewEventGroup(eventGroupName);
-                int judge = iEventService.doCreate(userId, eventGroup.getEventGroupId(), eventNameField.getText(), eventContentArea.getText());
+                EventGroup eventGroup = iEventGroupService.find(eventGroupName);
+                int judge = iEventService.create(userId, eventGroup.getEventGroupId(), eventNameField.getText(), eventContentArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }

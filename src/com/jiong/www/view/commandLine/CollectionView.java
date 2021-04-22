@@ -11,15 +11,15 @@ public class CollectionView {
     CollectionServiceImpl collectionServiceImpl = new CollectionServiceImpl();
     //收藏,同时更新收藏表
     public void collection(int userId,int eventId){
-        collectionServiceImpl.doCollect(userId,eventId);
+        collectionServiceImpl.collect(userId,eventId);
     }
     //取消收藏,同时删除用户收藏表中的相关数据
     public void cancelCollection(int userId,int eventId){
-        collectionServiceImpl.doCancelCollect(userId,eventId);
+        collectionServiceImpl.cancelCollect(userId,eventId);
     }
     //查看用户是否点赞
     public void collectionIfOrNot(int userId,int eventId){
-        int judge = collectionServiceImpl.queryCollect(userId, eventId);
+        int judge = collectionServiceImpl.isCollect(userId, eventId);
         if(judge==1){
             System.out.println("收藏");
         }else {

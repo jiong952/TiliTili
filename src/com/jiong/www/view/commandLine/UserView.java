@@ -17,7 +17,7 @@ public class UserView {
         while (!flag){
             System.out.println("请输入新用户名：");
             String loginName = scanner.next();
-            int judge = userServiceImpl.verifyUsername(loginName);
+            int judge = userServiceImpl.isExist(loginName);
             if(judge==0){
                 //judge为0不存在,为1存在
                 System.out.println("请输入新密码：");
@@ -62,7 +62,7 @@ public class UserView {
     //验证身份
     public int verifyRole(int userId){
         int row;
-        row= userServiceImpl.verifyRole(userId);
+        row= userServiceImpl.queryRole(userId);
         return row;
         //row为1是普通用户,2是管理员,3是游客,4是超管
     }
@@ -125,7 +125,7 @@ public class UserView {
                     System.out.println("请输入旧密码:");
                     String userOldPassword;
                     userOldPassword=scanner.nextLine();
-                    int row1= userServiceImpl.verifyPassword(userOldPassword,userId);
+                    int row1= userServiceImpl.queryPwd(userOldPassword,userId);
                     //用于判断密码修改是否正确
                     if(row1>0){
                         boolean flag=false;
@@ -152,7 +152,7 @@ public class UserView {
                         //确认密码功能，防止错误输入
                         if(flag){
                             int row2;
-                            row2= userServiceImpl.changePassword(userNewPassword,userId);
+                            row2= userServiceImpl.changePwd(userNewPassword,userId);
                             if(row2>0){
                                 System.out.println("修改密码成功！");
                             }else {
@@ -168,7 +168,7 @@ public class UserView {
                     }
                     break;
                 case 8:
-                    int row = userServiceImpl.perfectInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday);
+                    int row = userServiceImpl.updateInformation(userEmail,userNickName,userGender,userDescription,userId, userBirthday);
                     if(row>0){
                         System.out.println("保存成功!");
                     }else {
@@ -188,7 +188,7 @@ public class UserView {
     //查询用户的个人信息
     public void queryUserInformation(int userId){
         User userQuery = new User();
-        userQuery= userServiceImpl.queryUserInformation(userId);
+        userQuery= userServiceImpl.queryInformation(userId);
         System.out.println("用户名：" + userQuery.getLoginName());
         System.out.println("邮箱：" + userQuery.getUserEmail());
         System.out.println("昵称：" + userQuery.getUserNickname());

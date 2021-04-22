@@ -14,7 +14,7 @@ public interface IAccuseService {
      * @param accusedContent 举报内容
      * @return 举报成功的判断
      * */
-    int doAccuse(int eventId, int userId, String accusedContent);
+    int accuse(int eventId, int userId, String accusedContent);
     /**
      * 管理员查看自己管理瓜圈的举报情况
      * @param userId 管理员的id
@@ -25,16 +25,16 @@ public interface IAccuseService {
      * @param eventId 被举报的瓜id
      * @param accusedContent 举报内容
      * */
-    void doDelete(int eventId, String accusedContent);
+    void delete(int eventId, String accusedContent);
     /**刷新列表信息
      * @param userId 管理员id
      * @return 返回列表信息
      * */
-    Object[][] doRefresh(int userId);
+    Object[][] refresh(int userId);
     /**查看用户是否举报过该瓜
      * @param eventId 瓜id
      * @param userId 用户id
      * @return 判断是否存在
      * */
-    int verifyExist(int eventId, int userId);
+    int isAccuse(int eventId, int userId);
 }

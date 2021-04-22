@@ -24,7 +24,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
 
     /**创建瓜圈,添加瓜圈信息到瓜圈表*/
     @Override
-    public int doCreate(Connection conn, EventGroup eventGroup) {
+    public int create(Connection conn, EventGroup eventGroup) {
         int row;
         Object[] params ={eventGroup.getName(),eventGroup.getEventGroupDescription()};
         String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
@@ -40,7 +40,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**把瓜圈和管理员联系起来*/
     @Override
-    public void groupOfAdmin(Connection conn,int userId, EventGroup eventGroup){
+    public void insertToAdmin(Connection conn, int userId, EventGroup eventGroup){
         Object[] params={userId,eventGroup.getName()};
         String sql ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
         try {
@@ -52,7 +52,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**验证瓜圈名是否存在,避免发生重复*/
     @Override
-    public int verifyExist(String eventGroupName) {
+    public int isExist(String eventGroupName) {
         int row=0;
         String sql="SELECT `eventGroup_id` AS eventGroupId FROM `eventgroup` WHERE `eventGroup_name`=?";
         try {
@@ -69,7 +69,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**验证是否是该管理员管理的瓜圈*/
     @Override
-    public int verifyOfAdmin(int userId, int eventGroupId) {
+    public int isAdmin(int userId, int eventGroupId) {
         int row=0;
         //0表示不是
         Object[] params ={userId,eventGroupId};
@@ -88,7 +88,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**删除瓜圈*/
     @Override
-    public int doDelete(Connection conn,String deleteEventGroupName)  {
+    public int delete(Connection conn, String deleteEventGroupName)  {
         int row;
         String sql ="DELETE FROM `eventgroup` WHERE `eventGroup_name`=?";
         try {
@@ -102,7 +102,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**删除在管理员表与瓜圈的数据*/
     @Override
-    public void doDeleteOfAdmin(Connection conn,int eventGroupId, int userId){
+    public void deleteFromAdmin(Connection conn, int eventGroupId, int userId){
         Object[] params={eventGroupId,userId};
         //删除瓜圈与管理员的关系
         String sql ="DELETE FROM `administrator`WHERE `administrator_id`=? AND `administrator_groupid`=?";
@@ -115,7 +115,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**用瓜圈名查该瓜圈信息*/
     @Override
-    public EventGroup viewEventGroup(String eventGroupName){
+    public EventGroup find(String eventGroupName){
         EventGroup eventGroup = new EventGroup();
         String sql ="SELECT `eventGroup_description` AS eventGroupDescription,`eventGroup_id` AS eventGroupId FROM `eventgroup` WHERE `eventGroup_name` = ?";
         try {
@@ -131,7 +131,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**用瓜圈id查瓜圈名*/
     @Override
-    public String viewEventGroup(int eventGroupId){
+    public String queryName(int eventGroupId){
         String eventGroupName=null;
         String sql ="SELECT `eventGroup_name`  AS name FROM `eventgroup` WHERE `eventGroup_id`=?";
         try {
@@ -148,7 +148,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**查看管理员管理的所有瓜圈的瓜圈id*/
     @Override
-    public List<Integer> viewAdminGroup(int userId){
+    public List<Integer> findAllOfAdmin(int userId){
         List<Integer> list;
         String sql = "SELECT `administrator_groupid` FROM `administrator` WHERE `administrator_id` = ?";
         try {
@@ -161,7 +161,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**用一组瓜圈id查该瓜圈里的所有瓜的瓜信息*/
     @Override
-    public List<Event> viewEventGroup(List<Integer> list){
+    public List<Event> findSome(List<Integer> list){
         List<Event> eventList = new ArrayList<>();
         for (Integer integer : list) {
             String sql = "SELECT `event_id` AS eventId,`event_name` AS name FROM `event` WHERE `eventGroup_id` = ?";
@@ -179,7 +179,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**查看系统所有瓜圈*/
     @Override
-    public List<EventGroup> viewAllEventGroup()  {
+    public List<EventGroup> findAll()  {
         List<EventGroup> eventGroups;
         String sql ="SELECT `eventGroup_name` AS name,`eventGroup_description` AS eventGroupDescription FROM `eventgroup`";
         try {
@@ -193,7 +193,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     }
     /**用瓜圈id查看瓜圈里的所有瓜信息*/
     @Override
-    public List<Event> viewEventOfEventGroup(int eventGroupId)  {
+    public List<Event> findAllFromGroup(int eventGroupId)  {
         List<Event> events;
         String sql ="SELECT `event_id` AS eventId,`event_name` AS name,`comment_num` AS commentNum,`likes_num` AS likesNum," +
                 "`collection_num` AS collectionNum,`publisher_id` AS publisherId,`create_time` AS createTime FROM `event` WHERE `eventGroup_id` = ?";

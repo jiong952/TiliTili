@@ -35,9 +35,9 @@ public class UserServiceImpl implements IUserService {
             conn = getConnection();
             conn.setAutoCommit(false);
             //注册，添加信息到用户表
-            row = iUserDao.doRegister(conn,user);
+            row = iUserDao.register(conn,user);
             //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
-            iUserDao.doInsertRole(conn,iUserDao.doQueryId(user.getLoginName()),roleId);
+            iUserDao.insertToRole(conn,iUserDao.queryId(user.getLoginName()),roleId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -53,15 +53,15 @@ public class UserServiceImpl implements IUserService {
     }
     /**用于注册时验证该用户名是否存在*/
     @Override
-    public int verifyUsername(String loginName){
+    public int isExist(String loginName){
         int row;
-        row= iUserDao.verifyExist(loginName);
+        row= iUserDao.isExist(loginName);
         return row;
         //0不存在，1存在
     }
     /**完善用户信息*/
     @Override
-    public int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday) {
+    public int updateInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday) {
         int row ;
         // 用于接收dao层的返回值
         //封装对象
@@ -72,7 +72,7 @@ public class UserServiceImpl implements IUserService {
         user.setUserDescription(userDescription);
         user.setUserBirthday(userBirthday);
         user.setUserId(userId);
-        row= iUserDao.perfectInformation(user);
+        row= iUserDao.updateInformation(user);
         //处理dao层的异常
         return row;
         //返回结果集
@@ -105,16 +105,16 @@ public class UserServiceImpl implements IUserService {
     }
     /**验证用户的身份，吃瓜群众1管理员2游客3超管4*/
     @Override
-    public int verifyRole(int userId){
+    public int queryRole(int userId){
         int roleId;
-        roleId= iUserDao.verifyRole(userId);
+        roleId= iUserDao.queryRole(userId);
         return roleId;
     }
     /**验证要修改的密码*/
     @Override
-    public int verifyPassword(String oldPassword, int userId){
+    public int queryPwd(String oldPassword, int userId){
         int row=0;
-        String realPassword=iUserDao.verifyPassword(userId);
+        String realPassword=iUserDao.queryPwd(userId);
         oldPassword=Md5Utils.toMd5(oldPassword);
         if(realPassword.equals(oldPassword)){
             //旧密码输入正确
@@ -125,22 +125,22 @@ public class UserServiceImpl implements IUserService {
     }
     /**修改密码*/
     @Override
-    public int changePassword(String newPassword, int userId){
+    public int changePwd(String newPassword, int userId){
         int row;
         User user = new User();
         //新密码加密
         newPassword=Md5Utils.toMd5(newPassword);
         user.setLoginPassword(newPassword);
         user.setUserId(userId);
-        row= iUserDao.changePassword(user);
+        row= iUserDao.changePwd(user);
         return row;
     }
     /**查询用户的个人信息*/
     @Override
-    public User queryUserInformation(int userId){
+    public User queryInformation(int userId){
         User userQuery;
         //用集合来存数据
-        userQuery= iUserDao.queryUserInformation(userId);
+        userQuery= iUserDao.queryInformation(userId);
         return userQuery;
     }
     /**查看是否记住密码，是的话，把密码返回*/

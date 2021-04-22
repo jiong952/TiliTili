@@ -59,13 +59,13 @@ public class CreateGroupSwing extends JFrame {
         JButton create = new JButton("创建");
         create.setBounds(50,350,60,20);
         create.addActionListener(e -> {
-            int judge0 = iEventGroupService.verifyExist(jTextField.getText());
+            int judge0 = iEventGroupService.isExist(jTextField.getText());
             if(judge0==1){
                 //瓜圈已存在
                 JOptionPane.showMessageDialog(null,"瓜圈已存在!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
                 //瓜圈不存在
-                int judge = iEventGroupService.doCreate(userId, jTextField.getText(), jTextArea.getText());
+                int judge = iEventGroupService.create(userId, jTextField.getText(), jTextArea.getText());
                 if(judge==1){
                     JOptionPane.showMessageDialog(null,"创建成功！");
                 }

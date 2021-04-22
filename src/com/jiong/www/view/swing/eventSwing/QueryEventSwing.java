@@ -3,7 +3,6 @@ package com.jiong.www.view.swing.eventSwing;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.view.swing.eventSwing.EventSwing;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,9 +51,9 @@ public class QueryEventSwing extends JFrame{
             if("".equals(eventName)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = iEventService.verifyExist(eventName);
+                int judge = iEventService.isExist(eventName);
                 //验证瓜名是否存在
-                Event event1 = iEventService.doView(eventName);
+                Event event1 = iEventService.find(eventName);
                 if(judge==1){
                     //存在
                     jFrame.dispose();

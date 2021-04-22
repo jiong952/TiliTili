@@ -19,7 +19,7 @@ public class EventGroupView {
             String eventGroupName=scanner.nextLine();
             //验证瓜圈名
             int judge;
-            judge = eventGroupServiceImpl.verifyExist(eventGroupName);
+            judge = eventGroupServiceImpl.isExist(eventGroupName);
             if(judge==0)
             //judge==0表示瓜圈名不存在
             {
@@ -35,7 +35,7 @@ public class EventGroupView {
                 }
                 //把list--stringBuilder--string
                 String eventGroupDescription = stringBuilder.toString();
-                int row= eventGroupServiceImpl.doCreate(userId,eventGroupName,eventGroupDescription);
+                int row= eventGroupServiceImpl.create(userId,eventGroupName,eventGroupDescription);
                 //创建瓜圈
                 if(row>0){
                     System.out.println("创建成功！");
@@ -62,13 +62,13 @@ public class EventGroupView {
             //验证瓜圈名
             int judge;
             int judge1;
-            judge = eventGroupServiceImpl.verifyExist(deleteEventGroupName);
+            judge = eventGroupServiceImpl.isExist(deleteEventGroupName);
             if(judge==1){
-                judge1= eventGroupServiceImpl.verifyOfAdmin(userId,deleteEventGroupName);
+                judge1= eventGroupServiceImpl.isAdmin(userId,deleteEventGroupName);
                 if(judge1==1){
                     //judge1==1表示是该管理员管理的瓜圈，可以删除
                     //删除
-                    int row= eventGroupServiceImpl.doDelete(deleteEventGroupName,userId);
+                    int row= eventGroupServiceImpl.delete(deleteEventGroupName,userId);
                     //row用于接收service传来的结果
                     if(row>0){
                         System.out.println("删除成功！");
@@ -96,7 +96,7 @@ public class EventGroupView {
     //查看瓜圈,查看同时显示瓜圈里的所有瓜
     public void viewEventOfEventGroup(String eventGroupName){
         List<Event> events ;
-        events = eventGroupServiceImpl.viewEventOfEventGroup(eventGroupName);
+        events = eventGroupServiceImpl.findAllFromGroup(eventGroupName);
         System.out.println("所有瓜");
         for (int i = 0; i < events.size(); i++) {
             Event event;
@@ -109,7 +109,7 @@ public class EventGroupView {
     }
     //查看瓜圈的简介
     public void viewEventGroup(String eventGroupName) {
-        System.out.println(eventGroupServiceImpl.viewEventGroup(eventGroupName));
+        System.out.println(eventGroupServiceImpl.find(eventGroupName));
     }
     // 要把瓜的相应评论输出
     public void viewAllEventGroup(){

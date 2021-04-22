@@ -17,14 +17,14 @@ public interface IEventGroupService {
      * @param eventGroupDescription 瓜圈描述
      * @return 判断成功
      */
-    int doCreate(int userId, String eventGroupName, String eventGroupDescription);
+    int create(int userId, String eventGroupName, String eventGroupDescription);
 
     /**
      * 验证瓜圈名是否存在
      * @param eventGroupName 瓜圈名
      * @return 判断成功
      */
-    int verifyExist(String eventGroupName);
+    int isExist(String eventGroupName);
 
     /**
      * 验证是否是该管理员管理的瓜圈
@@ -32,7 +32,7 @@ public interface IEventGroupService {
      * @param eventGroupName 瓜圈名
      * @return 判断是否是所管理的
      */
-    int verifyOfAdmin(int userId, String eventGroupName);
+    int isAdmin(int userId, String eventGroupName);
 
     /**
      * 删除瓜圈，同时在管理员所管理的数据删除关系，删除瓜圈里的瓜
@@ -40,7 +40,7 @@ public interface IEventGroupService {
      * @param userId 瓜圈管理员id
      * @return 判断成功
      */
-    int doDelete(String deleteEventGroupName, int userId);
+    int delete(String deleteEventGroupName, int userId);
 
     /**
      * 查看所有瓜圈
@@ -53,31 +53,31 @@ public interface IEventGroupService {
      * @param eventGroupName 瓜圈名
      * @return 瓜圈信息
      */
-    EventGroup viewEventGroup(String eventGroupName);
+    EventGroup find(String eventGroupName);
 
     /**
      * 用瓜圈名查看瓜圈里的所有瓜
      * @param eventGroupName 瓜圈名
      * @return 所有的瓜圈信息
      */
-    List<Event> viewEventOfEventGroup(String eventGroupName);
+    List<Event> findAllFromGroup(String eventGroupName);
     /**瓜网的第一页的数据处理
      * @param pageSize 每一页的展示数目
      * @param listModel 传入数据源
      * @param eventGroups 获得瓜圈的信息
      */
-    void doDataProcess(int pageSize,DefaultListModel<String> listModel,List<EventGroup> eventGroups);
+    void firstPageData(int pageSize, DefaultListModel<String> listModel, List<EventGroup> eventGroups);
     /**刷新数据源
      * @param eventGroups 瓜圈数据
      * @param defaultListModel 数据源
      * */
-    void doRefresh(List<EventGroup> eventGroups,DefaultListModel<String> defaultListModel);
+    void refresh(List<EventGroup> eventGroups, DefaultListModel<String> defaultListModel);
     /**瓜圈的第一页的数据处理
      * @param pageSize 每一页的展示数目
      * @param listModel 传入数据源
      * @param events 获得瓜的信息
      */
-    void dataProcessGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events);
+    void firstPageDataOfGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events);
     /**刷新数据源
      * @param events 瓜数据
      * @param defaultListModel 数据源

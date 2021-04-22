@@ -76,7 +76,7 @@ public class GroupSwing extends JFrame {
         jPanel.add(jLabel1);
 
         //瓜圈简介文本框
-        JTextArea description = new JTextArea(iEventGroupService.viewEventGroup(eventGroupName).getEventGroupDescription());
+        JTextArea description = new JTextArea(iEventGroupService.find(eventGroupName).getEventGroupDescription());
         description.setFont(font2);
         description.setBounds(270,10,900,80);
         description.setEditable(false);
@@ -118,7 +118,7 @@ public class GroupSwing extends JFrame {
         list.addListSelectionListener(e -> {
             //单击是选择(单击会有tips提示内容简介) 双击是进入
             if(!list.getValueIsAdjusting()){
-                Event event = iEventService.doView(list.getSelectedValue());
+                Event event = iEventService.find(list.getSelectedValue());
                 list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                 +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
             }
@@ -129,16 +129,16 @@ public class GroupSwing extends JFrame {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
-                    Event event = iEventService.doView(list.getSelectedValue());
+                    Event event = iEventService.find(list.getSelectedValue());
                     eventOfGroup.dispose();
                     new EventSwing(userId,list.getSelectedValue(),event.getEventId(),eventGroupName);
                 }
             }
         });
         listModel = new DefaultListModel<>();
-        events = iEventGroupService.viewEventOfEventGroup(eventGroupName);
+        events = iEventGroupService.findAllFromGroup(eventGroupName);
         //第一页的数据处理
-        iEventGroupService.dataProcessGroup(PAGE_SIZE,listModel,events);
+        iEventGroupService.firstPageDataOfGroup(PAGE_SIZE,listModel,events);
         //向列表框中加入该瓜圈的所有瓜名
         list.setModel(listModel);
         jPanel.add(list);
@@ -195,8 +195,8 @@ public class GroupSwing extends JFrame {
             if("".equals(eventName)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = iEventService.verifyExist(eventName);
-                Event event1 = iEventService.doView(eventName);
+                int judge = iEventService.isExist(eventName);
+                Event event1 = iEventService.find(eventName);
                 if(judge==1){
                     //瓜存在
                     new EventSwing(userId,eventName,event1.getEventId(),eventGroupName);
@@ -222,14 +222,14 @@ public class GroupSwing extends JFrame {
         delete.setBounds(500,650,90,30);
         delete.addActionListener(e -> {
             if(list.getSelectedIndex()>0) {
-                int judge0 = iEventGroupService.verifyOfAdmin(userId, eventGroupName);
+                int judge0 = iEventGroupService.isAdmin(userId, eventGroupName);
                 //判断是不是该管理员管理的瓜圈
                 if (judge0 == 1) {
                     //YES
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要删除此瓜吗？", "确认", JOptionPane.YES_NO_OPTION);
                     if (judge == 0) {
                         //选择是
-                        judge0 = iEventService.doDelete(iEventService.doView(list.getSelectedValue()).getEventId());
+                        judge0 = iEventService.delete(iEventService.find(list.getSelectedValue()).getEventId());
                         if (judge0 == 1) {
                             JOptionPane.showMessageDialog(null, "删除瓜成功！");
                             new GroupsSwing(userId, eventGroupName);
@@ -259,7 +259,7 @@ public class GroupSwing extends JFrame {
         jPanel.add(refresh);
 
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
-        int roleId = new UserServiceImpl().verifyRole(userId);
+        int roleId = new UserServiceImpl().queryRole(userId);
 
         //删除瓜圈 创建瓜圈
         if(roleId==ADMIN||roleId==SUPER_ADMIN){

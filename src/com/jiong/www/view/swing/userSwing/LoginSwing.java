@@ -145,7 +145,7 @@ public class LoginSwing extends JFrame implements ActionListener {
             if("".equals(usernameField.getText())||"".equals(new String(passwordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = iUserService.verifyUsername(userName);
+                int judge = iUserService.isExist(userName);
                 if(judge==1){
                     //用户名存在
                     userId = iUserService.login(userName, password,isRemeberPassword);
@@ -153,8 +153,8 @@ public class LoginSwing extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(null,"登录失败!","错误",JOptionPane.ERROR_MESSAGE);
                     }else {
                         JOptionPane.showMessageDialog(null,"登录成功！");
-                        int roleId = iUserService.verifyRole(userId);
-                        User user = iUserService.queryUserInformation(userId);
+                        int roleId = iUserService.queryRole(userId);
+                        User user = iUserService.queryInformation(userId);
                         switch (roleId){
                             case 1:
                                 JOptionPane.showMessageDialog(null,"您好！用户"+user.getLoginName());

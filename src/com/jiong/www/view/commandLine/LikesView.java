@@ -11,15 +11,15 @@ public class LikesView {
     LikesServiceImpl likesServiceImpl = new LikesServiceImpl();
     //点赞,同时更新用户点赞表
     public void likes(int userId,int eventId){
-        likesServiceImpl.doLikes(userId, eventId);
+        likesServiceImpl.likes(userId, eventId);
     }
     //取消点赞,同时删除用户点赞表中的相关数据
     public void cancelLikes(int userId,int eventId){
-        likesServiceImpl.doCancelLikes(userId,eventId);
+        likesServiceImpl.cancelLikes(userId,eventId);
     }
     //查看用户是否点赞
     public void likesIfOrNot(int userId,int eventId){
-        int judge = likesServiceImpl.queryLikes(userId, eventId);
+        int judge = likesServiceImpl.isLikes(userId, eventId);
         if(judge==1){
             System.out.println("点赞");
         }else {

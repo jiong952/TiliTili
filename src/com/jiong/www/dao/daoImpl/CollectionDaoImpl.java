@@ -20,7 +20,7 @@ import java.util.List;
 public class CollectionDaoImpl implements ICollectionDao {
     /**收藏,同时更新收藏表*/
     @Override
-    public void doCollect(Connection conn,int userId, int eventId)  {
+    public void collect(Connection conn, int userId, int eventId)  {
         Object[] params={eventId,userId};
         String sql="INSERT INTO `collection` (`event_id`,`user_id`) VALUES(?,?)";
         try {
@@ -32,7 +32,7 @@ public class CollectionDaoImpl implements ICollectionDao {
     }
     /**收藏量+1*/
     @Override
-    public void addCollectionNum(Connection conn,int eventId) {
+    public void addNum(Connection conn, int eventId) {
         String sql = "UPDATE `event` SET `collection_num` = `collection_num`+1 WHERE `event_id` =?";
         try {
             queryRunner.execute(conn,sql, eventId);
@@ -43,7 +43,7 @@ public class CollectionDaoImpl implements ICollectionDao {
     }
     /**取消收藏,同时删除用户收藏表中的相关数据*/
     @Override
-    public void doCancelCollect(Connection conn,int userId, int eventId) {
+    public void cancelCollect(Connection conn, int userId, int eventId) {
         Object[] params={eventId,userId};
         String sql="DELETE FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
         try {
@@ -55,7 +55,7 @@ public class CollectionDaoImpl implements ICollectionDao {
     }
     /**收藏量-1*/
     @Override
-    public void subtractCollectionNum(Connection conn,int eventId) {
+    public void subtractNum(Connection conn, int eventId) {
         String sql ="UPDATE `event` SET `collection_num` = `collection_num`-1 WHERE `event_id` =?";
         try {
             queryRunner.execute(conn,sql,eventId);
@@ -66,7 +66,7 @@ public class CollectionDaoImpl implements ICollectionDao {
     }
     /**清除瓜相应收藏表数据*/
     @Override
-    public void doClear(Connection conn,int eventId) {
+    public void clearAll(Connection conn, int eventId) {
         String sql="DELETE FROM `collection` WHERE `event_id`= ? ";
         //清空所有评论
         try {
@@ -78,7 +78,7 @@ public class CollectionDaoImpl implements ICollectionDao {
     }
     /**查看用户是否收藏*/
     @Override
-    public int queryCollect(int userId, int eventId)  {
+    public int isCollect(int userId, int eventId)  {
         int judge=0;
         Object[] params={eventId,userId};
         String sql="SELECT `id` FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";

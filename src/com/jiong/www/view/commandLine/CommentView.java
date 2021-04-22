@@ -31,23 +31,23 @@ public class CommentView {
         String commentContent = stringBuilder.toString();
         scanner.nextLine();
         //用于缓冲最后的@
-        commentServiceImpl.doComment(userId,eventId,commentContent);
+        commentServiceImpl.comment(userId,eventId,commentContent);
 
     }
     //删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除
     public void cancelComment(int commentId,int eventId){
-        commentServiceImpl.doCancel(commentId,eventId);
+        commentServiceImpl.cancelComment(commentId,eventId);
     }
     //删除瓜的所有评论,管理员,事件发布者
     public void clearComment(int userId,int roleId,int eventId){
         if(roleId==1){
             //为普通用户
             //验证这个瓜是不是该用户发的
-            int row = eventServiceImpl.doVerify(userId,eventId);
+            int row = eventServiceImpl.isCreate(userId,eventId);
             if(row==1){
                 //row1==1表示是该用户发的
                 //进行删除
-                commentServiceImpl.doClear(eventId);
+                commentServiceImpl.clearAll(eventId);
             }else {
                 //不是用户发的，没有删除的权限
                 System.out.println("这不是您发布的瓜！没有权限");
@@ -57,13 +57,13 @@ public class CommentView {
             //先查这个瓜在哪个组,查出瓜圈名
             String eventGroupName;
             //eventGroupName为查询的瓜圈名
-            eventGroupName = eventServiceImpl.queryGroupName(eventId);
+            eventGroupName = eventServiceImpl.queryName(eventId);
             //验证这个组是不是归管理员管
-            int row = eventGroupServiceImpl.verifyOfAdmin(userId, eventGroupName);
+            int row = eventGroupServiceImpl.isAdmin(userId, eventGroupName);
             //row==1表示是该管理员管理的,0表示不是管理员管
             if (row == 1) {
                 //进行删除
-                commentServiceImpl.doClear(eventId);
+                commentServiceImpl.clearAll(eventId);
             } else {
                 //不是管理员所管理的瓜圈,没有权限
                 System.out.println("这不是您管理的瓜圈！没有权限");

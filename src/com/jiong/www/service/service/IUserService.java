@@ -10,6 +10,7 @@ import java.sql.Date;
  */
 public interface IUserService {
     /**
+     * 注册，添加用户信息到用户表
      * @param loginName 用户名
      * @param loginPassword 密码
      * @param roleId 角色id
@@ -22,7 +23,7 @@ public interface IUserService {
      * @param loginName 用户名
      * @return 验证判断
      */
-    int verifyUsername(String loginName);
+    int isExist(String loginName);
 
     /**
      * 完善用户信息
@@ -34,7 +35,7 @@ public interface IUserService {
      * @param userBirthday 生日
      * @return 判断成功
      */
-    int perfectInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday);
+    int updateInformation(String userEmail, String userNickName, int userGender, String userDescription, int userId, Date userBirthday);
 
     /**
      * 是否要记住密码
@@ -57,7 +58,7 @@ public interface IUserService {
      * @param userId 用户id
      * @return roleId
      */
-    int verifyRole(int userId);
+    int queryRole(int userId);
 
     /**
      * 验证要修改的密码
@@ -65,7 +66,7 @@ public interface IUserService {
      * @param userId 用户id
      * @return 判断正确
      */
-    int verifyPassword(String oldPassword, int userId);
+    int queryPwd(String oldPassword, int userId);
 
     /**
      * 修改密码
@@ -73,14 +74,14 @@ public interface IUserService {
      * @param userId 用户id
      * @return 判断成功
      */
-    int changePassword(String newPassword, int userId);
+    int changePwd(String newPassword, int userId);
 
     /**
      * 查询用户的个人信息
      * @param userId 用户id
      * @return 用户信息
      */
-    User queryUserInformation(int userId);
+    User queryInformation(int userId);
 
     /**
      * 查看是否记住密码，是的话，把密码返回

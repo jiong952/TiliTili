@@ -24,15 +24,15 @@ public class CommentServiceImpl implements ICommentService {
     ICommentDao iCommentDao = new CommentDaoImpl();
     /**进行评论，评论数+1，评论表更新*/
     @Override
-    public void doComment(int userId, int eventId, String commentContent){
+    public void comment(int userId, int eventId, String commentContent){
         Comment comment = new Comment();
         comment.setCommentContent(commentContent);
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            iCommentDao.doComment(conn,userId,eventId,comment);
-            iCommentDao.addCommentNum(conn,eventId);
+            iCommentDao.comment(conn,userId,eventId,comment);
+            iCommentDao.addNum(conn,eventId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -47,13 +47,13 @@ public class CommentServiceImpl implements ICommentService {
     }
     /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
     @Override
-    public void doCancel(int commentId, int eventId){
+    public void cancelComment(int commentId, int eventId){
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            iCommentDao.doCancel(conn,commentId,eventId);
-            iCommentDao.subtractCommentNum(conn,eventId);
+            iCommentDao.cancelComment(conn,commentId,eventId);
+            iCommentDao.subtractNum(conn,eventId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -68,13 +68,13 @@ public class CommentServiceImpl implements ICommentService {
     }
     /**删除瓜的所有评论,管理员*/
     @Override
-    public void doClear(int eventId){
+    public void clearAll(int eventId){
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            iCommentDao.doClear(conn,eventId);
-            iCommentDao.clearCommentNum(conn,eventId);
+            iCommentDao.clearAll(conn,eventId);
+            iCommentDao.clearNum(conn,eventId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -95,14 +95,14 @@ public class CommentServiceImpl implements ICommentService {
         //创建一个容器返回 评论的信息
         comments = iCommentDao.findAll(eventId);
         for(Comment comment:comments){
-            User user = iuserDao.queryUserInformation(comment.getCommenterId());
+            User user = iuserDao.queryInformation(comment.getCommenterId());
             comment.setCommenterName(user.getLoginName());
         }
         return comments;
     }
     /**第一页的数据处理*/
     @Override
-    public Object[][] doDataProcess(int pageSize, List<Comment> comments) {
+    public Object[][] firstPageData(int pageSize, List<Comment> comments) {
         Object[][] rowData = new Object[Math.min(comments.size(), pageSize)][3];
         if(comments.size()>=pageSize){
             for (int i = 0; i < pageSize; i++) {
@@ -122,7 +122,7 @@ public class CommentServiceImpl implements ICommentService {
     }
     /**进行删除，添加评论后表格刷新*/
     @Override
-    public  List<Comment> doRefresh(List<Comment> comments, DefaultTableModel defaultTableModel, int eventId, String[] columnNames, CommentPagingUtils commentPagingUtils) {
+    public  List<Comment> refresh(List<Comment> comments, DefaultTableModel defaultTableModel, int eventId, String[] columnNames, CommentPagingUtils commentPagingUtils) {
         comments=findAll(eventId);
         Object[][] rowData1 = new Object[comments.size()][3];
         for (int i = 0; i < comments.size(); i++) {
@@ -144,10 +144,10 @@ public class CommentServiceImpl implements ICommentService {
      * @return 评论信息
      */
     @Override
-    public Comment doView(int commentId) {
+    public Comment find(int commentId) {
         Comment comment;
-        comment=iCommentDao.doView(commentId);
-        comment.setCommenterName(new UserDaoImpl().queryUserInformation(comment.getCommenterId()).getLoginName());
+        comment=iCommentDao.find(commentId);
+        comment.setCommenterName(new UserDaoImpl().queryInformation(comment.getCommenterId()).getLoginName());
         return comment;
     }
 

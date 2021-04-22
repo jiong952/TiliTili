@@ -49,7 +49,7 @@ public class AccuseHandleSwing {
         //创建一个表格来放举报信息
         String[] columnNames = {"举报人","举报的瓜","举报理由","举报时间"};
         //查询所有的举报信息
-        Object[][] rowData = iAccuseService.doRefresh(userId);
+        Object[][] rowData = iAccuseService.refresh(userId);
 
         Font font1 = new Font("黑体",Font.PLAIN,15);
         JTable table = new JTable();
@@ -80,10 +80,10 @@ public class AccuseHandleSwing {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + deleteEventName + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    Event event = eventServiceImpl.doView(deleteEventName);
-                    eventServiceImpl.doDelete(event.getEventId());
+                    Event event = eventServiceImpl.find(deleteEventName);
+                    eventServiceImpl.delete(event.getEventId());
                     //刷新待处理列表
-                    Object[][] rowData1 = iAccuseService.doRefresh(userId);
+                    Object[][] rowData1 = iAccuseService.refresh(userId);
                     //重新设置数据源
                     defaultTableModel.setDataVector(rowData1,columnNames);
                 }
@@ -95,11 +95,11 @@ public class AccuseHandleSwing {
         notDelete.setBounds(350,430,90,30);
         notDelete.addActionListener(e -> {
             String accusedEventName = (String)rowData[table.getSelectedRow()][1];
-            Event event = eventServiceImpl.doView(accusedEventName);
+            Event event = eventServiceImpl.find(accusedEventName);
             String accusedContent = (String)rowData[table.getSelectedRow()][2];
-            iAccuseService.doDelete(event.getEventId(),accusedContent);
+            iAccuseService.delete(event.getEventId(),accusedContent);
             //刷新待处理列表
-            Object[][] rowData1 = iAccuseService.doRefresh(userId);
+            Object[][] rowData1 = iAccuseService.refresh(userId);
             //重新设置数据源
             defaultTableModel.setDataVector(rowData1,columnNames);
         });

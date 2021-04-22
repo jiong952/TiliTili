@@ -23,7 +23,7 @@ public class AccuseDaoImpl implements IAccuseDao {
 
     /**用户举报瓜*/
     @Override
-    public int doAccuse(Accuse accuse)  {
+    public int accuse(Accuse accuse)  {
         int row;
         Object[] params={accuse.getEventId(),accuse.getAccusedUserId(),accuse.getAccusedContent()};
         String sql ="INSERT INTO `accusation` (`accused_event_id`,`accuse_user_id`,`accused_content`) VALUES(?,?,?)";
@@ -57,7 +57,7 @@ public class AccuseDaoImpl implements IAccuseDao {
     }
     /**清空所有举报*/
     @Override
-    public void doClear(Connection conn, int eventId) {
+    public void clearAll(Connection conn, int eventId) {
         String sql="DELETE FROM `accusation` WHERE `accused_event_id`= ? ";
         //清空所有举报
         try {
@@ -69,7 +69,7 @@ public class AccuseDaoImpl implements IAccuseDao {
     }
     /**删除举报*/
     @Override
-    public void doDelete(Accuse accuse)  {
+    public void delete(Accuse accuse)  {
         Object[] params={accuse.getEventId(),accuse.getAccusedContent()};
         String sql ="DELETE FROM `accusation` WHERE `accused_event_id`= ? AND`accused_content`=? ";
         try {
@@ -81,7 +81,7 @@ public class AccuseDaoImpl implements IAccuseDao {
     }
     /**查看用户是否已经举报*/
     @Override
-    public int verifyExist(Accuse accuse) {
+    public int isAccuse(Accuse accuse) {
         int judge=0;
         Object[] params={accuse.getEventId(),accuse.getAccusedUserId()};
         String sql="SELECT `id` FROM `accusation` WHERE `accused_event_id`= ? AND `accuse_user_id` = ?";

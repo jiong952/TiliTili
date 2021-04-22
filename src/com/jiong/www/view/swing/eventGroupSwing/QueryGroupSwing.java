@@ -49,7 +49,7 @@ public class QueryGroupSwing {
             if("".equals(eventGroupName1)){
                 JOptionPane.showMessageDialog(null,"查询不能为空！","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                int judge = iEventGroupService.verifyExist(eventGroupName1);
+                int judge = iEventGroupService.isExist(eventGroupName1);
                 //验证瓜圈名是否存在
                 if(judge==1){
                     jFrame.dispose();

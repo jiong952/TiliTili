@@ -38,7 +38,7 @@ public class InformationSwing extends JFrame {
         this.userId = userId;
         this.eventGroupName = eventGroupName;
         UserServiceImpl userServiceImpl = new UserServiceImpl();
-        User user = userServiceImpl.queryUserInformation(userId);
+        User user = userServiceImpl.queryInformation(userId);
 
         JFrame userInformation = new JFrame("TiliTili瓜王系统");
         userInformation.setSize(900,700);
@@ -346,7 +346,7 @@ public class InformationSwing extends JFrame {
                     JOptionPane.showMessageDialog(null,"请填写合法的生日格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
                     //所有信息正确
-                    int judge = userServiceImpl.perfectInformation(userEmail, userNickname, userGender1, userDescription, userId, userBirthday2);
+                    int judge = userServiceImpl.updateInformation(userEmail, userNickname, userGender1, userDescription, userId, userBirthday2);
                     if (judge == 1) {
                         JOptionPane.showMessageDialog(null, "保存成功！");
                     } else {

@@ -113,7 +113,7 @@ public class MenuSwing {
         menuBar.add(viewCollection);
         menuBar.add(handle);
 
-        int roleId = new UserServiceImpl().verifyRole(userId);
+        int roleId = new UserServiceImpl().queryRole(userId);
 
         if(roleId==ADMIN||roleId==SUPER_ADMIN){
             //管理员 超管

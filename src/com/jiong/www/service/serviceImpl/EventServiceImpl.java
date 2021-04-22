@@ -26,45 +26,45 @@ public class EventServiceImpl implements IEventService {
     EventGroupDaoImpl eventGroupDaoImpl =new EventGroupDaoImpl();
     /**创建瓜*/
     @Override
-    public int doCreate(int userId, int eventGroupId, String eventName, String eventContent){
+    public int create(int userId, int eventGroupId, String eventName, String eventContent){
         // 用于接收dao层的返回值
         //封装event对象
         Event event = new Event();
         event.setName(eventName);
         event.setEventContent(eventContent);
-        return iEventDao.doCreate(userId,eventGroupId,event);
+        return iEventDao.create(userId,eventGroupId,event);
     }
     /**验证瓜名是否存在*/
     @Override
-    public int verifyExist(String eventName){
-        return iEventDao.verifyExist(eventName);
+    public int isExist(String eventName){
+        return iEventDao.isExist(eventName);
     }
     /**验证这个瓜是不是用户发的*/
     @Override
-    public int doVerify(int userId, int eventId){
-        return iEventDao.doVerify(userId,eventId);
+    public int isCreate(int userId, int eventId){
+        return iEventDao.isCreate(userId,eventId);
     }
     /**查询这个瓜所在的瓜圈名*/
     @Override
-    public String queryGroupName(int eventId){
+    public String queryName(int eventId){
         String eventGroupName;
-        int eventGroupId = iEventDao.queryGroupId(eventId);
-        eventGroupName= eventGroupDaoImpl.viewEventGroup(eventGroupId);
+        int eventGroupId = iEventDao.queryId(eventId);
+        eventGroupName= eventGroupDaoImpl.queryName(eventGroupId);
         return eventGroupName;
     }
     /**删除瓜以及瓜的点赞收藏评论举报信息*/
     @Override
-    public int doDelete(int eventId){
+    public int delete(int eventId){
         Connection conn = null;
         int judge;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            judge= iEventDao.doDelete(conn,eventId);
-            new CollectionDaoImpl().doClear(conn,eventId);
-            new CommentDaoImpl().doClear(conn,eventId);
-            new AccuseDaoImpl().doClear(conn,eventId);
-            new LikesDaoImpl().doClear(conn,eventId);
+            judge= iEventDao.delete(conn,eventId);
+            new CollectionDaoImpl().clearAll(conn,eventId);
+            new CommentDaoImpl().clearAll(conn,eventId);
+            new AccuseDaoImpl().clearAll(conn,eventId);
+            new LikesDaoImpl().clearAll(conn,eventId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -80,9 +80,9 @@ public class EventServiceImpl implements IEventService {
     }
     /**查看瓜,返回瓜的所有信息，封装*/
     @Override
-    public Event doView(String eventName){
-        Event event = iEventDao.doView(eventName);
-        event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
+    public Event find(String eventName){
+        Event event = iEventDao.find(eventName);
+        event.setPublisherName(new UserDaoImpl().queryInformation(event.getPublisherId()).getLoginName());
         return event;
     }
 }

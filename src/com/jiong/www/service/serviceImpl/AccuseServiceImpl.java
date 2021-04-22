@@ -23,24 +23,24 @@ public class AccuseServiceImpl implements IAccuseService {
     IEventGroupDao iEventGroupDao = new EventGroupDaoImpl();
     /**用户可以举报瓜，给管理员处理*/
     @Override
-    public int doAccuse(int eventId, int userId, String accusedContent){
+    public int accuse(int eventId, int userId, String accusedContent){
         int row;
         Accuse accuse = new Accuse();
         accuse.setEventId(eventId);
         accuse.setAccusedUserId(userId);
         accuse.setAccusedContent(accusedContent);
-        row= iAccuseDao.doAccuse(accuse);
+        row= iAccuseDao.accuse(accuse);
         return row;
     }
     /**管理员查看自己管理瓜圈的举报情况*/
     @Override
     public List<Accuse> findAll(int userId){
         List<Accuse> accuses;
-        List<Integer> integers = iEventGroupDao.viewAdminGroup(userId);
-        List<Event> eventList = iEventGroupDao.viewEventGroup(integers);
+        List<Integer> integers = iEventGroupDao.findAllOfAdmin(userId);
+        List<Event> eventList = iEventGroupDao.findSome(integers);
         accuses=iAccuseDao.findAll(eventList);
         for(Accuse accuse:accuses){
-            accuse.setAccusedUserName(new UserDaoImpl().queryUserInformation(accuse.getAccusedUserId()).getLoginName());
+            accuse.setAccusedUserName(new UserDaoImpl().queryInformation(accuse.getAccusedUserId()).getLoginName());
             accuse.setAccusedEventName(new EventDaoImpl().queryName(accuse.getEventId()));
         }
         accuses.sort(Accuse::compareTo);
@@ -48,15 +48,15 @@ public class AccuseServiceImpl implements IAccuseService {
     }
     /**删除举报信息*/
     @Override
-    public void doDelete(int eventId, String accusedContent){
+    public void delete(int eventId, String accusedContent){
         Accuse accuse = new Accuse();
         accuse.setEventId(eventId);
         accuse.setAccusedContent(accusedContent);
-        iAccuseDao.doDelete(accuse);
+        iAccuseDao.delete(accuse);
     }
     /**刷新举报信息的列表*/
     @Override
-    public Object[][] doRefresh(int userId) {
+    public Object[][] refresh(int userId) {
         List<Accuse> accuses = findAll(userId);
         Object[][] rowData = new Object[accuses.size()][4];
         for (int i = 0; i < accuses.size(); i++) {
@@ -78,12 +78,12 @@ public class AccuseServiceImpl implements IAccuseService {
      * @return 判断是否存在
      */
     @Override
-    public int verifyExist(int eventId, int userId) {
+    public int isAccuse(int eventId, int userId) {
         int judge;
         Accuse accuse = new Accuse();
         accuse.setEventId(eventId);
         accuse.setAccusedUserId(userId);
-        judge=iAccuseDao.verifyExist(accuse);
+        judge=iAccuseDao.isAccuse(accuse);
         return judge;
     }
 }

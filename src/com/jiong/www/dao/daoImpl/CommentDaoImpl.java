@@ -18,7 +18,7 @@ import java.util.List;
 public class CommentDaoImpl implements ICommentDao {
     /**进行评论*/
     @Override
-    public void doComment(Connection conn,int userId, int eventId, Comment comment)  {
+    public void comment(Connection conn, int userId, int eventId, Comment comment)  {
         Object[] params ={eventId,userId,comment.getCommentContent()};
         String sql="INSERT INTO `comment` (`event_id`,`user_id`,`comment_content`) VALUES(?,?,?)";
         try {
@@ -31,7 +31,7 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**评论数+1*/
     @Override
-    public void addCommentNum(Connection conn,int eventId) {
+    public void addNum(Connection conn, int eventId) {
         String sql ="UPDATE `event` SET `comment_num` = `comment_num`+1 WHERE `event_id` =?";
         try {
             queryRunner.execute(conn,sql,eventId);
@@ -43,7 +43,7 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
     @Override
-    public void doCancel(Connection conn,int commentId, int eventId) {
+    public void cancelComment(Connection conn, int commentId, int eventId) {
         Object[] params ={eventId,commentId};
         String sql="DELETE FROM `comment` WHERE `event_id`= ? AND `id` =?";
         try {
@@ -56,7 +56,7 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**评论数-1*/
     @Override
-    public void subtractCommentNum(Connection conn,int eventId) {
+    public void subtractNum(Connection conn, int eventId) {
         String sql ="UPDATE `event` SET `comment_num` = `comment_num`-1 WHERE `event_id` =?";
         try {
             queryRunner.execute(conn,sql,eventId);
@@ -68,7 +68,7 @@ public class CommentDaoImpl implements ICommentDao {
 
     /**删除瓜的所有评论，管理员*/
     @Override
-    public void doClear(Connection conn,int eventId){
+    public void clearAll(Connection conn, int eventId){
         String sql="DELETE FROM `comment` WHERE `event_id`= ? ";
         //清空所有评论
         try {
@@ -80,7 +80,7 @@ public class CommentDaoImpl implements ICommentDao {
     }
     /**评论数清0*/
     @Override
-    public void clearCommentNum(Connection conn,int eventId) {
+    public void clearNum(Connection conn, int eventId) {
         String sql="UPDATE `event` SET `comment_num` = 0 WHERE `event_id` =?";
         //评论数清0
         try {
@@ -116,7 +116,7 @@ public class CommentDaoImpl implements ICommentDao {
      * @return 评论信息
      */
     @Override
-    public Comment doView(int commentId) {
+    public Comment find(int commentId) {
         Comment query=new Comment();
         String sql ="SELECT `comment_content` AS commentContent,`user_id` AS commenterId,`create_time` AS commentTime FROM `comment`WHERE`id`=?";
         try {

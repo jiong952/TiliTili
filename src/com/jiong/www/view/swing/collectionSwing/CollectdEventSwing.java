@@ -60,7 +60,7 @@ public class CollectdEventSwing {
             if(!list.getValueIsAdjusting()){
                 Event event;
                 if(list.getSelectedIndex()>0){
-                    event= iEventService.doView(list.getSelectedValue());
+                    event= iEventService.find(list.getSelectedValue());
                     list.setToolTipText("作者："+event.getPublisherName()+"发布时间："+event.getCreateTime()+"点赞数："+event.getLikesNum()
                             +"收藏数："+event.getCollectionNum()+"评论数："+event.getCommentNum());
                 }
@@ -72,8 +72,8 @@ public class CollectdEventSwing {
                 super.mouseClicked(e);
                 if(e.getClickCount()==DOUBLE_CLICK){
                     //进入瓜界面
-                    Event event = iEventService.doView(list.getSelectedValue());
-                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), iEventService.queryGroupName(event.getEventId()));
+                    Event event = iEventService.find(list.getSelectedValue());
+                    new EventSwing(userId,list.getSelectedValue(),event.getEventId(), iEventService.queryName(event.getEventId()));
                 }
             }
         });
@@ -98,11 +98,11 @@ public class CollectdEventSwing {
                 int judge = JOptionPane.showConfirmDialog(null, "您确定要取消收藏" + list.getSelectedValue() + "吗？", "确认", JOptionPane.YES_NO_OPTION);
                 if(judge==0){
                     //YES
-                    Event event = iEventService.doView(list.getSelectedValue());
-                    iCollectionService.doCancelCollect(userId,event.getEventId());
+                    Event event = iEventService.find(list.getSelectedValue());
+                    iCollectionService.cancelCollect(userId,event.getEventId());
                     //刷新
                     DefaultListModel<String> listModel1;
-                    listModel1 = iCollectionService.doRefresh(userId);
+                    listModel1 = iCollectionService.refresh(userId);
                     list.setModel(listModel1);
                 }
             }else {

@@ -22,7 +22,7 @@ import java.sql.*;
 public class UserDaoImpl implements IUserDao {
     /**注册，添加用户信息到用户表*/
     @Override
-    public int doRegister(Connection conn,User user)  {
+    public int register(Connection conn, User user)  {
         int row;
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
         Object[] params= {user.getLoginName(), user.getLoginPassword(),user.getLoginName()};
@@ -39,7 +39,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1*/
     @Override
-    public void doInsertRole(Connection conn,int userId,int roleId)  {
+    public void insertToRole(Connection conn, int userId, int roleId)  {
         Object[] params={userId,roleId};
         String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES(?,?)";
         try {
@@ -51,7 +51,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**用用户名查用户id*/
     @Override
-    public int doQueryId(String userName)  {
+    public int queryId(String userName)  {
         int userId;
         String sql ="SELECT `user_id` AS userId FROM `user` WHERE `login_name`=?";
         try {
@@ -66,7 +66,7 @@ public class UserDaoImpl implements IUserDao {
 
     /**用于注册时验证该用户名是否存在*/
     @Override
-    public int verifyExist(String loginName)  {
+    public int isExist(String loginName)  {
         User userQuery = new User();
         int row=0;
         //默认为0不存在
@@ -85,7 +85,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**完善用户信息,实现了每次只改动某个信息，其他的保存为上次的值*/
     @Override
-    public int perfectInformation(User user)  {
+    public int updateInformation(User user)  {
         int row;
         Object[] params = {user.getUserEmail(),user.getUserNickname(),user.getUserGender(),user.getUserDescription(),user.getUserBirthday(),user.getUserId()};
         //查询并储存该用户的信息的原先值
@@ -130,7 +130,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**验证用户的身份，吃瓜群众1管理员2游客3超管4*/
     @Override
-    public int verifyRole(int userId) {
+    public int queryRole(int userId) {
         int roleId;
         //用户角色的id
         String sql ="SELECT `role_id` FROM `user_role`WHERE`user_id`=?";
@@ -144,7 +144,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**验证要修改的密码*/
     @Override
-    public String verifyPassword(int userId) {
+    public String queryPwd(int userId) {
         String realPassword;
         String sql ="SELECT `login_password` AS loginPassword FROM `user` WHERE `user_id`=?";
         try {
@@ -160,7 +160,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**修改密码*/
     @Override
-    public int changePassword(User user)  {
+    public int changePwd(User user)  {
         int row;
         Object[] params ={user.getLoginPassword(),user.getUserId()};
         String sql ="UPDATE `user` SET `login_password`=? WHERE `user_id`=?";
@@ -175,7 +175,7 @@ public class UserDaoImpl implements IUserDao {
     }
     /**查询用户的个人信息*/
     @Override
-    public User queryUserInformation(int userId){
+    public User queryInformation(int userId){
         String sql ="SELECT `login_name` AS loginName,`user_e-mail` AS userEmail,`user_nickname` AS userNickname,\n" +
                 "`user_gender` AS userGender,`user_description` AS userDescription,`user_birthday` AS userBirthday," +
                 "`login_password` AS loginPassword,`password_remember` AS isRememberPassword FROM `user` WHERE `user_id`=?";

@@ -24,13 +24,13 @@ public class LikesServiceImpl implements ILikesService {
     IEventDao iEventDao = new EventDaoImpl();
     /**点赞,同时更新用户点赞表*/
     @Override
-    public void doLikes(int userId, int eventId){
+    public void likes(int userId, int eventId){
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            iLikesDao.doLikes(conn,userId,eventId);
-            iLikesDao.addCollectionNum(conn,eventId);
+            iLikesDao.likes(conn,userId,eventId);
+            iLikesDao.addNum(conn,eventId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -45,13 +45,13 @@ public class LikesServiceImpl implements ILikesService {
     }
     /**取消点赞,同时删除用户点赞表中的相关数据*/
     @Override
-    public void doCancelLikes(int userId, int eventId){
+    public void cancelLikes(int userId, int eventId){
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            iLikesDao.doCancelLikes(conn,userId,eventId);
-            iLikesDao.subtractCollectionNum(conn,eventId);
+            iLikesDao.cancelLikes(conn,userId,eventId);
+            iLikesDao.subtractNum(conn,eventId);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -66,9 +66,9 @@ public class LikesServiceImpl implements ILikesService {
     }
     /**查看用户是否点赞*/
     @Override
-    public int queryLikes(int userId, int eventId)  {
+    public int isLikes(int userId, int eventId)  {
         int judge;
-        judge= iLikesDao.queryLikes(userId,eventId);
+        judge= iLikesDao.isLikes(userId,eventId);
         return  judge;
     }
     /**查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
@@ -76,15 +76,15 @@ public class LikesServiceImpl implements ILikesService {
     public List<Event> findAll(int userId){
         List<Event> events ;
         List<Integer> integers = iLikesDao.findAll(userId);
-        events=iEventDao.doView(integers);
+        events=iEventDao.findSome(integers);
         for(Event event:events){
-            event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
+            event.setPublisherName(new UserDaoImpl().queryInformation(event.getPublisherId()).getLoginName());
         }
         return events;
     }
     /**刷新列表信息*/
     @Override
-    public DefaultListModel<String> doRefresh(int userId) {
+    public DefaultListModel<String> refresh(int userId) {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         List<Event> events1 = findAll(userId);
         for (int i = 0; i < events1.size(); i++) {

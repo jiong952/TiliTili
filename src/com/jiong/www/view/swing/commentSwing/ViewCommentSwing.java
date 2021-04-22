@@ -1,12 +1,8 @@
 package com.jiong.www.view.swing.commentSwing;
 
 import com.jiong.www.po.Comment;
-import com.jiong.www.po.Event;
 import com.jiong.www.service.service.ICommentService;
-import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.CommentServiceImpl;
-import com.jiong.www.service.serviceImpl.EventServiceImpl;
-import com.jiong.www.view.swing.eventSwing.EventSwing;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +29,7 @@ public class ViewCommentSwing {
         jPanel.setLayout(null);
         //绝对布局
 
-        Comment comment = iCommentService.doView(commentId);
+        Comment comment = iCommentService.find(commentId);
 
         Font font = new Font("黑体",Font.BOLD,18);
         //评论人标签+文本框

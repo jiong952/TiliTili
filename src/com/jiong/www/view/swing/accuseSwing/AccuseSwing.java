@@ -54,14 +54,14 @@ public class AccuseSwing extends JFrame {
         JButton jButton = new JButton("举报");
         jButton.setBounds(110,200,60,30);
         jButton.addActionListener(e -> {
-            if(iAccuseService.verifyExist(eventId,userId)==1){
+            if(iAccuseService.isAccuse(eventId,userId)==1){
                 JOptionPane.showMessageDialog(null,"您已经举报过该瓜，请等待管理员处理!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
                 if(!"".equals(jTextArea.getText())){
                     int judge = JOptionPane.showConfirmDialog(null, "您确定要举报" + eventName + "吗?", "确认", JOptionPane.YES_NO_OPTION);
                     if(judge==0){
                         //YES
-                        int row = iAccuseService.doAccuse(eventId, userId, jTextArea.getText());
+                        int row = iAccuseService.accuse(eventId, userId, jTextArea.getText());
                         if(row==1){
                             JOptionPane.showMessageDialog(null,"举报成功");
                             jFrame.dispose();

@@ -3,7 +3,6 @@ package com.jiong.www.view.swing.userSwing;
 import com.jiong.www.service.service.IUserService;
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
 import com.jiong.www.util.StringUtils;
-import com.jiong.www.view.swing.userSwing.InformationSwing;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -61,7 +60,7 @@ public class PasswordSwing extends JFrame {
         oldPasswordField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                int judge = iUserService.verifyPassword(new String(oldPasswordField.getPassword()), userId);
+                int judge = iUserService.queryPwd(new String(oldPasswordField.getPassword()), userId);
                 //旧密码错误，错误提示标签出现
                 errorPassword.setVisible(judge == 0);
 
@@ -69,7 +68,7 @@ public class PasswordSwing extends JFrame {
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                int judge = iUserService.verifyPassword(oldPassword.getText(), userId);
+                int judge = iUserService.queryPwd(oldPassword.getText(), userId);
                 //旧密码错误，错误提示标签出现
                 errorPassword.setVisible(judge == 0);
             }
@@ -242,7 +241,7 @@ public class PasswordSwing extends JFrame {
             } else {
                 String userNewPassword=new String(newPasswordField.getPassword());
                 //修改完要加密
-                int judge = iUserService.changePassword(userNewPassword, userId);
+                int judge = iUserService.changePwd(userNewPassword, userId);
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"修改成功！");
                     password.dispose();

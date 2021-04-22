@@ -25,7 +25,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     IEventService iEventService = new EventServiceImpl();
     /**创建瓜圈*/
     @Override
-    public int doCreate(int userId, String eventGroupName, String eventGroupDescription){
+    public int create(int userId, String eventGroupName, String eventGroupDescription){
         int row ;
         // 用于接收dao层的返回值
         //封装eventGroup对象
@@ -36,8 +36,8 @@ public class EventGroupServiceImpl implements IEventGroupService {
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
-            row= iEventGroupDao.doCreate(conn,eventGroup);
-            iEventGroupDao.groupOfAdmin(conn,userId,eventGroup);
+            row= iEventGroupDao.create(conn,eventGroup);
+            iEventGroupDao.insertToAdmin(conn,userId,eventGroup);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -53,42 +53,42 @@ public class EventGroupServiceImpl implements IEventGroupService {
     }
     /**验证瓜圈名是否存在*/
     @Override
-    public int verifyExist(String eventGroupName){
+    public int isExist(String eventGroupName){
         int row;
         //默认0不存在
-        row= iEventGroupDao.verifyExist(eventGroupName);
+        row= iEventGroupDao.isExist(eventGroupName);
         //0则无数据，1则有数据
         return row;
 
     }
     /**验证是否是该管理员管理的瓜圈*/
     @Override
-    public int verifyOfAdmin(int userId, String eventGroupName){
+    public int isAdmin(int userId, String eventGroupName){
         int row;
         //默认0不是管理员管理的瓜圈
         EventGroup eventGroup;
-        eventGroup = iEventGroupDao.viewEventGroup(eventGroupName);
-        row= iEventGroupDao.verifyOfAdmin(userId,eventGroup.getEventGroupId());
+        eventGroup = iEventGroupDao.find(eventGroupName);
+        row= iEventGroupDao.isAdmin(userId,eventGroup.getEventGroupId());
         return row;
     }
     /**删除瓜圈，同时在管理员所管理的数据删除关系，删除瓜圈里的瓜*/
     @Override
-    public int doDelete(String deleteEventGroupName, int userId){
+    public int delete(String deleteEventGroupName, int userId){
         int row ;
         Connection conn = null;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
             //删除瓜圈里的瓜
-            int eventGroupId = iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId();
-            List<Event> events = iEventGroupDao.viewEventOfEventGroup(eventGroupId);
+            int eventGroupId = iEventGroupDao.find(deleteEventGroupName).getEventGroupId();
+            List<Event> events = iEventGroupDao.findAllFromGroup(eventGroupId);
             for(Event event:events){
-                iEventService.doDelete(event.getEventId());
+                iEventService.delete(event.getEventId());
             }
             //清除管理员表瓜圈的数据
-            iEventGroupDao.doDeleteOfAdmin(conn, eventGroupId,userId);
+            iEventGroupDao.deleteFromAdmin(conn, eventGroupId,userId);
             //删除瓜圈
-            row= iEventGroupDao.doDelete(conn,deleteEventGroupName);
+            row= iEventGroupDao.delete(conn,deleteEventGroupName);
             conn.commit();
         } catch (SQLException e) {
             try {
@@ -106,29 +106,29 @@ public class EventGroupServiceImpl implements IEventGroupService {
     @Override
     public List<EventGroup> findAll(){
         List<EventGroup> eventGroups;
-        eventGroups= iEventGroupDao.viewAllEventGroup();
+        eventGroups= iEventGroupDao.findAll();
         return eventGroups;
     }
     /**用瓜圈名查该瓜圈信息*/
     @Override
-    public EventGroup viewEventGroup(String eventGroupName){
+    public EventGroup find(String eventGroupName){
         EventGroup eventGroup;
-        eventGroup= iEventGroupDao.viewEventGroup(eventGroupName);
+        eventGroup= iEventGroupDao.find(eventGroupName);
         return eventGroup;
     }
     /**用瓜圈名查看瓜圈里的所有瓜*/
     @Override
-    public List<Event> viewEventOfEventGroup(String eventGroupName){
+    public List<Event> findAllFromGroup(String eventGroupName){
         List<Event> events ;
-        events = iEventGroupDao.viewEventOfEventGroup(iEventGroupDao.viewEventGroup(eventGroupName).getEventGroupId());
+        events = iEventGroupDao.findAllFromGroup(iEventGroupDao.find(eventGroupName).getEventGroupId());
         for(Event event:events){
-            event.setPublisherName(new UserDaoImpl().queryUserInformation(event.getPublisherId()).getLoginName());
+            event.setPublisherName(new UserDaoImpl().queryInformation(event.getPublisherId()).getLoginName());
         }
         return events;
     }
     /**瓜网的第一页的数据处理*/
     @Override
-    public void  doDataProcess(int pageSize, DefaultListModel<String> listModel, List<EventGroup> eventGroups) {
+    public void firstPageData(int pageSize, DefaultListModel<String> listModel, List<EventGroup> eventGroups) {
         //每一页页面的展示瓜圈数目
         if(eventGroups.size()>= pageSize){
             for (int i = 0; i < pageSize; i++) {
@@ -142,7 +142,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     }
     /**删除增加之后刷新数据*/
     @Override
-    public void   doRefresh(List<EventGroup> eventGroups,DefaultListModel<String> defaultListModel) {
+    public void refresh(List<EventGroup> eventGroups, DefaultListModel<String> defaultListModel) {
         //刷新
         List<EventGroup> eventGroups1 = findAll();
         defaultListModel.clear();
@@ -159,7 +159,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
      * 瓜圈的第一页的数据处理
      */
     @Override
-    public void dataProcessGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events) {
+    public void firstPageDataOfGroup(int pageSize, DefaultListModel<String> listModel, List<Event> events) {
         //每一页页面的展示瓜数目
         if(events.size()>=pageSize){
             for (int i = 0; i < pageSize; i++) {
@@ -178,7 +178,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     @Override
     public void refreshGroup(List<Event> events, DefaultListModel<String> defaultListModel, String eventGroupName) {
         //刷新
-        List<Event> events1 = viewEventOfEventGroup(eventGroupName);
+        List<Event> events1 = findAllFromGroup(eventGroupName);
         defaultListModel.clear();
         for (int i = 0; i < events1.size(); i++) {
             defaultListModel.add(i,events1.get(i).getName());
@@ -197,7 +197,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     @Override
     public int queryAdmin(String eventGroupName) {
         int adminId;
-        EventGroup eventGroup = iEventGroupDao.viewEventGroup(eventGroupName);
+        EventGroup eventGroup = iEventGroupDao.find(eventGroupName);
         adminId=iEventGroupDao.queryAdmin(eventGroup.getEventGroupId());
         return adminId;
     }

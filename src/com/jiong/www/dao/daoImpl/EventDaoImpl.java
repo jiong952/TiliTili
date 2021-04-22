@@ -19,7 +19,7 @@ import java.util.List;
 public class EventDaoImpl implements IEventDao {
     /**创建瓜，添加瓜信息到瓜表*/
     @Override
-    public int doCreate(int userId, int eventGroupId, Event event) {
+    public int create(int userId, int eventGroupId, Event event) {
         int row;
         Object[] params={eventGroupId,userId,event.getName(),event.getEventContent()};
         String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
@@ -35,7 +35,7 @@ public class EventDaoImpl implements IEventDao {
     }
     /**验证瓜名是否存在*/
     @Override
-    public int verifyExist(String eventName)  {
+    public int isExist(String eventName)  {
         int row=0;
         String sql="SELECT `event_id` AS eventId FROM `event`WHERE `event_name`=?";
         try {
@@ -52,7 +52,7 @@ public class EventDaoImpl implements IEventDao {
     }
     /**删除瓜时验证是不是用户发的瓜*/
     @Override
-    public int doVerify(int userId, int eventId)  {
+    public int isCreate(int userId, int eventId)  {
         int row=0;
         //默认不是用户的瓜
         Object[] params={userId,eventId};
@@ -71,7 +71,7 @@ public class EventDaoImpl implements IEventDao {
     }
     /**查询这个瓜所在的瓜圈id*/
     @Override
-    public int queryGroupId(int eventId)  {
+    public int queryId(int eventId)  {
         int eventGroupId =0;
         String sql ="SELECT `eventGroup_id` AS eventGroupId FROM `event` WHERE `event_id` = ?";
         try {
@@ -87,7 +87,7 @@ public class EventDaoImpl implements IEventDao {
     }
     /**删除瓜*/
     @Override
-    public int doDelete(Connection conn,int eventId){
+    public int delete(Connection conn, int eventId){
         int row;
         String sql ="DELETE FROM `event` WHERE `event_id` =?";
         try {
@@ -100,7 +100,7 @@ public class EventDaoImpl implements IEventDao {
     }
     /**查看瓜和搜索瓜,返回瓜的所有信息，封装,返回eventId作为参数给其他方法用*/
     @Override
-    public Event doView(String eventName) {
+    public Event find(String eventName) {
         Event eventQuery = new Event();
         String sql = "SELECT `publisher_id` AS publisherId,`event_content` AS eventContent,`comment_num` AS commentNum,\n" +
                     "`likes_num` AS likesNum,`create_time` AS createTime,`collection_num` AS collectionNum," +
@@ -118,7 +118,7 @@ public class EventDaoImpl implements IEventDao {
     }
     /**用于查看收藏点赞合集时用瓜id查看信息*/
     @Override
-    public List<Event> doView(List<Integer> list) {
+    public List<Event> findSome(List<Integer> list) {
         List<Event> eventList = new ArrayList<>();
         for (Integer integer : list) {
             String sql = "SELECT `publisher_id` AS publisherId,`event_name` AS name,`event_content` AS eventContent,`comment_num` AS commentNum,\n" +
