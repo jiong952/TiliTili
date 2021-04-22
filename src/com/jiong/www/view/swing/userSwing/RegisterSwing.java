@@ -153,7 +153,9 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             else {
                 //信息完整且正确
                 String newName = usernameField.getText();
-                String securePassword = new Md5Utils().toMd5(confirmPassword);
+                //去除用户名头尾的空格
+                newName=newName.trim();
+                String securePassword =  Md5Utils.toMd5(confirmPassword);
                 int judge;
                 //密码加密
                 if(isSuperAdmin==1){
@@ -229,7 +231,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());
             if(!"".equals(password)){
-                boolean judge = new StringUtils().isPassword(password);
+                boolean judge =  StringUtils.isPassword(password);
                 //判断密码格式是否正确
                 jLabel3.setVisible(!judge);
             }
@@ -294,7 +296,7 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
             String password = new String(passwordField.getPassword());
             String confirmPassword = new String(confirmPasswordField.getPassword());
             if(!"".equals(password)){
-                boolean judge = new StringUtils().isPassword(password);
+                boolean judge =  StringUtils.isPassword(password);
                 jLabel3.setVisible(!judge);
             }
             if(!"".equals(password)&&"".equals(confirmPassword)){

@@ -10,7 +10,7 @@ public class StringUtils {
     static final int EMAIL_NUMBER =5;
     static final int NUM_COUNT =2;
     static final int ALL_COUNT =8;
-    public boolean isEmail(String email){
+    public static boolean isEmail(String email){
         int judge =0;
         //判断是否有仅有一个@且不能在开头或结尾
         if(email.indexOf(EMAIL_CHAR) > 0 && email.indexOf(EMAIL_CHAR) == email.lastIndexOf(EMAIL_CHAR) && email.indexOf(EMAIL_CHAR) < email.length()-1) {
@@ -36,7 +36,7 @@ public class StringUtils {
         return judge == 5;
 
     }
-    public boolean isPassword(String password){
+    public static boolean isPassword(String password){
         //要求一定要是8位以上的密码，且一定有且只有字母和数字
         char[] chars = password.toCharArray();
         boolean flag = false;

@@ -22,7 +22,6 @@ import static com.jiong.www.util.MyDsUtils.*;
  */
 public class UserServiceImpl implements IUserService {
     IUserDao iUserDao = new UserDaoImpl();
-    Md5Utils md5Utils = new Md5Utils();
     /**放在类中，才能验证是不是同一个人*/
     @Override
     public int register(String loginName, String loginPassword,int roleId) {
@@ -94,7 +93,7 @@ public class UserServiceImpl implements IUserService {
         //用用户名查密码和userId
         User userQuery = iUserDao.login(loginName);
         if(isRememberPassword==0){
-            loginPassword=new Md5Utils().toMd5(loginPassword);
+            loginPassword=Md5Utils.toMd5(loginPassword);
         }
         //密码正确
         if(loginPassword.equals(userQuery.getLoginPassword())){
@@ -116,7 +115,7 @@ public class UserServiceImpl implements IUserService {
     public int verifyPassword(String oldPassword, int userId){
         int row=0;
         String realPassword=iUserDao.verifyPassword(userId);
-        oldPassword=md5Utils.toMd5(oldPassword);
+        oldPassword=Md5Utils.toMd5(oldPassword);
         if(realPassword.equals(oldPassword)){
             //旧密码输入正确
             row=1;
@@ -130,7 +129,7 @@ public class UserServiceImpl implements IUserService {
         int row;
         User user = new User();
         //新密码加密
-        newPassword=md5Utils.toMd5(newPassword);
+        newPassword=Md5Utils.toMd5(newPassword);
         user.setLoginPassword(newPassword);
         user.setUserId(userId);
         row= iUserDao.changePassword(user);
@@ -164,7 +163,7 @@ public class UserServiceImpl implements IUserService {
             //读出
             InputStream binaryStream = iUserDao.queryIcon(conn,userId);
             //存进本地
-            new ImageUtils().readBlob(binaryStream,"C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+            ImageUtils.readBlob(binaryStream,"C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
             conn.commit();
         } catch (SQLException e) {
             try {

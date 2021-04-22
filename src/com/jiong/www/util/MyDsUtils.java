@@ -47,40 +47,8 @@ public class MyDsUtils {
         return con;
 
     }
-    /**
 
-     * 获取线程局部的Connection
 
-     */
-
-    public static Connection getThreadConn(){
-
-        Connection con = thread.get();
-        //先从线程中取数据
-
-        if(con==null){
-
-            con = getConnection();
-
-            thread.set(con);
-
-        }
-
-        return con;
-
-    }
-
-    /**
-
-     * 可选的调用删除局部线程中的对象
-
-     */
-
-    public static void remove(){
-
-        thread.remove();
-
-    }
 
     /**
 

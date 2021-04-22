@@ -160,7 +160,7 @@ public class InformationSwing extends JFrame {
                 if(!"".equals(emailTextField.getText())){
                     String email = emailTextField.getText();
                     //邮箱格式工具类
-                    boolean judge = new StringUtils().isEmail(email);
+                    boolean judge = StringUtils.isEmail(email);
                     //邮箱格式是否合法
                     emailTips.setVisible(!judge);
                 }else {
@@ -172,7 +172,7 @@ public class InformationSwing extends JFrame {
             public void removeUpdate(DocumentEvent e) {
                 if(!"".equals(emailTextField.getText())){
                     String email = emailTextField.getText();
-                    boolean judge = new StringUtils().isEmail(email);
+                    boolean judge = StringUtils.isEmail(email);
                     //邮箱格式是否合法
                     emailTips.setVisible(!judge);
                 }else {
@@ -342,7 +342,7 @@ public class InformationSwing extends JFrame {
                 if(emailTips.isVisible()){
                     //错误提示还在,说明邮箱格式不正确
                     JOptionPane.showMessageDialog(null,"请填写正确的邮箱格式","错误",JOptionPane.ERROR_MESSAGE);
-                }else if (!new DateUtils().isDate(userBirthday1)&&userBirthday1!=null){
+                }else if (!DateUtils.isDate(userBirthday1)&&userBirthday1!=null){
                     JOptionPane.showMessageDialog(null,"请填写合法的生日格式","错误",JOptionPane.ERROR_MESSAGE);
                 }else {
                     //所有信息正确

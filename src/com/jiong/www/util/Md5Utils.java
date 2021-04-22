@@ -9,7 +9,7 @@ import java.security.MessageDigest;
 public class Md5Utils {
     static final int CHAR_LENGTH =32;
 
-    public  String toMd5(String password) {
+    public static String toMd5(String password) {
         String securePassword = null;
         //加密的密码
         try {

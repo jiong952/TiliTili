@@ -237,7 +237,7 @@ public class PasswordSwing extends JFrame {
             }
             else if(errorPassword2.isVisible()){
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
-            }else if(!new StringUtils().isPassword(new String(newPasswordField.getPassword()))){
+            }else if(! StringUtils.isPassword(new String(newPasswordField.getPassword()))){
                 JOptionPane.showMessageDialog(null,"密码8位以上,一定有且只有字母数字,数字一定大于2位！","错误",JOptionPane.ERROR_MESSAGE);
             } else {
                 String userNewPassword=new String(newPasswordField.getPassword());

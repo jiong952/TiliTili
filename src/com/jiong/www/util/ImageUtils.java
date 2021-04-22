@@ -136,7 +136,7 @@ public class ImageUtils extends JFrame {
     }
 
     /**从数据库中读取二进制文件再存入指定文件夹*/
-    public void readBlob (InputStream in ,String targetPath){
+    public static void readBlob (InputStream in ,String targetPath){
         File file = new File(targetPath);
         String path = targetPath.substring(0, targetPath.lastIndexOf("\\"));
         if(!file.exists()){

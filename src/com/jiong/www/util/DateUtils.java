@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
  * @author Mono
  * 判断日期合法
  */
-public class DateUtils {
-    public  boolean isDate(String date) {
+public  class DateUtils {
+    public static boolean isDate(String date) {
         boolean judge = true;
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
