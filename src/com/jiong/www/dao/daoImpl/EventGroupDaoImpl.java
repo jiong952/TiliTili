@@ -26,7 +26,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     @Override
     public int doCreate(Connection conn, EventGroup eventGroup) {
         int row;
-        Object[] params ={eventGroup.getEventGroupName(),eventGroup.getEventGroupDescription()};
+        Object[] params ={eventGroup.getName(),eventGroup.getEventGroupDescription()};
         String sql ="INSERT INTO `eventgroup`(`eventGroup_name`,`eventGroup_description`) VALUES(?,?)";
         try {
             row=queryRunner.execute(conn,sql, params);
@@ -41,7 +41,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     /**把瓜圈和管理员联系起来*/
     @Override
     public void groupOfAdmin(Connection conn,int userId, EventGroup eventGroup){
-        Object[] params={userId,eventGroup.getEventGroupName()};
+        Object[] params={userId,eventGroup.getName()};
         String sql ="INSERT INTO `administrator`(`administrator_id`,`administrator_groupid`)VALUES(?,(SELECT `eventGroup_id`FROM `eventgroup` WHERE `eventGroup_name`=?))";
         try {
             queryRunner.execute(conn,sql, params);
@@ -133,11 +133,11 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     @Override
     public String viewEventGroup(int eventGroupId){
         String eventGroupName=null;
-        String sql ="SELECT `eventGroup_name`  AS eventGroupName FROM `eventgroup` WHERE `eventGroup_id`=?";
+        String sql ="SELECT `eventGroup_name`  AS name FROM `eventgroup` WHERE `eventGroup_id`=?";
         try {
             EventGroup query = queryRunner.query(sql, new BeanHandler<>(EventGroup.class), eventGroupId);
             if(query!=null){
-                eventGroupName=query.getEventGroupName();
+                eventGroupName=query.getName();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -164,7 +164,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     public List<Event> viewEventGroup(List<Integer> list){
         List<Event> eventList = new ArrayList<>();
         for (Integer integer : list) {
-            String sql = "SELECT `event_id` AS eventId,`event_name` AS eventName FROM `event` WHERE `eventGroup_id` = ?";
+            String sql = "SELECT `event_id` AS eventId,`event_name` AS name FROM `event` WHERE `eventGroup_id` = ?";
             try {
                 List<Event> query = queryRunner.query(sql, new BeanListHandler<>(Event.class), integer);
                 if(query!=null){
@@ -181,7 +181,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     @Override
     public List<EventGroup> viewAllEventGroup()  {
         List<EventGroup> eventGroups;
-        String sql ="SELECT `eventGroup_name` AS eventGroupName,`eventGroup_description` AS eventGroupDescription FROM `eventgroup`";
+        String sql ="SELECT `eventGroup_name` AS name,`eventGroup_description` AS eventGroupDescription FROM `eventgroup`";
         try {
             eventGroups = queryRunner.query(sql, new BeanListHandler<>(EventGroup.class));
         } catch (SQLException e) {
@@ -195,7 +195,7 @@ public class EventGroupDaoImpl implements IEventGroupDao {
     @Override
     public List<Event> viewEventOfEventGroup(int eventGroupId)  {
         List<Event> events;
-        String sql ="SELECT `event_id` AS eventId,`event_name` AS eventName,`comment_num` AS commentNum,`likes_num` AS likesNum," +
+        String sql ="SELECT `event_id` AS eventId,`event_name` AS name,`comment_num` AS commentNum,`likes_num` AS likesNum," +
                 "`collection_num` AS collectionNum,`publisher_id` AS publisherId,`create_time` AS createTime FROM `event` WHERE `eventGroup_id` = ?";
         try {
             events=queryRunner.query(sql,new BeanListHandler<>(Event.class),eventGroupId);

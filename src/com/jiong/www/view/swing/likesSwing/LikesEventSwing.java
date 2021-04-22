@@ -79,7 +79,7 @@ public class LikesEventSwing {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         List<Event> events = iLikesService.findAll(userId);
         for (int i = 0; i < events.size(); i++) {
-            listModel.add(i,events.get(i).getEventName());
+            listModel.add(i,events.get(i).getName());
         }
         //向列表框中加入该瓜圈的所有瓜名
         list.setModel(listModel);

@@ -21,7 +21,7 @@ public class EventDaoImpl implements IEventDao {
     @Override
     public int doCreate(int userId, int eventGroupId, Event event) {
         int row;
-        Object[] params={eventGroupId,userId,event.getEventName(),event.getEventContent()};
+        Object[] params={eventGroupId,userId,event.getName(),event.getEventContent()};
         String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
         try {
             row=queryRunner.execute(sql, params);
@@ -56,7 +56,7 @@ public class EventDaoImpl implements IEventDao {
         int row=0;
         //默认不是用户的瓜
         Object[] params={userId,eventId};
-        String sql="SELECT `event_name` AS eventName FROM `event` WHERE `publisher_id` = ? AND `event_id`  = ?";
+        String sql="SELECT `event_name` AS name FROM `event` WHERE `publisher_id` = ? AND `event_id`  = ?";
         try {
             Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), params);
             if(query!=null){
@@ -121,7 +121,7 @@ public class EventDaoImpl implements IEventDao {
     public List<Event> doView(List<Integer> list) {
         List<Event> eventList = new ArrayList<>();
         for (Integer integer : list) {
-            String sql = "SELECT `publisher_id` AS publisherId,`event_name` AS eventName,`event_content` AS eventContent,`comment_num` AS commentNum,\n" +
+            String sql = "SELECT `publisher_id` AS publisherId,`event_name` AS name,`event_content` AS eventContent,`comment_num` AS commentNum,\n" +
                     "`likes_num` AS likesNum,`create_time` AS createTime,`collection_num` AS collectionNum FROM `event` WHERE `event_id` = ?";
             try {
                 Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), integer);
@@ -137,10 +137,10 @@ public class EventDaoImpl implements IEventDao {
     @Override
     public String queryName(int eventId) {
         String eventName;
-        String sql="SELECT `event_name` AS eventName FROM `event` WHERE `event_id`=?";
+        String sql="SELECT `event_name` AS name FROM `event` WHERE `event_id`=?";
         try {
             Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), eventId);
-            eventName=query.getEventName();
+            eventName=query.getName();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new DaoException("查看瓜名异常",e);

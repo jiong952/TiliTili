@@ -6,7 +6,7 @@ import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.service.IEventService;
 import com.jiong.www.service.serviceImpl.EventServiceImpl;
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
-import com.jiong.www.util.GroupPagingUtils;
+import com.jiong.www.util.PagingUtils;
 import com.jiong.www.view.swing.MenuSwing;
 import com.jiong.www.view.swing.eventSwing.CreateEventSwing;
 import com.jiong.www.view.swing.eventSwing.EventSwing;
@@ -26,7 +26,6 @@ public class GroupSwing extends JFrame {
     int userId;
     String eventGroupName;
     List<Event> events;
-    GroupPagingUtils groupPagingUtils;
     DefaultListModel<String> listModel;
     static final int DOUBLE_CLICK = 2;
     static final int PAGE_SIZE = 9;
@@ -151,7 +150,7 @@ public class GroupSwing extends JFrame {
 
 
         //分页处理
-        groupPagingUtils=new GroupPagingUtils(events,listModel,PAGE_SIZE, first, previous, next, last);
+        new PagingUtils<>(events,listModel,PAGE_SIZE, first, previous, next, last);
 
         //查询瓜的标签+文本框
         Font font3 = new Font("黑体",Font.PLAIN,25);

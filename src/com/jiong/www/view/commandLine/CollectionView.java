@@ -33,7 +33,7 @@ public class CollectionView {
         for (int i = 0; i < events.size(); i++) {
             Event eventQuery ;
             eventQuery=events.get(i);
-            System.out.println(eventQuery.getEventName());
+            System.out.println(eventQuery.getName());
             System.out.println("作者："+eventQuery.getPublisherName()+"\t发布时间："+eventQuery.getCreateTime());
             System.out.println("点赞量："+eventQuery.getLikesNum()+"\t评论量"+eventQuery.getCommentNum()+"\t收藏量"+eventQuery.getCollectionNum());
             System.out.println("--------------------------------------------------------------------------");

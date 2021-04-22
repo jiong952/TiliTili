@@ -1,18 +1,20 @@
 package com.jiong.www.util;
 
-import com.jiong.www.po.EventGroup;
+import com.jiong.www.po.Comment;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * @author Mono
  */
-public class GroupsPagingUtils extends JFrame {
+public class CommentPagingUtils {
     /**list由外部传入，储存所有的数据*/
-    List<EventGroup> eventGroups;
+    List<Comment> list;
     private int currentPage = 1;
     private int lastPage;
     JButton first;
@@ -21,14 +23,14 @@ public class GroupsPagingUtils extends JFrame {
     JButton last;
     /**页面的展示数目*/
     private final int pageSize ;
-    DefaultListModel<String> defaultListModel;
+    DefaultTableModel defaultTableModel;
 
-    public DefaultListModel<String> getDefaultListModel() {
-        return defaultListModel;
+    public void setList(List<Comment> list) {
+        this.list = list;
     }
 
-    public void setDefaultListModel(DefaultListModel<String> defaultListModel) {
-        this.defaultListModel = defaultListModel;
+    public void setDefaultTableModel(DefaultTableModel defaultTableModel) {
+        this.defaultTableModel = defaultTableModel;
     }
 
     /**常量，避免魔法值*/
@@ -55,27 +57,27 @@ public class GroupsPagingUtils extends JFrame {
     public int getPageSize() {
         return pageSize;
     }
-
-
-    public GroupsPagingUtils(List<EventGroup> eventGroups, DefaultListModel<String> defaultListModel, int pageSize, JButton first, JButton previous, JButton next, JButton last)  {
-        this.eventGroups = eventGroups;
-        this.defaultListModel = defaultListModel;
+    /**有参构造*/
+    public CommentPagingUtils(List<Comment> list, DefaultTableModel defaultTableModel, int pageSize, JButton first, JButton previous, JButton next, JButton last)  {
+        this.list = list;
+        this.defaultTableModel=defaultTableModel;
         this.pageSize=pageSize;
         this.first=first;
         this.previous=previous;
         this.next=next;
         this.last=last;
-        first.addActionListener(new MyList());
-        previous.addActionListener(new MyList());
-        next.addActionListener(new MyList());
-        last.addActionListener(new MyList());
+        first.addActionListener(new MyTable());
+        previous.addActionListener(new MyTable());
+        next.addActionListener(new MyTable());
+        last.addActionListener(new MyTable());
+
     }
 
     /**传入list得到子list*/
-    public List<EventGroup> getList(int currentPage,int pageSize){
-        List<EventGroup> sonList;
+    public List<Comment> getList(int currentPage,int pageSize){
+        List<Comment> sonList;
         //子list
-        int listLength = eventGroups.size();
+        int listLength = list.size();
         //总长度
         if(currentPage<1){
             currentPage=1;
@@ -88,26 +90,31 @@ public class GroupsPagingUtils extends JFrame {
             toIndex=listLength;
             //防止下标越界
         }
-        sonList = eventGroups.subList(fromIndex,toIndex);
+        sonList = list.subList(fromIndex,toIndex);
         return sonList;
     }
 
     public void showList(int currentPage){
         //设置末页
-        if(eventGroups.size()%pageSize==0){
-            setLastPage(eventGroups.size()/getPageSize());
+        if(list.size()%pageSize==0){
+            setLastPage(list.size()/getPageSize());
         }else {
-            setLastPage(eventGroups.size()/getPageSize()+1);
+            setLastPage(list.size()/getPageSize()+1);
         }
-        defaultListModel.clear();
+        defaultTableModel.setRowCount(0);
         //清除原有数据
         setCurrentPage(currentPage);
-        List<EventGroup> sonList = getList(currentPage, pageSize);
-        for (int i = 0; i < sonList.size(); i++) {
-            defaultListModel.add(i,sonList.get(i).getEventGroupName());
+        List<Comment> sonList = getList(currentPage, pageSize);
+        for (Comment value : sonList) {
+            Vector<Object> vector = new Vector<>();
+            vector.add(value.getCommenterName());
+            vector.add(value.getCommentContent());
+            vector.add(value.getCommentTime());
+            defaultTableModel.addRow(vector);
         }
     }
-    class MyList implements ActionListener{
+    /**监听器类*/
+    class MyTable implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(FIRST_PAGE.equals(e.getActionCommand())){
@@ -131,6 +138,4 @@ public class GroupsPagingUtils extends JFrame {
             }
         }
     }
-
-
 }

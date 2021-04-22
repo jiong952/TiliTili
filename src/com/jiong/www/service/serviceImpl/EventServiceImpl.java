@@ -30,7 +30,7 @@ public class EventServiceImpl implements IEventService {
         // 用于接收dao层的返回值
         //封装event对象
         Event event = new Event();
-        event.setEventName(eventName);
+        event.setName(eventName);
         event.setEventContent(eventContent);
         return iEventDao.doCreate(userId,eventGroupId,event);
     }

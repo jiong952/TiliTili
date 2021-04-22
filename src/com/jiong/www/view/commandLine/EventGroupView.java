@@ -101,7 +101,7 @@ public class EventGroupView {
         for (int i = 0; i < events.size(); i++) {
             Event event;
             event=events.get(i);
-            System.out.println(event.getEventName());
+            System.out.println(event.getName());
             System.out.println("作者名:"+event.getPublisherName()+"创建时间:"+event.getCreateTime());
             System.out.println("点赞量:"+event.getLikesNum()+"\t收藏量:"+event.getCollectionNum()+"\t评论量:"+event.getCommentNum());
             System.out.println("--------------------------------------------------------------------------");
@@ -119,7 +119,7 @@ public class EventGroupView {
         for (int i = 0; i < eventGroups.size(); i++) {
             EventGroup eventGroup;
             eventGroup=eventGroups.get(i);
-            System.out.println(eventGroup.getEventGroupName());
+            System.out.println(eventGroup.getName());
             System.out.println(eventGroup.getEventGroupDescription());
             System.out.println("--------------------------------------------------------------------------");
         }

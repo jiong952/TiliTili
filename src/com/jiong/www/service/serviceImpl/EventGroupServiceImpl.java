@@ -30,7 +30,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
         // 用于接收dao层的返回值
         //封装eventGroup对象
         EventGroup eventGroup = new EventGroup();
-        eventGroup.setEventGroupName(eventGroupName);
+        eventGroup.setName(eventGroupName);
         eventGroup.setEventGroupDescription(eventGroupDescription);
         Connection conn = null;
         try {
@@ -132,11 +132,11 @@ public class EventGroupServiceImpl implements IEventGroupService {
         //每一页页面的展示瓜圈数目
         if(eventGroups.size()>= pageSize){
             for (int i = 0; i < pageSize; i++) {
-                listModel.add(i,eventGroups.get(i).getEventGroupName());
+                listModel.add(i,eventGroups.get(i).getName());
             }
         }else {
             for (int i = 0; i < eventGroups.size(); i++) {
-                listModel.add(i,eventGroups.get(i).getEventGroupName());
+                listModel.add(i,eventGroups.get(i).getName());
             }
         }
     }
@@ -147,7 +147,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
         List<EventGroup> eventGroups1 = findAll();
         defaultListModel.clear();
         for (int i = 0; i < eventGroups1.size(); i++) {
-            defaultListModel.add(i,eventGroups1.get(i).getEventGroupName());
+            defaultListModel.add(i,eventGroups1.get(i).getName());
         }
         //向列表框中加入所有的瓜圈名
         eventGroups.clear();
@@ -163,11 +163,11 @@ public class EventGroupServiceImpl implements IEventGroupService {
         //每一页页面的展示瓜数目
         if(events.size()>=pageSize){
             for (int i = 0; i < pageSize; i++) {
-                listModel.add(i,events.get(i).getEventName());
+                listModel.add(i,events.get(i).getName());
             }
         }else {
             for (int i = 0; i < events.size(); i++) {
-                listModel.add(i,events.get(i).getEventName());
+                listModel.add(i,events.get(i).getName());
             }
         }
     }
@@ -181,7 +181,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
         List<Event> events1 = viewEventOfEventGroup(eventGroupName);
         defaultListModel.clear();
         for (int i = 0; i < events1.size(); i++) {
-            defaultListModel.add(i,events1.get(i).getEventName());
+            defaultListModel.add(i,events1.get(i).getName());
         }
         //向列表框中加入所有的瓜圈名
         events.clear();

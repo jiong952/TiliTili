@@ -4,7 +4,7 @@ import com.jiong.www.po.Comment;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.service.*;
 import com.jiong.www.service.serviceImpl.*;
-import com.jiong.www.util.EventPagingUtils;
+import com.jiong.www.util.CommentPagingUtils;
 import com.jiong.www.view.swing.commentSwing.ViewCommentSwing;
 import com.jiong.www.view.swing.eventGroupSwing.GroupSwing;
 import com.jiong.www.view.swing.eventGroupSwing.GroupsSwing;
@@ -14,8 +14,6 @@ import com.jiong.www.view.swing.accuseSwing.AccuseSwing;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -28,7 +26,7 @@ public class EventSwing {
     String eventGroupName;
     List<Comment> comments;
     DefaultTableModel defaultTableModel;
-    EventPagingUtils eventPagingUtils;
+    CommentPagingUtils commentPagingUtils;
     static final int  ADMIN = 2;
     static final int  SUPER_ADMIN = 4;
     static final int  VISITOR = 3;
@@ -270,7 +268,7 @@ public class EventSwing {
         jPanel.add(jScrollPane1);
 
         //分页处理
-        eventPagingUtils = new EventPagingUtils(comments, defaultTableModel, PAGE_SIZE, first, previous, next, last);
+        commentPagingUtils = new CommentPagingUtils(comments, defaultTableModel, PAGE_SIZE, first, previous, next, last);
 
         //评论标签
         JLabel myComment = new JLabel("我要评论:");
@@ -301,7 +299,7 @@ public class EventSwing {
                 //置空
                 myCommentArea.setText("");
                 //重新设置数据源重新分页
-                comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+                comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames, commentPagingUtils);
                 //第一页数据
                 Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
                 defaultTableModel.setDataVector(dataProcess,columnNames);
@@ -317,7 +315,7 @@ public class EventSwing {
             if(table.getSelectedRow()<0){
                 JOptionPane.showMessageDialog(null,"请先单击选择要查看的评论!","错误",JOptionPane.ERROR_MESSAGE);
             }else {
-                new ViewCommentSwing(comments.get(((eventPagingUtils.getCurrentPage()-1)*PAGE_SIZE+table.getSelectedRow())).getCommentId());
+                new ViewCommentSwing(comments.get(((commentPagingUtils.getCurrentPage()-1)*PAGE_SIZE+table.getSelectedRow())).getCommentId());
             }
         });
         jPanel.add(view);
@@ -334,10 +332,10 @@ public class EventSwing {
                 //吃瓜群众
                 if(userId==comments.get(table.getSelectedRow()).getCommenterId()){
                     //由第一页的相应行数推得删除行的实际行数
-                    iCommentService.doCancel(comments.get(((eventPagingUtils.getCurrentPage()-1)*PAGE_SIZE+table.getSelectedRow())).getCommentId(),eventId);
+                    iCommentService.doCancel(comments.get(((commentPagingUtils.getCurrentPage()-1)*PAGE_SIZE+table.getSelectedRow())).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功");
                     //重新设置数据源重新分页
-                    comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+                    comments=iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames, commentPagingUtils);
                     //处理第一页数据
                     Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
                     defaultTableModel.setDataVector(dataProcess,columnNames);
@@ -353,7 +351,7 @@ public class EventSwing {
                     iCommentService.doCancel(comments.get(table.getSelectedRow()).getCommentId(),eventId);
                     JOptionPane.showMessageDialog(null,"删除成功！");
                     //重新设置数据源重新分页
-                    comments= iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames,eventPagingUtils);
+                    comments= iCommentService.doRefresh(comments, defaultTableModel, eventId, columnNames, commentPagingUtils);
                     //处理第一页数据
                     Object[][] dataProcess = iCommentService.doDataProcess(PAGE_SIZE, comments);
                     defaultTableModel.setDataVector(dataProcess,columnNames);

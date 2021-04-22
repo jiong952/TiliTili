@@ -8,7 +8,7 @@ import com.jiong.www.po.Comment;
 import com.jiong.www.po.User;
 import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.ICommentService;
-import com.jiong.www.util.EventPagingUtils;
+import com.jiong.www.util.CommentPagingUtils;
 
 import javax.swing.table.DefaultTableModel;
 import java.sql.Connection;
@@ -122,7 +122,7 @@ public class CommentServiceImpl implements ICommentService {
     }
     /**进行删除，添加评论后表格刷新*/
     @Override
-    public  List<Comment> doRefresh(List<Comment> comments, DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils) {
+    public  List<Comment> doRefresh(List<Comment> comments, DefaultTableModel defaultTableModel, int eventId, String[] columnNames, CommentPagingUtils commentPagingUtils) {
         comments=findAll(eventId);
         Object[][] rowData1 = new Object[comments.size()][3];
         for (int i = 0; i < comments.size(); i++) {
@@ -132,8 +132,8 @@ public class CommentServiceImpl implements ICommentService {
         }
         //重新设置数据源
         defaultTableModel.setDataVector(rowData1,columnNames);
-        eventPagingUtils.setList(comments);
-        eventPagingUtils.setDefaultTableModel(defaultTableModel);
+        commentPagingUtils.setList(comments);
+        commentPagingUtils.setDefaultTableModel(defaultTableModel);
         return comments;
     }
 

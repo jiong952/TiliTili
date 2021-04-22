@@ -103,7 +103,7 @@ public class EventView {
     public int viewEvent(String eventName){
         Event eventQuery;
         eventQuery= eventServiceImpl.doView(eventName);
-        System.out.println(eventQuery.getEventName());
+        System.out.println(eventQuery.getName());
         System.out.println("发布者:"+eventQuery.getPublisherName());
         System.out.println("发布时间:"+eventQuery.getCreateTime());
         System.out.println("点赞数："+eventQuery.getLikesNum()+"\t评论数："+eventQuery.getCommentNum()+"\t收藏数："+eventQuery.getCollectionNum());

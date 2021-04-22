@@ -4,7 +4,7 @@ import com.jiong.www.po.EventGroup;
 import com.jiong.www.service.serviceImpl.EventGroupServiceImpl;
 import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.serviceImpl.UserServiceImpl;
-import com.jiong.www.util.GroupsPagingUtils;
+import com.jiong.www.util.PagingUtils;
 import com.jiong.www.view.swing.MenuSwing;
 
 import javax.swing.*;
@@ -24,7 +24,6 @@ public class GroupsSwing extends JFrame {
     int adminId;
     String eventGroupName;
     List<EventGroup> eventGroups;
-    GroupsPagingUtils groupsPagingUtils;
     DefaultListModel<String> listModel;
     static final int DOUBLE_CLICK = 2;
     static final int PAGE_SIZE = 9;
@@ -123,7 +122,7 @@ public class GroupsSwing extends JFrame {
 
 
         //分页处理
-        groupsPagingUtils = new GroupsPagingUtils(eventGroups, listModel, PAGE_SIZE, first, previous, next, last);
+        new PagingUtils<>(eventGroups, listModel, PAGE_SIZE, first, previous, next, last);
 
         //查询瓜圈的标签+文本框
         Font font2 = new Font("黑体",Font.PLAIN,25);

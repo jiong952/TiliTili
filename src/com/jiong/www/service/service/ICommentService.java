@@ -1,7 +1,7 @@
 package com.jiong.www.service.service;
 
 import com.jiong.www.po.Comment;
-import com.jiong.www.util.EventPagingUtils;
+import com.jiong.www.util.CommentPagingUtils;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -37,9 +37,9 @@ public interface ICommentService {
      * @param defaultTableModel 传入数据源
      * @param eventId 瓜id
      * @param columnNames 表头
-     * @param eventPagingUtils 分页
+     * @param commentPagingUtils 分页
      * @return 返回处理完的评论信息*/
-    List<Comment> doRefresh (List<Comment> comments,DefaultTableModel defaultTableModel,int eventId,String[] columnNames,EventPagingUtils eventPagingUtils);
+    List<Comment> doRefresh (List<Comment> comments, DefaultTableModel defaultTableModel, int eventId, String[] columnNames, CommentPagingUtils commentPagingUtils);
     /**查看一条评论的信息
      * @param commentId 评论id
      * @return 评论信息

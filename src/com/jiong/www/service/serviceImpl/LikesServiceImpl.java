@@ -88,7 +88,7 @@ public class LikesServiceImpl implements ILikesService {
         DefaultListModel<String> listModel = new DefaultListModel<>();
         List<Event> events1 = findAll(userId);
         for (int i = 0; i < events1.size(); i++) {
-            listModel.add(i,events1.get(i).getEventName());
+            listModel.add(i,events1.get(i).getName());
         }
         return listModel;
     }

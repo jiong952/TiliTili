@@ -6,10 +6,10 @@ import java.util.Date;
  * @author Mono
  */
 public class Event {
+    /**瓜的名称*/
+    private String name;
     /**瓜的内容*/
     private String eventContent;
-    /**瓜的名称*/
-    private String eventName;
     /**瓜的发布者名字*/
     private String publisherName;
     /**发布者的id*/
@@ -50,12 +50,12 @@ public class Event {
         this.eventContent = eventContent;
     }
 
-    public String getEventName() {
-        return eventName;
+    public String getName() {
+        return name;
     }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPublisherName() {
