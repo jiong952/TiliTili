@@ -6,6 +6,7 @@ import com.jiong.www.dao.daoImpl.LikesDaoImpl;
 import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
+import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.ILikesService;
 
 import javax.swing.*;
@@ -36,8 +37,10 @@ public class LikesServiceImpl implements ILikesService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("点赞异常",e);
         }
     }
     /**取消点赞,同时删除用户点赞表中的相关数据*/
@@ -55,8 +58,10 @@ public class LikesServiceImpl implements ILikesService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("取消点赞异常",e);
         }
     }
     /**查看用户是否点赞*/

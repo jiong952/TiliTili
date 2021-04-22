@@ -6,6 +6,7 @@ import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
+import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.ICollectionService;
 import static com.jiong.www.util.MyDsUtils.*;
 import javax.swing.*;
@@ -34,8 +35,10 @@ public class CollectionServiceImpl implements ICollectionService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("收藏异常",e);
         }
     }
     /**取消收藏,同时删除用户收藏表中的相关数据*/
@@ -53,8 +56,10 @@ public class CollectionServiceImpl implements ICollectionService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("取消收藏异常",e);
         }
     }
     /**查看用户是否点赞*/

@@ -3,6 +3,7 @@ package com.jiong.www.service.serviceImpl;
 import com.jiong.www.dao.dao.IUserDao;
 import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.po.User;
+import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.IUserService;
 import com.jiong.www.util.ImageUtils;
 import com.jiong.www.util.Md5Utils;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements IUserService {
     /**放在类中，才能验证是不是同一个人*/
     @Override
     public int register(String loginName, String loginPassword,int roleId) {
-        int row=0;
+        int row;
         //封装user对象
         User user = new User();
         user.setLoginName(loginName);
@@ -44,8 +45,10 @@ public class UserServiceImpl implements IUserService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("注册异常",e);
         }
         return row;
     }
@@ -151,7 +154,7 @@ public class UserServiceImpl implements IUserService {
     /**保存用户设置的头像文件到数据库，把该二进制文件存到特定文件夹*/
     @Override
     public int saveIcon(InputStream inputStream, int userId){
-        int judge=0;
+        int judge;
         Connection conn = null;
         try {
             conn = getConnection();
@@ -162,15 +165,16 @@ public class UserServiceImpl implements IUserService {
             InputStream binaryStream = iUserDao.queryIcon(conn,userId);
             //存进本地
             new ImageUtils().readBlob(binaryStream,"C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
-
             conn.commit();
         } catch (SQLException e) {
             try {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("保存头像异常",e);
         }
         return judge;
     }
@@ -198,8 +202,10 @@ public class UserServiceImpl implements IUserService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("删除头像异常",e);
         }
         return flag;
     }

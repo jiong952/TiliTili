@@ -5,6 +5,7 @@ import com.jiong.www.dao.dao.IEventGroupDao;
 import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.po.EventGroup;
+import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.IEventGroupService;
 import com.jiong.www.service.service.IEventService;
 
@@ -25,7 +26,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     /**创建瓜圈*/
     @Override
     public int doCreate(int userId, String eventGroupName, String eventGroupDescription){
-        int row = 0;
+        int row ;
         // 用于接收dao层的返回值
         //封装eventGroup对象
         EventGroup eventGroup = new EventGroup();
@@ -43,8 +44,10 @@ public class EventGroupServiceImpl implements IEventGroupService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("创建瓜圈异常",e);
         }
         return row;
     }
@@ -71,7 +74,7 @@ public class EventGroupServiceImpl implements IEventGroupService {
     /**删除瓜圈，同时在管理员所管理的数据删除关系，删除瓜圈里的瓜*/
     @Override
     public int doDelete(String deleteEventGroupName, int userId){
-        int row = 0;
+        int row ;
         Connection conn = null;
         try {
             conn = getConnection();
@@ -92,8 +95,10 @@ public class EventGroupServiceImpl implements IEventGroupService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("删除瓜圈异常",e);
         }
         return row;
     }

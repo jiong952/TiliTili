@@ -9,6 +9,7 @@ import com.jiong.www.dao.daoImpl.CommentDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
+import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.IEventService;
 
 import java.sql.Connection;
@@ -55,7 +56,7 @@ public class EventServiceImpl implements IEventService {
     @Override
     public int doDelete(int eventId){
         Connection conn = null;
-        int judge=0;
+        int judge;
         try {
             conn = getConnection();
             conn.setAutoCommit(false);
@@ -70,8 +71,10 @@ public class EventServiceImpl implements IEventService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("删除瓜异常",e);
         }
         return judge;
     }

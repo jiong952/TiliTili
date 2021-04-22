@@ -6,6 +6,7 @@ import com.jiong.www.dao.daoImpl.CommentDaoImpl;
 import com.jiong.www.dao.dao.ICommentDao;
 import com.jiong.www.po.Comment;
 import com.jiong.www.po.User;
+import com.jiong.www.service.ServiceException;
 import com.jiong.www.service.service.ICommentService;
 import com.jiong.www.util.EventPagingUtils;
 
@@ -38,8 +39,10 @@ public class CommentServiceImpl implements ICommentService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("评论异常",e);
         }
     }
     /**删除评论，同时删除用户评论表中的相关数据,用于普通用户的删除*/
@@ -57,8 +60,10 @@ public class CommentServiceImpl implements ICommentService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("删除评论异常",e);
         }
     }
     /**删除瓜的所有评论,管理员*/
@@ -76,8 +81,10 @@ public class CommentServiceImpl implements ICommentService {
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+                throw new ServiceException("数据回滚异常",e);
             }
             e.printStackTrace();
+            throw new ServiceException("删除瓜所有评论异常",e);
         }
     }
     /**查看瓜的评论,也要返回评论人名*/
