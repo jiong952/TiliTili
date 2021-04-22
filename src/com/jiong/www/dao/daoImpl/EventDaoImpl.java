@@ -1,5 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.DaoException;
 import com.jiong.www.dao.dao.IEventDao;
 import com.jiong.www.po.Event;
 
@@ -19,13 +20,14 @@ public class EventDaoImpl implements IEventDao {
     /**创建瓜，添加瓜信息到瓜表*/
     @Override
     public int doCreate(int userId, int eventGroupId, Event event) {
-        int row = 0;
+        int row;
         Object[] params={eventGroupId,userId,event.getEventName(),event.getEventContent()};
         String sql ="INSERT INTO `event`(`eventGroup_id`,`publisher_id`,`event_name`,`event_content`) VALUES(?,?,?,?)";
         try {
             row=queryRunner.execute(sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("创建瓜异常",e);
         }
         //sql语句返回结果判断
         //row是返回值，用于判断
@@ -43,6 +45,7 @@ public class EventDaoImpl implements IEventDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看瓜名存在情况异常",e);
         }
         return row;
         //抛出到view层判断,1则无数据，0则有数据
@@ -61,11 +64,12 @@ public class EventDaoImpl implements IEventDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看是不是用户发布瓜情况异常",e);
         }
         return row;
         //抛出到view层判断
     }
-    /**查询这个瓜所在的瓜圈名*/
+    /**查询这个瓜所在的瓜圈id*/
     @Override
     public int queryGroupId(int eventId)  {
         int eventGroupId =0;
@@ -77,18 +81,20 @@ public class EventDaoImpl implements IEventDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查询瓜所在的瓜圈id异常",e);
         }
         return eventGroupId;
     }
     /**删除瓜*/
     @Override
     public int doDelete(Connection conn,int eventId){
-        int row=0;
+        int row;
         String sql ="DELETE FROM `event` WHERE `event_id` =?";
         try {
             row=queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("删除瓜异常",e);
         }
         return row;
     }
@@ -106,6 +112,7 @@ public class EventDaoImpl implements IEventDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看瓜异常",e);
         }
         return eventQuery;
     }
@@ -121,6 +128,7 @@ public class EventDaoImpl implements IEventDao {
                 eventList.add(query);
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new DaoException("查看收藏点赞合集瓜异常",e);
             }
         }
         return eventList;
@@ -128,13 +136,14 @@ public class EventDaoImpl implements IEventDao {
     /**查看瓜名*/
     @Override
     public String queryName(int eventId) {
-        String eventName=null;
+        String eventName;
         String sql="SELECT `event_name` AS eventName FROM `event` WHERE `event_id`=?";
         try {
             Event query = queryRunner.query(sql, new BeanHandler<>(Event.class), eventId);
             eventName=query.getEventName();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看瓜名异常",e);
         }
         return eventName;
     }

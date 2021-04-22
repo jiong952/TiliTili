@@ -1,5 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.DaoException;
 import com.jiong.www.dao.dao.ICollectionDao;
 import com.jiong.www.po.Collection;
 
@@ -26,6 +27,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("收藏异常",e);
         }
     }
     /**收藏量+1*/
@@ -36,6 +38,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             queryRunner.execute(conn,sql, eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("收藏量+1异常",e);
         }
     }
     /**取消收藏,同时删除用户收藏表中的相关数据*/
@@ -47,6 +50,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("取消收藏异常",e);
         }
     }
     /**收藏量-1*/
@@ -57,6 +61,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("收藏量-1异常",e);
         }
     }
     /**清除瓜相应收藏表数据*/
@@ -68,6 +73,7 @@ public class CollectionDaoImpl implements ICollectionDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("清除瓜相应收藏表数据异常",e);
         }
     }
     /**查看用户是否收藏*/
@@ -76,11 +82,12 @@ public class CollectionDaoImpl implements ICollectionDao {
         int judge=0;
         Object[] params={eventId,userId};
         String sql="SELECT `id` FROM `collection`  WHERE `event_id`= ? AND `user_id` =?";
-        Collection query = null;
+        Collection query;
         try {
             query = queryRunner.query(sql, new BeanHandler<>(Collection.class), params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看用户是否收藏异常",e);
         }
         if(query!=null){
             judge=1;
@@ -92,13 +99,14 @@ public class CollectionDaoImpl implements ICollectionDao {
     /**查看收藏合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     @Override
     public List<Integer> findAll(int userId)  {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list;
         //创建一个集合返回 收藏瓜的id
         String sql ="SELECT `event_id` AS eventId FROM `collection` WHERE `user_id` =?";
         try {
             list=queryRunner.query(sql, new ColumnListHandler<>(),userId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看收藏合集异常",e);
         }
         return list;
     }

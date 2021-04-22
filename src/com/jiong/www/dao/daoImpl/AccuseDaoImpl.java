@@ -1,5 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.DaoException;
 import com.jiong.www.dao.dao.IAccuseDao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
@@ -23,13 +24,14 @@ public class AccuseDaoImpl implements IAccuseDao {
     /**用户举报瓜*/
     @Override
     public int doAccuse(Accuse accuse)  {
-        int row = 0;
+        int row;
         Object[] params={accuse.getEventId(),accuse.getAccusedUserId(),accuse.getAccusedContent()};
         String sql ="INSERT INTO `accusation` (`accused_event_id`,`accuse_user_id`,`accused_content`) VALUES(?,?,?)";
         try {
             row=queryRunner.execute(sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("用户举报瓜异常",e);
         }
         return row;
     }
@@ -47,6 +49,7 @@ public class AccuseDaoImpl implements IAccuseDao {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new DaoException("管理员查看自己管理瓜圈的举报情况异常",e);
             }
         }
         //把查询的结果集返回到service层
@@ -61,6 +64,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("清空所有举报异常",e);
         }
     }
     /**删除举报*/
@@ -72,6 +76,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             queryRunner.execute(sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("删除举报异常",e);
         }
     }
     /**查看用户是否已经举报*/
@@ -88,6 +93,7 @@ public class AccuseDaoImpl implements IAccuseDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看用户举报情况异常",e);
         }
         return judge;
     }

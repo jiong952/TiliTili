@@ -1,5 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.DaoException;
 import com.jiong.www.dao.dao.ICommentDao;
 import com.jiong.www.po.Comment;
 import org.apache.commons.dbutils.handlers.BeanHandler;
@@ -24,6 +25,7 @@ public class CommentDaoImpl implements ICommentDao {
             queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("评论异常",e);
         }
     }
 
@@ -35,6 +37,7 @@ public class CommentDaoImpl implements ICommentDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("评论数+1异常",e);
         }
     }
 
@@ -47,6 +50,7 @@ public class CommentDaoImpl implements ICommentDao {
             queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("删除评论异常",e);
         }
     }
 
@@ -58,6 +62,7 @@ public class CommentDaoImpl implements ICommentDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("评论数-1异常",e);
         }
     }
 
@@ -70,6 +75,7 @@ public class CommentDaoImpl implements ICommentDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("删除瓜的所有评论异常",e);
         }
     }
     /**评论数清0*/
@@ -81,13 +87,14 @@ public class CommentDaoImpl implements ICommentDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("评论数清0异常",e);
         }
     }
 
     /**查看瓜的评论*/
     @Override
     public List<Comment> findAll(int eventId){
-        List<Comment> comments = new ArrayList<>();
+        List<Comment> comments;
         //创建一个集合返回 评论的信息
         String sql ="SELECT `comment_content` AS commentContent,`user_id` AS commenterId,`create_time` AS commentTime," +
                 "`id` AS commentId FROM `comment`WHERE`event_id`=?";
@@ -96,6 +103,7 @@ public class CommentDaoImpl implements ICommentDao {
             comments=queryRunner.query(sql,new BeanListHandler<>(Comment.class),eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看瓜的评论异常",e);
         }
         return comments;
 
@@ -115,6 +123,7 @@ public class CommentDaoImpl implements ICommentDao {
             query = queryRunner.query(sql, new BeanHandler<>(Comment.class), commentId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看特定评论异常",e);
         }
         return query;
     }

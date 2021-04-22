@@ -1,5 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.DaoException;
 import com.jiong.www.dao.dao.ILikesDao;
 
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
@@ -28,6 +29,7 @@ public class LikesDaoImpl implements ILikesDao {
             queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("点赞异常",e);
         }
     }
     /**点赞量+1*/
@@ -38,6 +40,7 @@ public class LikesDaoImpl implements ILikesDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("点赞量+1异常",e);
         }
     }
     /**取消点赞,同时删除用户点赞表中的相关数据*/
@@ -49,6 +52,7 @@ public class LikesDaoImpl implements ILikesDao {
             queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("取消点赞异常",e);
         }
     }
     /**点赞量-1*/
@@ -59,6 +63,7 @@ public class LikesDaoImpl implements ILikesDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("点赞量-1异常",e);
         }
     }
     /**清空瓜的点赞数据*/
@@ -70,6 +75,7 @@ public class LikesDaoImpl implements ILikesDao {
             queryRunner.execute(conn,sql,eventId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("清空点赞数据异常",e);
         }
     }
     /**查看用户是否点赞*/
@@ -86,19 +92,21 @@ public class LikesDaoImpl implements ILikesDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看是否点赞异常",e);
         }
         return judge;
     }
     /**查看点赞合集 每个瓜只展示事件标题 作者 发布时间 点赞量 收藏量 评论量*/
     @Override
     public List<Integer> findAll(int userId)  {
-        List<Integer> list = new ArrayList<>();
+        List<Integer> list;
         //创建一个集合返回 收藏瓜的信息
         String sql ="SELECT `event_id` AS eventId FROM `like` WHERE `user_id` =?";
         try {
             list=queryRunner.query(sql, new ColumnListHandler<>(),userId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看点赞合集异常",e);
         }
         return list;
     }

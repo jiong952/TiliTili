@@ -1,9 +1,11 @@
 package com.jiong.www.service.serviceImpl;
 
+import com.jiong.www.dao.dao.IUserDao;
 import com.jiong.www.dao.daoImpl.UserDaoImpl;
 import com.jiong.www.dao.daoImpl.CommentDaoImpl;
 import com.jiong.www.dao.dao.ICommentDao;
 import com.jiong.www.po.Comment;
+import com.jiong.www.po.User;
 import com.jiong.www.service.service.ICommentService;
 import com.jiong.www.util.EventPagingUtils;
 
@@ -82,10 +84,12 @@ public class CommentServiceImpl implements ICommentService {
     @Override
     public List<Comment> findAll(int eventId){
         List<Comment> comments;
+        IUserDao iuserDao = new UserDaoImpl();
         //创建一个容器返回 评论的信息
         comments = iCommentDao.findAll(eventId);
         for(Comment comment:comments){
-            comment.setCommenterName(new UserDaoImpl().queryUserInformation(comment.getCommenterId()).getLoginName());
+            User user = iuserDao.queryUserInformation(comment.getCommenterId());
+            comment.setCommenterName(user.getLoginName());
         }
         return comments;
     }

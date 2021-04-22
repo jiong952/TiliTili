@@ -1,5 +1,6 @@
 package com.jiong.www.dao.daoImpl;
 
+import com.jiong.www.dao.DaoException;
 import com.jiong.www.dao.dao.IUserDao;
 import com.jiong.www.po.User;
 
@@ -22,13 +23,14 @@ public class UserDaoImpl implements IUserDao {
     /**注册，添加用户信息到用户表*/
     @Override
     public int doRegister(Connection conn,User user)  {
-        int row=0;
+        int row;
         String sql ="INSERT INTO `user` (`login_name`,`login_password`,`user_nickname`) VALUES(?,?,?)";
         Object[] params= {user.getLoginName(), user.getLoginPassword(),user.getLoginName()};
         try {
             row = queryRunner.execute(conn,sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("注册异常",e);
         }
         //sql语句返回结果判断
         //释放连接
@@ -44,18 +46,20 @@ public class UserDaoImpl implements IUserDao {
             queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("更新用户角色表异常",e);
         }
     }
     /**用用户名查用户id*/
     @Override
     public int doQueryId(String userName)  {
-        int userId=0;
+        int userId;
         String sql ="SELECT `user_id` AS userId FROM `user` WHERE `login_name`=?";
         try {
             User user = queryRunner.query(sql, new BeanHandler<>(User.class), userName);
             userId=user.getUserId();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("用用户名查用户id异常",e);
         }
         return userId;
     }
@@ -74,6 +78,7 @@ public class UserDaoImpl implements IUserDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("验证该用户名是否存在异常",e);
         }
         return row;
         //抛出到view层判断
@@ -81,7 +86,7 @@ public class UserDaoImpl implements IUserDao {
     /**完善用户信息,实现了每次只改动某个信息，其他的保存为上次的值*/
     @Override
     public int perfectInformation(User user)  {
-        int row = 0;
+        int row;
         Object[] params = {user.getUserEmail(),user.getUserNickname(),user.getUserGender(),user.getUserDescription(),user.getUserBirthday(),user.getUserId()};
         //查询并储存该用户的信息的原先值
         String sql ="UPDATE `user` SET `user_e-mail`=?,`user_nickname`=?,`user_gender`=?,`user_description`=?,`user_birthday`=? WHERE `user_id`=?";
@@ -89,6 +94,7 @@ public class UserDaoImpl implements IUserDao {
             row = queryRunner.execute(sql, params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("更新用户信息异常",e);
         }
         //释放连接
         return row;
@@ -103,6 +109,7 @@ public class UserDaoImpl implements IUserDao {
             queryRunner.execute(sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("更新是否记住密码异常",e);
         }
     }
     /**登录*/
@@ -117,26 +124,28 @@ public class UserDaoImpl implements IUserDao {
             userQuery = queryRunner.query(sql, new BeanHandler<>(User.class), loginName);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("登录异常",e);
         }
         return userQuery;
     }
     /**验证用户的身份，吃瓜群众1管理员2游客3超管4*/
     @Override
     public int verifyRole(int userId) {
-        int roleId=0;
+        int roleId;
         //用户角色的id
         String sql ="SELECT `role_id` FROM `user_role`WHERE`user_id`=?";
         try {
             roleId = queryRunner.query(sql, new ScalarHandler<>(), userId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看用户身份异常",e);
         }
         return roleId;
     }
     /**验证要修改的密码*/
     @Override
     public String verifyPassword(int userId) {
-        String realPassword=null;
+        String realPassword;
         String sql ="SELECT `login_password` AS loginPassword FROM `user` WHERE `user_id`=?";
         try {
             User query = queryRunner.query(sql, new BeanHandler<>(User.class), userId);
@@ -145,19 +154,21 @@ public class UserDaoImpl implements IUserDao {
             System.out.println(realPassword);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看密码异常",e);
         }
         return realPassword;
     }
     /**修改密码*/
     @Override
     public int changePassword(User user)  {
-        int row=0;
+        int row;
         Object[] params ={user.getLoginPassword(),user.getUserId()};
         String sql ="UPDATE `user` SET `login_password`=? WHERE `user_id`=?";
         try {
             row=queryRunner.execute(sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("修改密码异常",e);
         }
         //释放连接
         return row;
@@ -173,6 +184,7 @@ public class UserDaoImpl implements IUserDao {
             query = queryRunner.query(sql, new BeanHandler<>(User.class), userId);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查询用户个人信息异常",e);
         }
         //把查询的结果集返回到service层
         return query;
@@ -189,45 +201,49 @@ public class UserDaoImpl implements IUserDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("查看是否记住密码异常",e);
         }
         return query;
     }
     /**保存用户设置的头像文件到数据库*/
     @Override
     public int saveIcon(Connection conn,InputStream inputStream, int userId){
-        int row=0;
+        int row;
         Object[] params = {inputStream,userId};
         String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
         try {
             row=queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("保存头像到数据库异常",e);
         }
         return row;
     }
     /**保存用户设置的头像文件本地文件夹*/
     @Override
     public InputStream queryIcon(Connection conn,int userId){
-        InputStream binaryStream=null;
+        InputStream binaryStream;
         String sql = "SELECT `icon` AS  icon FROM `user` WHERE `user_id`=?";
         try {
             User query = queryRunner.query(conn,sql, new BeanHandler<>(User.class), userId);
             binaryStream=new ByteArrayInputStream(query.getIcon());
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("保存头像到本地文件夹异常",e);
         }
         return binaryStream;
     }
     /**删除用户保存的头像文件*/
     @Override
     public int deleteIcon(Connection conn,int userId) {
-        int row = 0;
+        int row;
         String sql ="UPDATE `user` SET `icon` = ? WHERE `user_id` = ?";
         Object[] params={null,userId};
         try {
             row=queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DaoException("删除数据库头像异常",e);
         }
         return row;
     }
