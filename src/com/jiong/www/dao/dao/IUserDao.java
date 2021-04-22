@@ -19,8 +19,9 @@ public interface IUserDao {
     /**把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
      * @param userId 用户id
      * @param conn 连接
+     * @param roleId 角色
      * */
-    void doInsertRole(Connection conn,int userId);
+    void doInsertRole(Connection conn,int userId,int roleId);
 
     /**
      * 用用户名查用户id

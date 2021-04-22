@@ -6,7 +6,7 @@ import com.jiong.www.po.Collection;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 
-import static com.jiong.www.util.DbcpUtils.*;
+import static com.jiong.www.util.MyDsUtils.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;

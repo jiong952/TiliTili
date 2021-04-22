@@ -22,7 +22,7 @@ public class UserView {
                 //judge为0不存在,为1存在
                 System.out.println("请输入新密码：");
                 String loginPassword = scanner.next();
-                int row = userServiceImpl.register(loginName,loginPassword);
+                int row = userServiceImpl.register(loginName,loginPassword,1);
                 //row用于接收service传来的结果
                 if(row>0){
                     System.out.println("注册成功！");

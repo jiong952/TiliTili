@@ -3,11 +3,11 @@ package com.jiong.www.dao.daoImpl;
 import com.jiong.www.dao.dao.IAccuseDao;
 import com.jiong.www.po.Accuse;
 import com.jiong.www.po.Event;
-import org.apache.commons.dbutils.handlers.BeanHandler;
+
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import static com.jiong.www.util.DbcpUtils.*;
+import static com.jiong.www.util.MyDsUtils.*;
 
 
 import java.sql.Connection;

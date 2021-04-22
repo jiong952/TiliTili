@@ -1,5 +1,6 @@
 package com.jiong.www.util;
 
+
 import java.sql.*;
 
 /**
@@ -15,7 +16,8 @@ public class JdbcUtils {
             e.printStackTrace();
         }
     }
-    /**用用户信息和url进行数据库连接*/
+
+    /**使用用户信息和url进行数据库连接*/
     static String url ="jdbc:mysql://localhost:3306/tilitili?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC";
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(url,"root","123456");

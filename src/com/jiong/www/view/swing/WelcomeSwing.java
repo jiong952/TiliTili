@@ -74,7 +74,7 @@ public class WelcomeSwing extends JFrame implements ActionListener{
         }else if(e.getSource()==register){
             welcome.dispose();
             //销毁当前页面
-            new RegisterSwing();
+            new RegisterSwing(0);
             //进入注册界面
         }else if(e.getSource()== visitor){
             int judge = JOptionPane.showConfirmDialog(null, "游客只能浏览瓜，您确定不登录吗？", "确认", JOptionPane.YES_NO_OPTION);

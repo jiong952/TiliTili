@@ -5,7 +5,7 @@ import com.jiong.www.po.Event;
 
 
 import org.apache.commons.dbutils.handlers.BeanHandler;
-import static com.jiong.www.util.DbcpUtils.*;
+import static com.jiong.www.util.MyDsUtils.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;

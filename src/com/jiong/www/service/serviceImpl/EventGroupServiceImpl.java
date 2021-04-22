@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.jiong.www.util.DbcpUtils.getConnection;
+import static com.jiong.www.util.MyDsUtils.*;
 
 /**
  * @author Mono
@@ -40,7 +40,6 @@ public class EventGroupServiceImpl implements IEventGroupService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -78,18 +77,18 @@ public class EventGroupServiceImpl implements IEventGroupService {
             conn = getConnection();
             conn.setAutoCommit(false);
             //删除瓜圈里的瓜
-            List<Event> events = iEventGroupDao.viewEventOfEventGroup(iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId());
+            int eventGroupId = iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId();
+            List<Event> events = iEventGroupDao.viewEventOfEventGroup(eventGroupId);
             for(Event event:events){
                 iEventService.doDelete(event.getEventId());
             }
             //清除管理员表瓜圈的数据
-            iEventGroupDao.doDeleteOfAdmin(conn,iEventGroupDao.viewEventGroup(deleteEventGroupName).getEventGroupId(),userId);
+            iEventGroupDao.doDeleteOfAdmin(conn, eventGroupId,userId);
             //删除瓜圈
             row= iEventGroupDao.doDelete(conn,deleteEventGroupName);
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -182,5 +181,19 @@ public class EventGroupServiceImpl implements IEventGroupService {
         //向列表框中加入所有的瓜圈名
         events.clear();
         events.addAll(events1);
+    }
+
+    /**
+     * 查询瓜圈管理员id
+     *
+     * @param eventGroupName 瓜圈名
+     * @return 管理员id
+     */
+    @Override
+    public int queryAdmin(String eventGroupName) {
+        int adminId;
+        EventGroup eventGroup = iEventGroupDao.viewEventGroup(eventGroupName);
+        adminId=iEventGroupDao.queryAdmin(eventGroup.getEventGroupId());
+        return adminId;
     }
 }

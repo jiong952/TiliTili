@@ -32,7 +32,10 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
     JButton reset;
     JButton cancel;
     IUserService iUserService = new UserServiceImpl();
-    public RegisterSwing(){
+    /**注册时区分超级管理员和普通用户*/
+    int isSuperAdmin;
+    public RegisterSwing(int isSuperAdmin){
+        this.isSuperAdmin = isSuperAdmin;
         register = new JFrame("TiliTili瓜王系统");
         register.setSize(500,500);
         //设置大小
@@ -116,6 +119,14 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
         jPanel.add(reset);
         jPanel.add(cancel);
 
+
+        if(isSuperAdmin==1){
+            //区分界面
+            username.setText("管理员名");
+            jLabel1.setText("管理员名已存在!");
+            registerButton.setText("添加管理员");
+            registerButton.setBounds(100,350,120,20);
+        }
         register.setVisible(true);
     }
 
@@ -129,7 +140,11 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
                 JOptionPane.showMessageDialog(null,"请填写完所有信息！","错误",JOptionPane.ERROR_MESSAGE);
                 //让用户填写所有
             }else if(jLabel1.isVisible()){
-                JOptionPane.showMessageDialog(null,"用户名已存在！","错误",JOptionPane.ERROR_MESSAGE);
+                if(isSuperAdmin==1){
+                    JOptionPane.showMessageDialog(null,"管理员名已存在！","错误",JOptionPane.ERROR_MESSAGE);
+                }else {
+                    JOptionPane.showMessageDialog(null,"用户名已存在！","错误",JOptionPane.ERROR_MESSAGE);
+                }
             }else if(jLabel2.isVisible()){
                 JOptionPane.showMessageDialog(null,"两次密码输入不一致！","错误",JOptionPane.ERROR_MESSAGE);
             }else if(jLabel3.isVisible()){
@@ -139,8 +154,15 @@ public class RegisterSwing extends JFrame implements ActionListener , DocumentLi
                 //信息完整且正确
                 String newName = usernameField.getText();
                 String securePassword = new Md5Utils().toMd5(confirmPassword);
+                int judge;
                 //密码加密
-                int judge = iUserService.register(newName, securePassword);
+                if(isSuperAdmin==1){
+                    //超级管理员添加管理员
+                    judge = iUserService.register(newName, securePassword,2);
+                }else {
+                    //普通用户注册
+                    judge = iUserService.register(newName, securePassword,1);
+                }
                 if(judge>0){
                     JOptionPane.showMessageDialog(null,"注册成功！");
                     register.dispose();

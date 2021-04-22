@@ -3,6 +3,7 @@ package com.jiong.www.test;
 import com.jiong.www.util.ImageUtils;
 import com.jiong.www.util.JdbcUtils;
 
+import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,5 +18,9 @@ public class Main {
         //界面美化：加显示当前的时间
         // 菜单项可以设置快捷键
         // 界面的外框可以加图标
+        FileSystemView fileSystemView = FileSystemView.getFileSystemView();
+        File homeDirectory = fileSystemView.getHomeDirectory();
+        System.out.println(homeDirectory);
+
     }
 }

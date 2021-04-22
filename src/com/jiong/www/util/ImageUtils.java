@@ -4,11 +4,8 @@ import com.jiong.www.service.serviceImpl.UserServiceImpl;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 
 /**
@@ -29,6 +26,9 @@ public class ImageUtils extends JFrame {
     JFileChooser jFileChooser = new JFileChooser();
     JLabel accessory = new JLabel();
     File file;
+    /**图片格式后缀*/
+    String jpg = ".jpg";
+    String png = ".png";
     /**预览时图片加载的标签*/
     public ImageUtils(JLabel jLabel, JPanel jPanel, JButton set,JButton save,JButton reset,int userId){
         this.jLabel=jLabel;
@@ -44,7 +44,10 @@ public class ImageUtils extends JFrame {
     }
 
     public void init(){
-        jFileChooser.setCurrentDirectory(new File("C:\\Users\\Mono\\Desktop"));
+        //读取桌面路径
+        FileSystemView fileSystemView = FileSystemView.getFileSystemView();
+        File homeDirectory = fileSystemView.getHomeDirectory();
+        jFileChooser.setCurrentDirectory(homeDirectory);
         //设置当前目录
         jFileChooser.addChoosableFileFilter(new FileCanChoose());
         //设置过滤器
@@ -83,7 +86,7 @@ public class ImageUtils extends JFrame {
             //如果用户选择了APPROVE（赞同）按钮，即放进个人信息或者放进瓜
             if(result == JFileChooser.APPROVE_OPTION)
             {
-                if(jFileChooser.getSelectedFile().getName().toLowerCase().endsWith(".png")||jFileChooser.getSelectedFile().getName().toLowerCase().endsWith(".jpg")){
+                if(jFileChooser.getSelectedFile().getName().toLowerCase().endsWith(png)||jFileChooser.getSelectedFile().getName().toLowerCase().endsWith(jpg)){
                     String address = jFileChooser.getSelectedFile().getAbsolutePath();
                     imageChosen =new ImageIcon(address); //显示指定图片
                     imageChosen = new ImageIcon(imageChosen.getImage().getScaledInstance(jLabel.getWidth(),-1,Image.SCALE_DEFAULT));
@@ -120,9 +123,9 @@ public class ImageUtils extends JFrame {
                 JOptionPane.showMessageDialog(null,"已是原始头像","失败",JOptionPane.ERROR_MESSAGE);
             }
         //刷新
-            File file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\" + userId + ".jpg");
+            File file = new File(homeDirectory+"\\TiliTili照片\\" + userId + jpg);
             if(!file.exists()){
-                file = new File("C:\\Users\\Mono\\Desktop\\TiliTili照片\\默认.jpg");
+                file = new File(homeDirectory+"\\TiliTili照片\\默认"+jpg);
             }
             ImageIcon imageIcon = new ImageIcon(file.getAbsolutePath());
             imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(jLabel.getWidth(),-1,Image.SCALE_DEFAULT));
@@ -160,7 +163,7 @@ public class ImageUtils extends JFrame {
             }
         }
     }
-    class FileCanChoose extends FileFilter{
+    static class FileCanChoose extends FileFilter{
 
         @Override
         public boolean accept(File file) {

@@ -7,7 +7,7 @@ import com.jiong.www.dao.daoImpl.CollectionDaoImpl;
 import com.jiong.www.dao.daoImpl.EventDaoImpl;
 import com.jiong.www.po.Event;
 import com.jiong.www.service.service.ICollectionService;
-import static com.jiong.www.util.DbcpUtils.*;
+import static com.jiong.www.util.MyDsUtils.*;
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +31,6 @@ public class CollectionServiceImpl implements ICollectionService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -51,7 +50,6 @@ public class CollectionServiceImpl implements ICollectionService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

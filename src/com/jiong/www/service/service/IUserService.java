@@ -12,9 +12,10 @@ public interface IUserService {
     /**
      * @param loginName 用户名
      * @param loginPassword 密码
+     * @param roleId 角色id
      * @return 验证判断
      */
-    int register(String loginName, String loginPassword);
+    int register(String loginName, String loginPassword,int roleId);
 
     /**
      * 用于注册时验证该用户名是否存在

@@ -1,17 +1,15 @@
 package com.jiong.www.dao.daoImpl;
 
 import com.jiong.www.dao.dao.ILikesDao;
-import com.jiong.www.util.DbcpUtils;
-import com.jiong.www.util.JdbcUtils;
+
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import javax.swing.*;
 
-import static com.jiong.www.util.DbcpUtils.*;
+
+import static com.jiong.www.util.MyDsUtils.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

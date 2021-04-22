@@ -97,4 +97,9 @@ public interface IEventGroupDao {
      * @return 该瓜圈id对应的瓜圈
      */
     List<Event> viewEventOfEventGroup(int eventGroupId);
+    /**查看瓜圈所属管理员id
+     * @param eventGroupId 瓜圈id
+     * @return 管理员id
+     * */
+    int queryAdmin(int eventGroupId);
 }

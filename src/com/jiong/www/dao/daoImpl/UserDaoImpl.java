@@ -3,14 +3,17 @@ package com.jiong.www.dao.daoImpl;
 import com.jiong.www.dao.dao.IUserDao;
 import com.jiong.www.po.User;
 
+import static com.jiong.www.util.MyDsUtils.*;
+
+import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
+import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.*;
 
-import static com.jiong.www.util.DbcpUtils.*;
 
 /**
  * @author Mono
@@ -34,10 +37,11 @@ public class UserDaoImpl implements IUserDao {
     }
     /**把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1*/
     @Override
-    public void doInsertRole(Connection conn,int userId)  {
-        String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES(?,1)";
+    public void doInsertRole(Connection conn,int userId,int roleId)  {
+        Object[] params={userId,roleId};
+        String sql ="INSERT INTO `user_role`(`user_id`,`role_id`)VALUES(?,?)";
         try {
-            queryRunner.execute(conn,sql,userId);
+            queryRunner.execute(conn,sql,params);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -105,6 +109,9 @@ public class UserDaoImpl implements IUserDao {
     @Override
     public User login(String loginName)  {
         User userQuery = new User();
+        DataSource dataSource = getDataSource();
+        QueryRunner queryRunner = new QueryRunner(dataSource);
+        new QueryRunner();
         String sql ="SELECT `user_id` AS userId,`login_password` AS loginPassword FROM `user` WHERE `login_name`=?";
         try {
             userQuery = queryRunner.query(sql, new BeanHandler<>(User.class), loginName);

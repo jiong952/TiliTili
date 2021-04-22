@@ -14,7 +14,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 
-import static com.jiong.www.util.DbcpUtils.getConnection;
+import static com.jiong.www.util.MyDsUtils.*;
 
 /**
  * @author Mono
@@ -24,7 +24,7 @@ public class UserServiceImpl implements IUserService {
     Md5Utils md5Utils = new Md5Utils();
     /**放在类中，才能验证是不是同一个人*/
     @Override
-    public int register(String loginName, String loginPassword) {
+    public int register(String loginName, String loginPassword,int roleId) {
         int row=0;
         //封装user对象
         User user = new User();
@@ -37,11 +37,10 @@ public class UserServiceImpl implements IUserService {
             //注册，添加信息到用户表
             row = iUserDao.doRegister(conn,user);
             //把新注册的用户加入到用户角色表，默认新注册只能为吃瓜群众即1
-            iUserDao.doInsertRole(conn,iUserDao.doQueryId(user.getLoginName()));
+            iUserDao.doInsertRole(conn,iUserDao.doQueryId(user.getLoginName()),roleId);
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -167,7 +166,6 @@ public class UserServiceImpl implements IUserService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -197,7 +195,6 @@ public class UserServiceImpl implements IUserService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

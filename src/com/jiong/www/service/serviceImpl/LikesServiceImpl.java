@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.jiong.www.util.DbcpUtils.getConnection;
+import static com.jiong.www.util.MyDsUtils.*;
 
 /**
  * @author Mono
@@ -33,7 +33,6 @@ public class LikesServiceImpl implements ILikesService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -53,7 +52,6 @@ public class LikesServiceImpl implements ILikesService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

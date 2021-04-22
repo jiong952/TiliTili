@@ -20,6 +20,8 @@ import java.util.List;
  */
 public class GroupsSwing extends JFrame {
     int userId;
+    int roleId;
+    int adminId;
     String eventGroupName;
     List<EventGroup> eventGroups;
     GroupsPagingUtils groupsPagingUtils;
@@ -182,14 +184,21 @@ public class GroupsSwing extends JFrame {
         delete.setBounds(350,650,90,30);
         delete.addActionListener(e -> {
             if(list.getSelectedIndex()>0){
-                int judge0 = iEventGroupService.verifyOfAdmin(userId, list.getSelectedValue());
-                //判断是不是该管理员管理的瓜圈
-                if(judge0==1){
+                String eventGroupName1 = list.getSelectedValue();
+                int judge0 = iEventGroupService.verifyOfAdmin(userId, eventGroupName1);
+                //判断是不是该管理员管理的瓜圈或者是不是超级管理员
+                if(judge0==1||roleId==SUPER_ADMIN){
                     //YES
-                    int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + list.getSelectedValue() + "瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
+                    int judge = JOptionPane.showConfirmDialog(null, "您确定要删除" + eventGroupName1 + "瓜圈吗？", "确认", JOptionPane.YES_NO_OPTION);
                     if(judge==0){
                         //确认是
-                        judge0 = iEventGroupService.doDelete(list.getSelectedValue(), userId);
+                        if(roleId==SUPER_ADMIN){
+                            //超管删除时先查询瓜圈管理员id
+                            adminId=iEventGroupService.queryAdmin(eventGroupName1);
+                        }else {
+                            adminId=userId;
+                        }
+                        judge0 = iEventGroupService.doDelete(eventGroupName1, adminId);
                         if(judge0==1){
                             JOptionPane.showMessageDialog(null,"删除瓜圈成功！");
                             new GroupsSwing(userId,null);
@@ -223,7 +232,7 @@ public class GroupsSwing extends JFrame {
         refresh.setVisible(false);
 
         //直接用roleId来区分不同的身份，使不同角色看到不同的界面
-        int roleId = new UserServiceImpl().verifyRole(userId);
+        roleId = new UserServiceImpl().verifyRole(userId);
 
         //窗口可见
         eventGroup.setVisible(true);

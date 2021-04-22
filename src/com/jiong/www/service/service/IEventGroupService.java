@@ -84,4 +84,9 @@ public interface IEventGroupService {
      * @param eventGroupName 瓜圈名
      * */
     void refreshGroup(List<Event> events, DefaultListModel<String> defaultListModel, String eventGroupName);
+    /**查询瓜圈管理员id
+     * @param eventGroupName 瓜圈名
+     * @return 管理员id
+     * */
+    int queryAdmin(String eventGroupName);
 }

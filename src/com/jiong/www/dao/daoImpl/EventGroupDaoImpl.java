@@ -9,7 +9,7 @@ import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import static com.jiong.www.util.DbcpUtils.*;
+import static com.jiong.www.util.MyDsUtils.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,6 +20,7 @@ import java.util.List;
  * @author Mono
  */
 public class EventGroupDaoImpl implements IEventGroupDao {
+
     /**创建瓜圈,添加瓜圈信息到瓜圈表*/
     @Override
     public int doCreate(Connection conn, EventGroup eventGroup) {
@@ -191,5 +192,17 @@ public class EventGroupDaoImpl implements IEventGroupDao {
         }
         //把查询的结果集返回到service层
         return events;
+    }
+    /**查看瓜圈所属管理员id*/
+    @Override
+    public int queryAdmin(int eventGroupId) {
+        int adminId=0;
+        String sql="SELECT `administrator_id` FROM `administrator` WHERE `administrator_groupid`=?";
+        try {
+            adminId=queryRunner.query(sql,new ScalarHandler<>(),eventGroupId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return adminId;
     }
 }

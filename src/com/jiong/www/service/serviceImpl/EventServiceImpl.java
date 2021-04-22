@@ -14,7 +14,7 @@ import com.jiong.www.service.service.IEventService;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.jiong.www.util.DbcpUtils.getConnection;
+import static com.jiong.www.util.MyDsUtils.*;
 
 
 /**
@@ -67,7 +67,6 @@ public class EventServiceImpl implements IEventService {
             conn.commit();
         } catch (SQLException e) {
             try {
-                assert conn != null;
                 conn.rollback();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();

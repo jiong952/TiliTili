@@ -50,7 +50,7 @@ public class MenuSwing {
             if(userId!=0){
                 JOptionPane.showMessageDialog(null,"请先退出登录","错误",JOptionPane.ERROR_MESSAGE);
             } else {
-                new RegisterSwing();
+                new RegisterSwing(0);
             }
         });
         JMenuItem login = new JMenuItem("登录");
@@ -99,10 +99,6 @@ public class MenuSwing {
         viewCollection.add(likesCollection);
         viewCollection.add(collectedCollection);
 
-        //帮助文档菜单
-        JMenu help = new JMenu("帮助");
-        JMenuItem helpItem = new JMenuItem("帮助文档");
-        help.add(helpItem);
 
         //待处理菜单
         JMenu handle = new JMenu("待处理");
@@ -115,7 +111,6 @@ public class MenuSwing {
         menuBar.add(information);
         menuBar.add(event);
         menuBar.add(viewCollection);
-        menuBar.add(help);
         menuBar.add(handle);
 
         int roleId = new UserServiceImpl().verifyRole(userId);
