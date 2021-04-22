@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.*;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 /**

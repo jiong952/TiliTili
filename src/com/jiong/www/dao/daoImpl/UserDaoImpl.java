@@ -118,9 +118,6 @@ public class UserDaoImpl implements IUserDao {
     @Override
     public User login(String loginName)  {
         User userQuery = new User();
-        DataSource dataSource = getDataSource();
-        QueryRunner queryRunner = new QueryRunner(dataSource);
-        new QueryRunner();
         String sql ="SELECT `user_id` AS userId,`login_password` AS loginPassword FROM `user` WHERE `login_name`=?";
         try {
             userQuery = queryRunner.query(sql, new BeanHandler<>(User.class), loginName);

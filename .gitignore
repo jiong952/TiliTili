@@ -2,7 +2,7 @@
 *.log
 *.lock
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.ear
 target/
