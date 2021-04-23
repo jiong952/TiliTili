@@ -6,11 +6,9 @@ import com.jiong.www.po.User;
 
 import static com.jiong.www.util.MyDsUtils.*;
 
-import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.*;
