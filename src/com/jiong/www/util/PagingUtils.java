@@ -113,7 +113,7 @@ public class PagingUtils<T>extends JFrame {
         Class<?> tClass = t.getClass();
         //得到T的所有属性
         Field[] field = tClass.getDeclaredFields();
-        //event 和 eventGroup中 Name 都在第一个
+        //event 和 eventGroup中 name 都在第一个
         field[0].setAccessible(true);
         //获取属性的名字
         String filedName = field[0].getName();
@@ -126,7 +126,7 @@ public class PagingUtils<T>extends JFrame {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
-        //调用这个整合出来的get方法，强转成自己需要的类型
+        //调用这个整合出来的get方法，强转类型
         String name = null;
         try {
             assert m != null;

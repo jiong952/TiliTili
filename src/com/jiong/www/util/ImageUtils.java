@@ -82,7 +82,8 @@ public class ImageUtils extends JFrame {
         });
         //为set增加事件
         set.addActionListener(event -> {
-            int result = jFileChooser.showDialog(jPanel , "打开");  //显示文件对话框
+            int result = jFileChooser.showDialog(jPanel , "打开");
+            //显示文件对话框
             //如果用户选择了APPROVE（赞同）按钮，即放进个人信息或者放进瓜
             if(result == JFileChooser.APPROVE_OPTION)
             {
