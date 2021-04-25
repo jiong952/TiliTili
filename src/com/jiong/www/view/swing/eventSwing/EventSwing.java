@@ -445,7 +445,7 @@ public class EventSwing {
             notLike.setVisible(false);
             collected.setVisible(false);
             notCollected.setVisible(false);
-            myCommentArea.setVisible(false);
+            jScrollPane2.setVisible(false);
         }
         selectedEvent.setVisible(true);
 
