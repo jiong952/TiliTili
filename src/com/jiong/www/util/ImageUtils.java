@@ -84,7 +84,7 @@ public class ImageUtils extends JFrame {
         set.addActionListener(event -> {
             int result = jFileChooser.showDialog(jPanel , "打开");
             //显示文件对话框
-            //如果用户选择了APPROVE（赞同）按钮，即放进个人信息或者放进瓜
+            //如果用户选择了APPROVE（同意）按钮，即放进个人信息或者放进瓜
             if(result == JFileChooser.APPROVE_OPTION)
             {
                 if(jFileChooser.getSelectedFile().getName().toLowerCase().endsWith(png)||jFileChooser.getSelectedFile().getName().toLowerCase().endsWith(jpg)){
@@ -123,7 +123,7 @@ public class ImageUtils extends JFrame {
             if(!flag){
                 JOptionPane.showMessageDialog(null,"已是原始头像","失败",JOptionPane.ERROR_MESSAGE);
             }
-        //刷新
+            //刷新
             File file = new File(homeDirectory+"\\TiliTili照片\\" + userId + jpg);
             if(!file.exists()){
                 file = new File(homeDirectory+"\\TiliTili照片\\默认"+jpg);
@@ -165,7 +165,6 @@ public class ImageUtils extends JFrame {
         }
     }
     static class FileCanChoose extends FileFilter{
-
         @Override
         public boolean accept(File file) {
             String filename =file.getName();
@@ -174,7 +173,6 @@ public class ImageUtils extends JFrame {
 
         @Override
         public String getDescription() {
-
             return "图片文件：.jpg,.png";
         }
     }
