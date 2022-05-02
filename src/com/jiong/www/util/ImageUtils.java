@@ -69,7 +69,8 @@ public class ImageUtils extends JFrame {
                     accessory.setIcon(null);
                     return;
                 }
-                ImageIcon icon = new ImageIcon(file.getPath());  //将所文件读入ImageIcon对象中
+                ImageIcon icon = new ImageIcon(file.getPath());
+                //将所文件读入ImageIcon对象中
                 //如果图像太大，则缩小它
                 if(icon.getIconWidth() > PREVIEW_SIZE)
                 {
